@@ -1,0 +1,6 @@
+{
+   "id": 1,
+   "description": "Where are your #8 or #9 tiles?",
+   "additional_info": "You must chose one number before asking that question",
+   "condition": "check|index|8|9"
+}
