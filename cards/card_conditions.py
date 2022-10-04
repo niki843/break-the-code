@@ -1,6 +1,10 @@
-from constants import CARD_INDEX_TO_LETTER_MAP, MISSING_PROPERTY_DEFAULT, Colors, GameTypes
+from constants import (
+    CARD_INDEX_TO_LETTER_MAP,
+    MISSING_PROPERTY_DEFAULT,
+    Colors,
+    GameTypes,
+)
 from exceptions.player_cards_missing import PlayerCardsMissingException
-from the_game import GAME_TYPE
 
 
 def first_card(player):
@@ -38,7 +42,7 @@ def fifth_card(player):
 def sixth_card(player):
     check_player_has_cards(player)
 
-    return get_even_or_odd_from_player_tiles(player, 1, 'odd')
+    return get_even_or_odd_from_player_tiles(player, 1, "odd")
 
 
 def seventh_card(player):
@@ -47,20 +51,24 @@ def seventh_card(player):
 
 
 def eight_card(player):
+    from game_builder import GameBuilder
+
     check_player_has_cards(player)
     start_index = 1
     end_index = 4
-    if GAME_TYPE == GameTypes.FOUR_PLAYER:
+    if GameBuilder().game_type == GameTypes.FOUR_PLAYER:
         end_index = 3
 
     return get_sum_from_player_tiles(player, start_index, end_index)
 
 
 def ninth_card(player):
+    from game_builder import GameBuilder
+
     check_player_has_cards(player)
     start_index = 0
     end_index = 5
-    if GAME_TYPE == GameTypes.FOUR_PLAYER:
+    if GameBuilder().game_type == GameTypes.FOUR_PLAYER:
         end_index = 4
 
     return get_sum_from_player_tiles(player, start_index, end_index)
@@ -87,21 +95,23 @@ def twelfth_card(player):
 
 def thirteenth_card(player):
     check_player_has_cards(player)
-    return get_card_index_list_from_property(player, 'number', 5)
+    return get_card_index_list_from_property(player, "number", 5)
 
 
 def fourteenth_card(player):
     check_player_has_cards(player)
     number_list = [x.number for x in player.get_cards()]
     diff = max(number_list) - min(number_list)
-    print(f"Player {player.get_name()}, has a difference between his highers and lowest card equal to {diff}")
+    print(
+        f"Player {player.get_name()}, has a difference between his highers and lowest card equal to {diff}"
+    )
     return diff
 
 
 def fifteenth_card(player):
     check_player_has_cards(player)
 
-    return get_even_or_odd_from_player_tiles(player, 0, 'even')
+    return get_even_or_odd_from_player_tiles(player, 0, "even")
 
 
 def sixteenth_card(player):
@@ -124,17 +134,21 @@ def seventeenth_card(player):
 
     same_number_cards_count = (len(number_list) - len(unique_cards)) * 2
 
-    print(f"""Player {player.get_name()}, has {same_number_cards_count} with the same number.
+    print(
+        f"""Player {player.get_name()}, has {same_number_cards_count} with the same number.
     Bear in mind that the deck of tiles has only a set of 2 with the same number, 
-    so this means 2 of one number and 2 of another if the number is 4""")
+    so this means 2 of one number and 2 of another if the number is 4"""
+    )
     return same_number_cards_count
 
 
 def eighteenth_card(player):
+    from game_builder import GameBuilder
+
     check_player_has_cards(player)
     start_index = 2
     end_index = 5
-    if GAME_TYPE == GameTypes.FOUR_PLAYER:
+    if GameBuilder().game_type == GameTypes.FOUR_PLAYER:
         start_index = 1
         end_index = 4
 
@@ -281,5 +295,5 @@ CARD_ID_TO_CONDITION_MAP = {
     18: eighteenth_card,
     19: nineteenth_card,
     20: twentieth_card,
-    21: twenty_first_card
+    21: twenty_first_card,
 }

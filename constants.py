@@ -5,13 +5,7 @@ MISSING_PROPERTY_DEFAULT = -1
 NUMBER_CARDS_PER_PLAYER_TWO_OR_THREE_PLAYERS = 5
 NUMBER_CARDS_PER_PLAYER_FOUR_PLAYERS = 4
 NUMBER_CARDS_COUNT = 20
-CARD_INDEX_TO_LETTER_MAP = {
-    0: 'a',
-    1: 'b',
-    2: 'c',
-    3: 'd',
-    4: 'e'
-}
+CARD_INDEX_TO_LETTER_MAP = {0: "a", 1: "b", 2: "c", 3: "d", 4: "e"}
 
 
 class GameTypes(IntEnum):
@@ -27,8 +21,12 @@ class Colors(IntEnum):
 
     def __str__(self):
         if self.value == Colors.COLOR_BLACK:
-            return 'Black'
+            return "Black"
         elif self.value == Colors.COLOR_WHITE:
-            return 'White'
+            return "White"
         else:
-            return 'Green'
+            return "Green"
+
+
+# Game important constanst this will contain variables that are used through game
+GAME_TYPE = None

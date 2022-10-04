@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import pytest
 
-from card import Card
+from entity.card import Card
 from cards.card_conditions import (
     first_card,
     second_card,
@@ -14,8 +14,17 @@ from cards.card_conditions import (
     seventh_card,
     eight_card,
     ninth_card,
-    eleventh_card, twelfth_card, thirteenth_card, fourteenth_card, fifteenth_card, sixteenth_card, seventeenth_card,
-    eighteenth_card, nineteenth_card, twentieth_card, twenty_first_card,
+    eleventh_card,
+    twelfth_card,
+    thirteenth_card,
+    fourteenth_card,
+    fifteenth_card,
+    sixteenth_card,
+    seventeenth_card,
+    eighteenth_card,
+    nineteenth_card,
+    twentieth_card,
+    twenty_first_card,
 )
 from constants import Colors, GameTypes
 
@@ -209,24 +218,24 @@ class TestCardReaderCardConditions:
         "get_cards, sum_cards",
         [
             (
-                    lambda: [
-                        Card(number=1, color=Colors.COLOR_BLACK),
-                        Card(number=2, color=Colors.COLOR_BLACK),
-                        Card(number=3, color=Colors.COLOR_WHITE),
-                        Card(number=8, color=Colors.COLOR_WHITE),
-                        Card(number=9, color=Colors.COLOR_GREEN),
-                    ],
-                    3,
+                lambda: [
+                    Card(number=1, color=Colors.COLOR_BLACK),
+                    Card(number=2, color=Colors.COLOR_BLACK),
+                    Card(number=3, color=Colors.COLOR_WHITE),
+                    Card(number=8, color=Colors.COLOR_WHITE),
+                    Card(number=9, color=Colors.COLOR_GREEN),
+                ],
+                3,
             ),
             (
-                    lambda: [
-                        Card(number=1, color=Colors.COLOR_WHITE),
-                        Card(number=2, color=Colors.COLOR_WHITE),
-                        Card(number=3, color=Colors.COLOR_WHITE),
-                        Card(number=8, color=Colors.COLOR_WHITE),
-                        Card(number=9, color=Colors.COLOR_GREEN),
-                    ],
-                    0,
+                lambda: [
+                    Card(number=1, color=Colors.COLOR_WHITE),
+                    Card(number=2, color=Colors.COLOR_WHITE),
+                    Card(number=3, color=Colors.COLOR_WHITE),
+                    Card(number=8, color=Colors.COLOR_WHITE),
+                    Card(number=9, color=Colors.COLOR_GREEN),
+                ],
+                0,
             ),
         ],
     )
@@ -279,7 +288,7 @@ class TestCardReaderCardConditions:
 
         result = thirteenth_card(player)
 
-        assert result == ['c', 'd']
+        assert result == ["c", "d"]
 
     def test_fourteenth(self):
         player = SimpleNamespace()
@@ -358,9 +367,7 @@ class TestCardReaderCardConditions:
 
         assert results == 4
 
-    @pytest.mark.parametrize(
-        "game_type", [GameTypes.FOUR_PLAYER]
-    )
+    @pytest.mark.parametrize("game_type", [GameTypes.FOUR_PLAYER])
     def test_eighteenth(self, game_type):
         player = SimpleNamespace()
         setattr(player, "get_name", lambda: "test_user")
@@ -405,24 +412,24 @@ class TestCardReaderCardConditions:
         "get_cards, sum_cards",
         [
             (
-                    lambda: [
-                        Card(number=1, color=Colors.COLOR_BLACK),
-                        Card(number=2, color=Colors.COLOR_BLACK),
-                        Card(number=3, color=Colors.COLOR_WHITE),
-                        Card(number=8, color=Colors.COLOR_WHITE),
-                        Card(number=9, color=Colors.COLOR_GREEN),
-                    ],
-                    11,
+                lambda: [
+                    Card(number=1, color=Colors.COLOR_BLACK),
+                    Card(number=2, color=Colors.COLOR_BLACK),
+                    Card(number=3, color=Colors.COLOR_WHITE),
+                    Card(number=8, color=Colors.COLOR_WHITE),
+                    Card(number=9, color=Colors.COLOR_GREEN),
+                ],
+                11,
             ),
             (
-                    lambda: [
-                        Card(number=1, color=Colors.COLOR_BLACK),
-                        Card(number=2, color=Colors.COLOR_BLACK),
-                        Card(number=3, color=Colors.COLOR_BLACK),
-                        Card(number=8, color=Colors.COLOR_BLACK),
-                        Card(number=9, color=Colors.COLOR_GREEN),
-                    ],
-                    0,
+                lambda: [
+                    Card(number=1, color=Colors.COLOR_BLACK),
+                    Card(number=2, color=Colors.COLOR_BLACK),
+                    Card(number=3, color=Colors.COLOR_BLACK),
+                    Card(number=8, color=Colors.COLOR_BLACK),
+                    Card(number=9, color=Colors.COLOR_GREEN),
+                ],
+                0,
             ),
         ],
     )
