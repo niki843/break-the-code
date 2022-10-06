@@ -3,25 +3,32 @@ import os
 
 from game_builder import GameBuilder
 
+from utils.game_events import check_events
+
+img_path = f".{os.path.sep}images{os.path.sep}"
+
 
 def start_game():
     pygame.init()
 
-    pygame.display.set_mode((800, 600))
+    # pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    screen = pygame.display.set_mode((800, 600), pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.RESIZABLE)
     pygame.display.set_caption("Break The Code")
     thumbnail = pygame.image.load(
-        f".{os.path.sep}images{os.path.sep}crack-the-code-thumbnail.png"
+        f"{img_path}crack-the-code-thumbnail.png"
     )
     pygame.display.set_icon(thumbnail)
-    # pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    background = pygame.image.load(f"{img_path}background.jpg")
+    screen.blit(pygame.transform.scale(background, (800, 600)), (0, 0))
+    pygame.display.flip()
 
     GameBuilder()
 
     running = True
     while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
+        running = check_events(background, screen) is None
+
+        pygame.display.update()
 
 
 if __name__ == "__main__":
