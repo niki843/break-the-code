@@ -20,7 +20,8 @@ async def create_game(websocket, player_id):
     try:
         GAME_SESSIONS[started_game_session_id] = GameSession(
             session_id=started_game_session_id,
-            host_id=str(player_id),
+            host=str(player_id),
+            websocket=websocket
         )
     except InvalidPlayerId:
         await send_message(
@@ -37,6 +38,9 @@ async def create_game(websocket, player_id):
         game_session_id=started_game_session_id,
     )
 
+    async for message in websocket:
+        print(message)
+
 
 async def join_game(websocket, game_session_id, player_id):
     if game_session_id not in GAME_SESSIONS.keys():
@@ -47,8 +51,10 @@ async def join_game(websocket, game_session_id, player_id):
             error_type="session_not_found",
         )
 
+    current_game_session = GAME_SESSIONS[game_session_id]
+
     try:
-        GAME_SESSIONS[game_session_id].join_player(player_id)
+        current_game_session.join_player(player_id, websocket)
     except SessionFull:
         await send_message(
             websocket,
@@ -63,6 +69,9 @@ async def join_game(websocket, game_session_id, player_id):
             message="The player id that was provided is not valid",
             error_type="player_id_not_valid",
         )
+
+    # Notify players of new player joining
+    await current_game_session.send_joined_message(player_id)
 
 
 async def send_message(websocket, message_type, message, **kwargs):
