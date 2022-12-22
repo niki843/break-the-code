@@ -5,22 +5,32 @@ import websockets
 import json
 import uuid
 
+from websockets.exceptions import ConnectionClosed
+
 from entity.game_session import GameSession
 from exceptions.invalid_id import InvalidPlayerId
 from exceptions.session_full import SessionFull
 
 # key: id of the game session
 # value: ids of the players so they can rejoin
+from utils.enums import GameState
+
 GAME_SESSIONS = {}
 
+# This will keep the player id of disconnected players
+# mapped to game session ids
+CLOSED_CONNECTION_PLAYER_ID_TO_GAME_SESSION_ID = {}
 
-async def create_game(websocket, player_id):
+
+async def create_game(websocket, player_id, player_name):
     started_game_session_id = str(uuid.uuid4())
+    current_game_session = None
 
     try:
-        GAME_SESSIONS[started_game_session_id] = GameSession(
+        current_game_session = GameSession(
             session_id=started_game_session_id,
-            host=str(player_id),
+            player_id=player_id,
+            player_name=player_name,
             websocket=websocket
         )
     except InvalidPlayerId:
@@ -31,6 +41,8 @@ async def create_game(websocket, player_id):
             error_type="player_id_not_valid",
         )
 
+    GAME_SESSIONS[started_game_session_id] = current_game_session
+
     await send_message(
         websocket,
         message_type="success",
@@ -38,11 +50,10 @@ async def create_game(websocket, player_id):
         game_session_id=started_game_session_id,
     )
 
-    async for message in websocket:
-        print(message)
+    await receive_user_input(websocket, current_game_session)
 
 
-async def join_game(websocket, game_session_id, player_id):
+async def join_game(websocket, game_session_id, player_id, player_name):
     if game_session_id not in GAME_SESSIONS.keys():
         await send_message(
             websocket,
@@ -54,7 +65,7 @@ async def join_game(websocket, game_session_id, player_id):
     current_game_session = GAME_SESSIONS[game_session_id]
 
     try:
-        current_game_session.join_player(player_id, websocket)
+        current_game_session.join_player(player_id, player_name, websocket)
     except SessionFull:
         await send_message(
             websocket,
@@ -70,8 +81,10 @@ async def join_game(websocket, game_session_id, player_id):
             error_type="player_id_not_valid",
         )
 
-    # Notify players of new player joining
+    # Notify all players of new player joining
     await current_game_session.send_joined_message(player_id)
+
+    await receive_user_input(websocket, current_game_session)
 
 
 async def send_message(websocket, message_type, message, **kwargs):
@@ -81,6 +94,20 @@ async def send_message(websocket, message_type, message, **kwargs):
     }
     event.update(kwargs)
     await websocket.send(json.dumps(event))
+
+
+async def receive_user_input(websocket, game_session):
+    while True:
+        try:
+            await websocket.recv()
+        except ConnectionClosed:
+            # If the game has ended, delete the game session from the dict
+            if game_session.get_state() == GameState.END:
+                del GAME_SESSIONS[game_session.id]
+                return
+
+            print("Waiting for player to reconnect")
+            return
 
 
 # Handles all new incoming requests and distributes to appropriate functions
@@ -101,11 +128,11 @@ async def handler(websocket):
 
     if event_msg.get("type") == "join_game":
         await join_game(
-            websocket, event_msg.get("game_session_id"), event_msg.get("player_id")
+            websocket, event_msg.get("game_session_id"), event_msg.get("player_id"), event_msg.get("player_name")
         )
 
     if event_msg.get("type") == "new_game":
-        await create_game(websocket, event_msg.get("player_id"))
+        await create_game(websocket, event_msg.get("player_id"), event_msg.get("player_name"))
 
 
 async def main():

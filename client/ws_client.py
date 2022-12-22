@@ -10,9 +10,11 @@ import websockets
 async def connect_to_server():
     try:
         async with websockets.connect("ws://localhost:8765") as websocket:
-            await websocket.send(json.dumps({"type": "new_game"}))
-            msg = await websocket.recv()
-            print(msg)
+            inp = input("json: ")
+            while inp != "end":
+                await websocket.send(inp)
+                print(await websocket.recv())
+                inp = input("json: ")
     except ConnectionRefusedError:
         print("Could not connect to server")
     except Exception as e:

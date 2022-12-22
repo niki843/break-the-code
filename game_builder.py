@@ -15,9 +15,11 @@ from cards.card_reader import CardReader
 
 # Setting the GameBuilder to Singleton will prevent re-loading the game assets like cards, players etc.
 class GameBuilder(Singleton):
-    def __init__(self):
+    def __init__(self, players: list):
         self.game_type = None
         self.cards, self.players, self.number_cards = self.build_game()
+        self.players = players
+        self.game_type = GameTypes(len(players))
 
     def build_game(self):
         # players_count = int(input("Please input number of players:"))
@@ -28,17 +30,16 @@ class GameBuilder(Singleton):
         #             "of players:"
         #         )
         #     )
-
-        players_count = 3
-
-        players = self.populate_players(players_count)
+        #
+        # players_count = 3
+        # players = self.populate_players(players_count)
 
         number_cards = self.create_number_cards()
         self.populate_number_cards(number_cards)
 
-        self.hand_out_number_cards_to_players(players, number_cards)
+        self.hand_out_number_cards_to_players(self.players, number_cards)
         cards = CardReader().cards
-        return cards, players, number_cards
+        return cards, self.players, number_cards
 
     def create_number_cards(self):
         number_cards = []
@@ -60,15 +61,15 @@ class GameBuilder(Singleton):
             setattr(numbers[index], "color", Colors.COLOR_BLACK)
             setattr(numbers[index], "number", index % 10)
 
-    def populate_players(self, players_count: int):
-        players = []
-
-        for i in range(players_count):
-            players.append(Player(i, f"test_name{i}"))
-
-        self.game_type = GameTypes(len(players))
-
-        return players
+    # def populate_players(self, players_count: int):
+    #     players = []
+    #
+    #     for i in range(players_count):
+    #         players.append(Player(i, f"test_name{i}"))
+    #
+    #     self.game_type = GameTypes(len(players))
+    #
+    #     return players
 
     def hand_out_number_cards_to_players(self, players, cards):
         number_cards_amount = (
