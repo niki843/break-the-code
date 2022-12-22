@@ -31,7 +31,7 @@ async def create_game(websocket, player_id, player_name):
             session_id=started_game_session_id,
             player_id=player_id,
             player_name=player_name,
-            websocket=websocket
+            websocket=websocket,
         )
     except InvalidPlayerId:
         await send_message(
@@ -50,7 +50,7 @@ async def create_game(websocket, player_id, player_name):
         game_session_id=started_game_session_id,
     )
 
-    await receive_user_input(websocket, current_game_session)
+    await handle_user_input(player_id, websocket, current_game_session)
 
 
 async def join_game(websocket, game_session_id, player_id, player_name):
@@ -84,7 +84,7 @@ async def join_game(websocket, game_session_id, player_id, player_name):
     # Notify all players of new player joining
     await current_game_session.send_joined_message(player_id)
 
-    await receive_user_input(websocket, current_game_session)
+    await handle_user_input(player_id, websocket, current_game_session)
 
 
 async def send_message(websocket, message_type, message, **kwargs):
@@ -96,10 +96,36 @@ async def send_message(websocket, message_type, message, **kwargs):
     await websocket.send(json.dumps(event))
 
 
-async def receive_user_input(websocket, game_session):
+async def handle_user_input(player_id, websocket, game_session):
     while True:
         try:
-            await websocket.recv()
+            msg = json.loads(await websocket.recv())
+
+            if msg.get("type") == "start_game":
+                if not player_id == game_session.get_host().id:
+                    await send_message(
+                        websocket,
+                        message_type="error",
+                        message="Only the host can start the game",
+                        error_type="insufficient_permissions",
+                    )
+                if not game_session.get_state() == GameState.PENDING:
+                    await send_message(
+                        websocket,
+                        message_type="error",
+                        message="The game can not be started from the current state",
+                        error_type="game_state_error",
+                    )
+                if game_session.get_players_count() < 3:
+                    await send_message(
+                        websocket,
+                        message_type="error",
+                        message="The game can not be started with less than 3 players",
+                        error_type="game_state_error",
+                    )
+
+                await game_session.start_game()
+
         except ConnectionClosed:
             # If the game has ended, delete the game session from the dict
             if game_session.get_state() == GameState.END:
@@ -128,11 +154,16 @@ async def handler(websocket):
 
     if event_msg.get("type") == "join_game":
         await join_game(
-            websocket, event_msg.get("game_session_id"), event_msg.get("player_id"), event_msg.get("player_name")
+            websocket,
+            event_msg.get("game_session_id"),
+            event_msg.get("player_id"),
+            event_msg.get("player_name"),
         )
 
     if event_msg.get("type") == "new_game":
-        await create_game(websocket, event_msg.get("player_id"), event_msg.get("player_name"))
+        await create_game(
+            websocket, event_msg.get("player_id"), event_msg.get("player_name")
+        )
 
 
 async def main():

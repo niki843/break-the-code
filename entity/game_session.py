@@ -32,15 +32,6 @@ class GameSession:
         self.__connected_players.add(Player(player_id, name=player_name))
         self.__connected_player_connections.add(websocket)
 
-    def start_game(self):
-        self.__state = GameState.IN_PROGRESS
-
-    def get_players_count(self):
-        return len(self.__connected_players)
-
-    def get_state(self):
-        return copy.deepcopy(self.__state)
-
     async def send_joined_message(self, player_id):
         event = {
             "type": "info",
@@ -48,3 +39,21 @@ class GameSession:
             "message": f"Player {player_id[:7]} has joined",
         }
         websockets.broadcast(self.__connected_player_connections, json.dumps(event))
+
+    async def start_game(self):
+        self.__state = GameState.IN_PROGRESS
+
+        event = {
+            "type": "start_game",
+            "message": f"{self.__host.name} started the game",
+        }
+        websockets.broadcast(self.__connected_player_connections, json.dumps(event))
+
+    def get_players_count(self):
+        return len(self.__connected_players)
+
+    def get_state(self):
+        return copy.deepcopy(self.__state)
+
+    def get_host(self):
+        return self.__host
