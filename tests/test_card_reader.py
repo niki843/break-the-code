@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import pytest
 
-from entity.card import Card
+from entity.condition_card import Card
 from cards.card_conditions import (
     first_card,
     second_card,
@@ -181,8 +181,7 @@ class TestCardReaderCardConditions:
                 Card(number=9),
             ],
         )
-        with patch("cards.card_conditions.GAME_TYPE", game_type):
-            results = eight_card(player)
+        results = eight_card(player, game_type)
 
         if game_type == GameTypes.THREE_PLAYER:
             assert results == 13
@@ -206,8 +205,7 @@ class TestCardReaderCardConditions:
                 Card(number=9),
             ],
         )
-        with patch("cards.card_conditions.GAME_TYPE", game_type):
-            results = ninth_card(player)
+        results = ninth_card(player, game_type)
 
         if game_type == GameTypes.THREE_PLAYER:
             assert results == 23
@@ -382,8 +380,7 @@ class TestCardReaderCardConditions:
                 Card(number=9),
             ],
         )
-        with patch("cards.card_conditions.GAME_TYPE", game_type):
-            results = eighteenth_card(player)
+        results = eighteenth_card(player, game_type)
 
         if game_type == GameTypes.THREE_PLAYER:
             assert results == 20

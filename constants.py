@@ -26,7 +26,3 @@ class Colors(IntEnum):
             return "White"
         else:
             return "Green"
-
-
-# Game important constanst this will contain variables that are used through game
-GAME_TYPE = None

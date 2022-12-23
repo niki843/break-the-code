@@ -2,7 +2,7 @@ import json
 import os
 import re
 
-from entity.card import Card
+from entity.condition_card import ConditionCard
 from cards.card_conditions import CARD_ID_TO_CONDITION_MAP
 from constants import CARDS_PATH
 from utils.singelton import Singleton
@@ -23,7 +23,7 @@ class CardReader(Singleton):
 
         for card in card_names:
             f = open(CARDS_PATH + card)
-            x = json.load(f, object_hook=lambda d: Card(**d))
+            x = json.load(f, object_hook=lambda d: ConditionCard(**d))
             cards.append(x)
 
         return cards
