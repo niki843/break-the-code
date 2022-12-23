@@ -11,11 +11,15 @@ from entity.game_session import GameSession
 from exceptions.invalid_id import InvalidPlayerId
 from exceptions.session_full import SessionFull
 
-# key: id of the game session
-# value: ids of the players so they can rejoin
 from utils.enums import GameState
 
+# key: id of the game session
+# value: ids of the players so they can rejoin
 GAME_SESSIONS = {}
+
+# TODO: Add all live websocket connections
+#  for sending messages to all players
+CURRENT_WEBSOCKET_CONNECTIONS = []
 
 # This will keep the player id of disconnected players
 # mapped to game session ids
@@ -87,6 +91,29 @@ async def join_game(websocket, game_session_id, player_id, player_name):
     await handle_user_input(player_id, websocket, current_game_session)
 
 
+async def handle_user_input(player_id, websocket, game_session):
+    while True:
+        try:
+            msg = json.loads(await websocket.recv())
+
+            if msg.get("type") == "start_game":
+                await validate_and_start_game(websocket, player_id, game_session)
+            elif msg.get("type") == "play_tile":
+                pass
+            elif msg.get("type") == "guess_numbers":
+                pass
+
+        except ConnectionClosed:
+            # If the game has ended, delete the game session from the dict
+            if game_session.get_state() == GameState.END:
+                del GAME_SESSIONS[game_session.id]
+                return
+
+            # TODO: Implement reconnecting
+            print("Waiting for player to reconnect")
+            return
+
+
 async def send_message(websocket, message_type, message, **kwargs):
     event = {
         "type": message_type,
@@ -96,44 +123,33 @@ async def send_message(websocket, message_type, message, **kwargs):
     await websocket.send(json.dumps(event))
 
 
-async def handle_user_input(player_id, websocket, game_session):
-    while True:
-        try:
-            msg = json.loads(await websocket.recv())
+async def validate_and_start_game(websocket, player_id, game_session):
+    if not player_id == game_session.get_host().id:
+        await send_message(
+            websocket,
+            message_type="error",
+            message="Only the host can start the game",
+            error_type="insufficient_permissions",
+        )
+        return
+    if not game_session.get_state() == GameState.PENDING:
+        await send_message(
+            websocket,
+            message_type="error",
+            message="The game can not be started from the current state",
+            error_type="game_state_error",
+        )
+        return
+    if game_session.get_players_count() < 3:
+        await send_message(
+            websocket,
+            message_type="error",
+            message="The game can not be started with less than 3 players",
+            error_type="game_state_error",
+        )
+        return
 
-            if msg.get("type") == "start_game":
-                if not player_id == game_session.get_host().id:
-                    await send_message(
-                        websocket,
-                        message_type="error",
-                        message="Only the host can start the game",
-                        error_type="insufficient_permissions",
-                    )
-                if not game_session.get_state() == GameState.PENDING:
-                    await send_message(
-                        websocket,
-                        message_type="error",
-                        message="The game can not be started from the current state",
-                        error_type="game_state_error",
-                    )
-                if game_session.get_players_count() < 3:
-                    await send_message(
-                        websocket,
-                        message_type="error",
-                        message="The game can not be started with less than 3 players",
-                        error_type="game_state_error",
-                    )
-
-                await game_session.start_game()
-
-        except ConnectionClosed:
-            # If the game has ended, delete the game session from the dict
-            if game_session.get_state() == GameState.END:
-                del GAME_SESSIONS[game_session.id]
-                return
-
-            print("Waiting for player to reconnect")
-            return
+    await game_session.start_game()
 
 
 # Handles all new incoming requests and distributes to appropriate functions
@@ -150,7 +166,7 @@ async def handler(websocket):
             return
 
         if event_msg.get("type") == "get_current_games":
-            await websocket.send(json.dumps(GAME_SESSIONS.keys()))
+            await websocket.send(json.dumps({"game_session_ids": list(GAME_SESSIONS.keys())}))
 
     if event_msg.get("type") == "join_game":
         await join_game(

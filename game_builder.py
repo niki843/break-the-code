@@ -1,7 +1,6 @@
 import random
 from types import SimpleNamespace
 
-from entity.player import Player
 from constants import (
     NUMBER_CARDS_COUNT,
     Colors,
@@ -15,25 +14,13 @@ from cards.card_reader import CardReader
 
 # Setting the GameBuilder to Singleton will prevent re-loading the game assets like cards, players etc.
 class GameBuilder(Singleton):
-    def __init__(self, players: list):
+    def __init__(self, players: set):
         self.game_type = None
         self.cards, self.players, self.number_cards = self.build_game()
         self.players = players
         self.game_type = GameTypes(len(players))
 
     def build_game(self):
-        # players_count = int(input("Please input number of players:"))
-        # while players_count < 2 or players_count > 4:
-        #     players_count = int(
-        #         input(
-        #             "Sorry the number of players could be between 2-4 players. Please enter the amount "
-        #             "of players:"
-        #         )
-        #     )
-        #
-        # players_count = 3
-        # players = self.populate_players(players_count)
-
         number_cards = self.create_number_cards()
         self.populate_number_cards(number_cards)
 
@@ -41,13 +28,15 @@ class GameBuilder(Singleton):
         cards = CardReader().cards
         return cards, self.players, number_cards
 
-    def create_number_cards(self):
+    @staticmethod
+    def create_number_cards():
         number_cards = []
         for index in range(1, NUMBER_CARDS_COUNT + 1):
             number_cards.append(SimpleNamespace())
         return number_cards
 
-    def populate_number_cards(self, numbers: list):
+    @staticmethod
+    def populate_number_cards(numbers: list):
         for index in range(0, len(numbers)):
             if index == 5 or index == 15:
                 setattr(numbers[index], "color", Colors.COLOR_GREEN)
@@ -61,17 +50,8 @@ class GameBuilder(Singleton):
             setattr(numbers[index], "color", Colors.COLOR_BLACK)
             setattr(numbers[index], "number", index % 10)
 
-    # def populate_players(self, players_count: int):
-    #     players = []
-    #
-    #     for i in range(players_count):
-    #         players.append(Player(i, f"test_name{i}"))
-    #
-    #     self.game_type = GameTypes(len(players))
-    #
-    #     return players
-
-    def hand_out_number_cards_to_players(self, players, cards):
+    @staticmethod
+    def hand_out_number_cards_to_players(players, cards):
         number_cards_amount = (
             NUMBER_CARDS_PER_PLAYER_FOUR_PLAYERS
             if len(players) == 4

@@ -6,6 +6,7 @@ import copy
 from entity.player import Player
 from exceptions.invalid_id import InvalidPlayerId
 from exceptions.session_full import SessionFull
+from game_builder import GameBuilder
 from utils.enums import GameState
 from utils.validate import is_valid_uuid
 
@@ -20,6 +21,7 @@ class GameSession:
         self.__connected_players = {self.__host}
         self.__connected_player_connections = {websocket}
         self.__state = GameState.PENDING
+        self.__game = None
 
     def join_player(self, player_id, player_name, websocket):
         # Check if game session is full
@@ -48,6 +50,8 @@ class GameSession:
             "message": f"{self.__host.name} started the game",
         }
         websockets.broadcast(self.__connected_player_connections, json.dumps(event))
+
+        self.__game = GameBuilder(self.__connected_players)
 
     def get_players_count(self):
         return len(self.__connected_players)
