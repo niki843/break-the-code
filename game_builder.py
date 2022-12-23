@@ -8,16 +8,15 @@ from constants import (
     NUMBER_CARDS_PER_PLAYER_FOUR_PLAYERS,
     NUMBER_CARDS_PER_PLAYER_TWO_OR_THREE_PLAYERS,
 )
-from utils.singelton import Singleton
 from cards.card_reader import CardReader
 
 
 # Setting the GameBuilder to Singleton will prevent re-loading the game assets like cards, players etc.
-class GameBuilder(Singleton):
+class GameBuilder:
     def __init__(self, players: set):
         self.game_type = None
-        self.cards, self.players, self.number_cards = self.build_game()
         self.players = players
+        self.cards, self.players, self.number_cards = self.build_game()
         self.game_type = GameTypes(len(players))
 
     def build_game(self):
