@@ -99,9 +99,9 @@ async def handle_user_input(player_id, websocket, game_session):
             if msg.get("type") == "start_game":
                 await validate_and_start_game(websocket, player_id, game_session)
             elif msg.get("type") == "play_tile":
-                pass
+                await validate_and_play_tile(websocket, player_id, game_session)
             elif msg.get("type") == "guess_numbers":
-                pass
+                await validate_and_guess_number(websocket, player_id, game_session)
 
         except ConnectionClosed:
             # If the game has ended, delete the game session from the dict
@@ -152,6 +152,14 @@ async def validate_and_start_game(websocket, player_id, game_session):
     await game_session.start_game()
 
 
+async def validate_and_play_tile(websocket, player_id, game_session):
+    pass
+
+
+async def validate_and_guess_number(websocket, player_id, game_session):
+    pass
+
+
 # Handles all new incoming requests and distributes to appropriate functions
 async def handler(websocket):
     # message = await websocket.recv()
@@ -166,7 +174,9 @@ async def handler(websocket):
             return
 
         if event_msg.get("type") == "get_current_games":
-            await websocket.send(json.dumps({"game_session_ids": list(GAME_SESSIONS.keys())}))
+            await websocket.send(
+                json.dumps({"game_session_ids": list(GAME_SESSIONS.keys())})
+            )
 
     if event_msg.get("type") == "join_game":
         await join_game(

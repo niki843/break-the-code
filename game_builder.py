@@ -11,6 +11,7 @@ class GameBuilder:
         self.players = players
         self.condition_cards, self.number_cards = self.build_game()
         self.game_type = constants.GameTypes(len(players))
+        self.current_condition_cards = random.sample(self.condition_cards, 6)
 
     def build_game(self):
         number_cards = self.create_number_cards()
