@@ -18,10 +18,10 @@ class GameSession:
 
         self.id = session_id
         self.__host = Player(player_id, name=player_name)
-        self.__connected_players = {self.__host}
+        self.__connected_players = [self.__host]
         self.__connected_player_connections = {websocket}
         self.__state = GameState.PENDING
-        self.__game = None
+        self.__game_board = None
 
     def join_player(self, player_id, player_name, websocket):
         # Check if game session is full
@@ -31,7 +31,7 @@ class GameSession:
         if not is_valid_uuid(player_id):
             raise InvalidPlayerId(player_id)
 
-        self.__connected_players.add(Player(player_id, name=player_name))
+        self.__connected_players.append(Player(player_id, name=player_name))
         self.__connected_player_connections.add(websocket)
 
     async def send_joined_message(self, player_id):
@@ -51,7 +51,7 @@ class GameSession:
         }
         websockets.broadcast(self.__connected_player_connections, json.dumps(event))
 
-        self.__game = GameBuilder(self.__connected_players)
+        self.__game_board = GameBuilder(self.__connected_players)
 
     def get_players_count(self):
         return len(self.__connected_players)

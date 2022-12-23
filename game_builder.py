@@ -7,7 +7,7 @@ from cards.card_reader import CardReader
 
 # Setting the GameBuilder to Singleton will prevent re-loading the game assets like cards, players etc.
 class GameBuilder:
-    def __init__(self, players: set):
+    def __init__(self, players: list):
         self.players = players
         self.condition_cards, self.number_cards = self.build_game()
         self.game_type = constants.GameTypes(len(players))
