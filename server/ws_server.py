@@ -99,7 +99,7 @@ async def handle_user_input(player_id, websocket, game_session):
             if msg.get("type") == "start_game":
                 await validate_and_start_game(websocket, player_id, game_session)
             elif msg.get("type") == "play_tile":
-                await validate_and_play_tile(websocket, player_id, game_session)
+                await execute_condition_card_request(websocket, player_id, game_session, msg.get("condition_card_id"))
             elif msg.get("type") == "guess_numbers":
                 await validate_and_guess_number(websocket, player_id, game_session)
 
@@ -152,8 +152,11 @@ async def validate_and_start_game(websocket, player_id, game_session):
     await game_session.start_game()
 
 
-async def validate_and_play_tile(websocket, player_id, game_session):
-    pass
+# The validation will be happening in the game session and game board
+# there is no validation that the server can do without too much information
+# transfer up the line
+async def execute_condition_card_request(websocket, player_id, game_session, condition_card_id):
+    return await game_session.validate_and_play_condition_card(websocket, player_id, condition_card_id)
 
 
 async def validate_and_guess_number(websocket, player_id, game_session):

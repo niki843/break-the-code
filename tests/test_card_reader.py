@@ -26,7 +26,7 @@ from cards.card_conditions import (
     twentieth_card,
     twenty_first_card,
 )
-from constants import Colors, GameTypes
+from utils.enums import Colors, GameTypes
 
 
 class TestCardReaderCardConditions:

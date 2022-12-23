@@ -2,10 +2,10 @@ import constants
 from constants import (
     CARD_INDEX_TO_LETTER_MAP,
     MISSING_PROPERTY_DEFAULT,
-    Colors,
-    GameTypes,
 )
+from utils.enums import GameTypes
 from exceptions.player_cards_missing import PlayerCardsMissingException
+from utils.enums import Colors
 
 
 def first_card(player):
