@@ -7,7 +7,7 @@ import uuid
 
 from websockets.exceptions import ConnectionClosed
 
-from entity.game_session import GameSession
+from service.game_session import GameSession
 from exceptions.invalid_id import InvalidPlayerId
 from exceptions.session_full import SessionFull
 

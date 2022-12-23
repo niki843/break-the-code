@@ -1,7 +1,7 @@
 import pygame
 import os
 
-from game_builder import GameBuilder
+from utils.game_builder import GameBuilder
 
 from utils.game_events import check_events
 

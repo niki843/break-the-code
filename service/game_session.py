@@ -6,7 +6,7 @@ import copy
 from entity.player import Player
 from exceptions.invalid_id import InvalidPlayerId
 from exceptions.session_full import SessionFull
-from game_builder import GameBuilder
+from utils.game_builder import GameBuilder
 from utils.enums import GameState
 from utils.validate import is_valid_uuid
 
