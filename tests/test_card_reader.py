@@ -3,7 +3,6 @@ from unittest.mock import patch
 
 import pytest
 
-from entity.condition_card import Card
 from cards.card_conditions import (
     first_card,
     second_card,
@@ -38,11 +37,11 @@ class TestCardReaderCardConditions:
             player,
             "get_cards",
             lambda: [
-                Card(number=1),
-                Card(number=2),
-                Card(number=3),
-                Card(number=8),
-                Card(number=9),
+                SimpleNamespace(number=1, color=0),
+                SimpleNamespace(number=2, color=0),
+                SimpleNamespace(number=3, color=0),
+                SimpleNamespace(number=8, color=0),
+                SimpleNamespace(number=9, color=0),
             ],
         )
         with patch("cards.card_conditions.input", lambda x: user_input):
@@ -58,11 +57,11 @@ class TestCardReaderCardConditions:
             player,
             "get_cards",
             lambda: [
-                Card(number=1),
-                Card(number=2),
-                Card(number=3),
-                Card(number=8),
-                Card(number=9),
+                SimpleNamespace(number=1, color=0),
+                SimpleNamespace(number=2, color=0),
+                SimpleNamespace(number=3, color=0),
+                SimpleNamespace(number=8, color=0),
+                SimpleNamespace(number=9, color=0),
             ],
         )
         results = second_card(player)
@@ -77,11 +76,11 @@ class TestCardReaderCardConditions:
             player,
             "get_cards",
             lambda: [
-                Card(number=1),
-                Card(number=2),
-                Card(number=3),
-                Card(number=8),
-                Card(number=0),
+                SimpleNamespace(number=1, color=0),
+                SimpleNamespace(number=2, color=0),
+                SimpleNamespace(number=3, color=0),
+                SimpleNamespace(number=8, color=0),
+                SimpleNamespace(number=0, color=0),
             ],
         )
         with patch("cards.card_conditions.input", lambda x: 0):
@@ -97,11 +96,11 @@ class TestCardReaderCardConditions:
             player,
             "get_cards",
             lambda: [
-                Card(color=Colors.COLOR_BLACK),
-                Card(color=Colors.COLOR_BLACK),
-                Card(color=Colors.COLOR_BLACK),
-                Card(color=Colors.COLOR_BLACK),
-                Card(color=Colors.COLOR_WHITE),
+                SimpleNamespace(color=Colors.COLOR_BLACK, number=1),
+                SimpleNamespace(color=Colors.COLOR_BLACK, number=2),
+                SimpleNamespace(color=Colors.COLOR_BLACK, number=3),
+                SimpleNamespace(color=Colors.COLOR_BLACK, number=4),
+                SimpleNamespace(color=Colors.COLOR_WHITE, number=5),
             ],
         )
         results = fourth_card(player)
@@ -116,11 +115,11 @@ class TestCardReaderCardConditions:
             player,
             "get_cards",
             lambda: [
-                Card(color=Colors.COLOR_WHITE),
-                Card(color=Colors.COLOR_WHITE),
-                Card(color=Colors.COLOR_WHITE),
-                Card(color=Colors.COLOR_WHITE),
-                Card(color=Colors.COLOR_BLACK),
+                SimpleNamespace(color=Colors.COLOR_WHITE, number=1),
+                SimpleNamespace(color=Colors.COLOR_WHITE, number=2),
+                SimpleNamespace(color=Colors.COLOR_WHITE, number=3),
+                SimpleNamespace(color=Colors.COLOR_WHITE, number=4),
+                SimpleNamespace(color=Colors.COLOR_BLACK, number=5),
             ],
         )
         results = fifth_card(player)
@@ -135,11 +134,11 @@ class TestCardReaderCardConditions:
             player,
             "get_cards",
             lambda: [
-                Card(number=0),
-                Card(number=1),
-                Card(number=2),
-                Card(number=3),
-                Card(number=4),
+                SimpleNamespace(number=0, color=Colors.COLOR_BLACK),
+                SimpleNamespace(number=1, color=Colors.COLOR_BLACK),
+                SimpleNamespace(number=2, color=Colors.COLOR_BLACK),
+                SimpleNamespace(number=3, color=Colors.COLOR_BLACK),
+                SimpleNamespace(number=4, color=Colors.COLOR_BLACK),
             ],
         )
         results = sixth_card(player)
@@ -153,11 +152,11 @@ class TestCardReaderCardConditions:
             player,
             "get_cards",
             lambda: [
-                Card(color=Colors.COLOR_WHITE),
-                Card(color=Colors.COLOR_WHITE),
-                Card(color=Colors.COLOR_WHITE),
-                Card(color=Colors.COLOR_BLACK),
-                Card(color=Colors.COLOR_BLACK),
+                SimpleNamespace(color=Colors.COLOR_WHITE, number=0),
+                SimpleNamespace(color=Colors.COLOR_WHITE, number=1),
+                SimpleNamespace(color=Colors.COLOR_WHITE, number=2),
+                SimpleNamespace(color=Colors.COLOR_BLACK, number=3),
+                SimpleNamespace(color=Colors.COLOR_BLACK, number=4),
             ],
         )
         results = seventh_card(player)
@@ -174,11 +173,11 @@ class TestCardReaderCardConditions:
             player,
             "get_cards",
             lambda: [
-                Card(number=1),
-                Card(number=2),
-                Card(number=3),
-                Card(number=8),
-                Card(number=9),
+                SimpleNamespace(number=1, color=Colors.COLOR_BLACK),
+                SimpleNamespace(number=2, color=Colors.COLOR_BLACK),
+                SimpleNamespace(number=3, color=Colors.COLOR_BLACK),
+                SimpleNamespace(number=8, color=Colors.COLOR_BLACK),
+                SimpleNamespace(number=9, color=Colors.COLOR_BLACK),
             ],
         )
         results = eight_card(player, game_type)
@@ -198,11 +197,11 @@ class TestCardReaderCardConditions:
             player,
             "get_cards",
             lambda: [
-                Card(number=1),
-                Card(number=2),
-                Card(number=3),
-                Card(number=8),
-                Card(number=9),
+                SimpleNamespace(number=1, color=Colors.COLOR_BLACK),
+                SimpleNamespace(number=2, color=Colors.COLOR_BLACK),
+                SimpleNamespace(number=3, color=Colors.COLOR_BLACK),
+                SimpleNamespace(number=8, color=Colors.COLOR_BLACK),
+                SimpleNamespace(number=9, color=Colors.COLOR_BLACK),
             ],
         )
         results = ninth_card(player, game_type)
@@ -217,21 +216,21 @@ class TestCardReaderCardConditions:
         [
             (
                 lambda: [
-                    Card(number=1, color=Colors.COLOR_BLACK),
-                    Card(number=2, color=Colors.COLOR_BLACK),
-                    Card(number=3, color=Colors.COLOR_WHITE),
-                    Card(number=8, color=Colors.COLOR_WHITE),
-                    Card(number=9, color=Colors.COLOR_GREEN),
+                    SimpleNamespace(number=1, color=Colors.COLOR_BLACK),
+                    SimpleNamespace(number=2, color=Colors.COLOR_BLACK),
+                    SimpleNamespace(number=3, color=Colors.COLOR_WHITE),
+                    SimpleNamespace(number=8, color=Colors.COLOR_WHITE),
+                    SimpleNamespace(number=9, color=Colors.COLOR_GREEN),
                 ],
                 3,
             ),
             (
                 lambda: [
-                    Card(number=1, color=Colors.COLOR_WHITE),
-                    Card(number=2, color=Colors.COLOR_WHITE),
-                    Card(number=3, color=Colors.COLOR_WHITE),
-                    Card(number=8, color=Colors.COLOR_WHITE),
-                    Card(number=9, color=Colors.COLOR_GREEN),
+                    SimpleNamespace(number=1, color=Colors.COLOR_WHITE),
+                    SimpleNamespace(number=2, color=Colors.COLOR_WHITE),
+                    SimpleNamespace(number=3, color=Colors.COLOR_WHITE),
+                    SimpleNamespace(number=8, color=Colors.COLOR_WHITE),
+                    SimpleNamespace(number=9, color=Colors.COLOR_GREEN),
                 ],
                 0,
             ),
@@ -257,11 +256,11 @@ class TestCardReaderCardConditions:
             player,
             "get_cards",
             lambda: [
-                Card(number=1),
-                Card(number=2),
-                Card(number=c_card),
-                Card(number=8),
-                Card(number=9),
+                SimpleNamespace(number=1, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=2, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=c_card, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=8, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=9, color=Colors.COLOR_WHITE),
             ],
         )
 
@@ -276,11 +275,11 @@ class TestCardReaderCardConditions:
             player,
             "get_cards",
             lambda: [
-                Card(number=1),
-                Card(number=2),
-                Card(number=5),
-                Card(number=5),
-                Card(number=4),
+                SimpleNamespace(number=1, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=2, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=5, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=5, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=4, color=Colors.COLOR_WHITE),
             ],
         )
 
@@ -295,11 +294,11 @@ class TestCardReaderCardConditions:
             player,
             "get_cards",
             lambda: [
-                Card(number=1),
-                Card(number=2),
-                Card(number=3),
-                Card(number=8),
-                Card(number=9),
+                SimpleNamespace(number=1, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=2, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=3, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=8, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=9, color=Colors.COLOR_WHITE),
             ],
         )
 
@@ -314,11 +313,11 @@ class TestCardReaderCardConditions:
             player,
             "get_cards",
             lambda: [
-                Card(number=1),
-                Card(number=2),
-                Card(number=0),
-                Card(number=8),
-                Card(number=9),
+                SimpleNamespace(number=1, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=2, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=0, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=8, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=9, color=Colors.COLOR_WHITE),
             ],
         )
 
@@ -334,11 +333,11 @@ class TestCardReaderCardConditions:
             player,
             "get_cards",
             lambda: [
-                Card(number=1),
-                Card(number=2),
-                Card(number=3),
-                Card(number=8),
-                Card(number=9),
+                SimpleNamespace(number=1, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=2, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=3, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=8, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=9, color=Colors.COLOR_WHITE),
             ],
         )
         with patch("cards.card_conditions.input", lambda x: user_input):
@@ -354,11 +353,11 @@ class TestCardReaderCardConditions:
             player,
             "get_cards",
             lambda: [
-                Card(number=1),
-                Card(number=1),
-                Card(number=3),
-                Card(number=9),
-                Card(number=9),
+                SimpleNamespace(number=1, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=1, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=3, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=9, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=9, color=Colors.COLOR_WHITE),
             ],
         )
         results = seventeenth_card(player)
@@ -373,11 +372,11 @@ class TestCardReaderCardConditions:
             player,
             "get_cards",
             lambda: [
-                Card(number=1),
-                Card(number=2),
-                Card(number=3),
-                Card(number=8),
-                Card(number=9),
+                SimpleNamespace(number=1, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=2, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=3, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=8, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=9, color=Colors.COLOR_WHITE),
             ],
         )
         results = eighteenth_card(player, game_type)
@@ -394,11 +393,11 @@ class TestCardReaderCardConditions:
             player,
             "get_cards",
             lambda: [
-                Card(number=1),
-                Card(number=2),
-                Card(number=3),
-                Card(number=8),
-                Card(number=9),
+                SimpleNamespace(number=1, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=2, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=3, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=8, color=Colors.COLOR_WHITE),
+                SimpleNamespace(number=9, color=Colors.COLOR_WHITE),
             ],
         )
         results = nineteenth_card(player)
@@ -410,21 +409,21 @@ class TestCardReaderCardConditions:
         [
             (
                 lambda: [
-                    Card(number=1, color=Colors.COLOR_BLACK),
-                    Card(number=2, color=Colors.COLOR_BLACK),
-                    Card(number=3, color=Colors.COLOR_WHITE),
-                    Card(number=8, color=Colors.COLOR_WHITE),
-                    Card(number=9, color=Colors.COLOR_GREEN),
+                    SimpleNamespace(number=1, color=Colors.COLOR_BLACK),
+                    SimpleNamespace(number=2, color=Colors.COLOR_BLACK),
+                    SimpleNamespace(number=3, color=Colors.COLOR_WHITE),
+                    SimpleNamespace(number=8, color=Colors.COLOR_WHITE),
+                    SimpleNamespace(number=9, color=Colors.COLOR_GREEN),
                 ],
                 11,
             ),
             (
                 lambda: [
-                    Card(number=1, color=Colors.COLOR_BLACK),
-                    Card(number=2, color=Colors.COLOR_BLACK),
-                    Card(number=3, color=Colors.COLOR_BLACK),
-                    Card(number=8, color=Colors.COLOR_BLACK),
-                    Card(number=9, color=Colors.COLOR_GREEN),
+                    SimpleNamespace(number=1, color=Colors.COLOR_BLACK),
+                    SimpleNamespace(number=2, color=Colors.COLOR_BLACK),
+                    SimpleNamespace(number=3, color=Colors.COLOR_BLACK),
+                    SimpleNamespace(number=8, color=Colors.COLOR_BLACK),
+                    SimpleNamespace(number=9, color=Colors.COLOR_GREEN),
                 ],
                 0,
             ),
@@ -450,11 +449,11 @@ class TestCardReaderCardConditions:
             player,
             "get_cards",
             lambda: [
-                Card(number=1),
-                Card(number=2),
-                Card(number=3),
-                Card(number=4),
-                Card(number=9),
+                SimpleNamespace(number=1, color=Colors.COLOR_BLACK),
+                SimpleNamespace(number=2, color=Colors.COLOR_BLACK),
+                SimpleNamespace(number=3, color=Colors.COLOR_BLACK),
+                SimpleNamespace(number=4, color=Colors.COLOR_BLACK),
+                SimpleNamespace(number=9, color=Colors.COLOR_BLACK),
             ],
         )
         with patch("cards.card_conditions.input", lambda x: user_input):

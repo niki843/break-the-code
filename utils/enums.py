@@ -14,8 +14,8 @@ class GameTypes(IntEnum):
 
 
 class Colors(IntEnum):
-    COLOR_WHITE = 0
-    COLOR_BLACK = 1
+    COLOR_WHITE = 1
+    COLOR_BLACK = 0
     COLOR_GREEN = 2
 
     def __str__(self):

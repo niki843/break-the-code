@@ -10,6 +10,10 @@ class Player:
     def get_cards(self):
         return self.number_cards.copy()
 
+    def order_cards(self):
+        self.number_cards.sort(key=lambda x: x.number)
+        self.number_cards.sort(key=lambda x: x.color.value)
+
     def update_number_cards(self, numbers: list):
         if len(numbers) != 5 and len(numbers) != 4:
             raise ValueError("Invalid amount of numbers, 4-5 numbers are expected!")

@@ -1,4 +1,5 @@
 import random
+import constants
 from copy import deepcopy
 from types import SimpleNamespace
 
@@ -68,5 +69,7 @@ class GameBuilder:
                 current_player_numbers.append(
                     cards.pop(random.randint(0, len(cards) - 1))
                 )
+
+            player.order_cards()
             current_player_numbers.sort(key=lambda x: x.number)
             player.update_number_cards(current_player_numbers)
