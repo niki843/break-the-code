@@ -234,7 +234,7 @@ def get_consecutive_cards(player, attr):
 def get_sum_from_player_tiles(player, start_index, end_index):
     sum_card = sum([x.number for x in player.get_cards()][start_index:end_index])
 
-    print(f"Player {player.get_name()}, has a sum of f{sum_card}.")
+    print(f"Player {player.get_name()}, has a sum of {sum_card}.")
     return sum_card
 
 
