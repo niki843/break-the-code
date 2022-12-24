@@ -10,6 +10,9 @@ class Player:
     def get_cards(self):
         return self.number_cards.copy()
 
+    def get_id(self):
+        return self.id
+
     def order_cards(self):
         self.number_cards.sort(key=lambda x: x.number)
         self.number_cards.sort(key=lambda x: x.color.value)

@@ -4,8 +4,8 @@ from copy import deepcopy
 from types import SimpleNamespace
 
 from cards.card_reader import CardReader
-from utils.enums import Colors, GameTypes
-
+from exceptions.incorrect_card import IncorrectCardPlayed
+from utils.enums import Colors, GameTypes, EndGame
 
 # Setting the GameBuilder to Singleton will prevent re-loading the game assets like cards, players etc.
 from exceptions.not_your_turn import NotYourTurn
@@ -17,6 +17,7 @@ class GameBuilder:
         self.condition_cards, self.number_cards = self.build_game()
         self.game_type = GameTypes(len(players))
         self.__current_condition_cards = random.sample(self.condition_cards, 6)
+        self.condition_cards = [card for card in self.condition_cards if card not in self.__current_condition_cards]
         self.__current_player_at_hand = players[0]
 
     def build_game(self):
@@ -33,6 +34,26 @@ class GameBuilder:
     def play_condition_card(self, player, condition_card_id):
         if player != self.__current_player_at_hand:
             raise NotYourTurn(player.get_name())
+
+        if not any(condition_card_id == card.id for card in self.__current_condition_cards):
+            raise IncorrectCardPlayed(player.get_id())
+
+        for card in self.__current_condition_cards:
+            if card.id == condition_card_id:
+                self.__current_condition_cards.remove(card)
+                # In the case that all the cards are drawn the game should play until the last card is called
+                if len(self.condition_cards) == 0:
+                    return card
+
+                new_card = random.choice(self.condition_cards)
+                self.__current_condition_cards.append(new_card)
+
+                self.condition_cards.remove(new_card)
+
+                return card
+
+        # if no cards left in current_cards send end game message
+        return EndGame.ALL_CARDS_PLAYED
 
     @staticmethod
     def create_number_cards():

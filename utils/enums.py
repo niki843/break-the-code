@@ -7,6 +7,10 @@ class GameState(Enum):
     END = 3
 
 
+class EndGame(Enum):
+    ALL_CARDS_PLAYED = 0
+
+
 class GameTypes(IntEnum):
     TWO_PLAYER = 2
     THREE_PLAYER = 3

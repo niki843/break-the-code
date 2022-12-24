@@ -1,9 +1,7 @@
-import constants
 from constants import (
     CARD_INDEX_TO_LETTER_MAP,
     MISSING_PROPERTY_DEFAULT,
 )
-from utils.enums import GameTypes
 from exceptions.player_cards_missing import PlayerCardsMissingException
 from utils.enums import Colors
 
@@ -51,21 +49,21 @@ def seventh_card(player):
     return get_consecutive_cards(player, "color")
 
 
-def eight_card(player, game_type):
+def eight_card(player):
     check_player_has_cards(player)
     start_index = 1
     end_index = 4
-    if game_type == GameTypes.FOUR_PLAYER:
+    if len(player.get_cards()) == 4:
         end_index = 3
 
     return get_sum_from_player_tiles(player, start_index, end_index)
 
 
-def ninth_card(player, game_type):
+def ninth_card(player):
     check_player_has_cards(player)
     start_index = 0
     end_index = 5
-    if game_type == GameTypes.FOUR_PLAYER:
+    if len(player.get_cards()) == 4:
         end_index = 4
 
     return get_sum_from_player_tiles(player, start_index, end_index)
@@ -139,11 +137,11 @@ def seventeenth_card(player):
     return same_number_cards_count
 
 
-def eighteenth_card(player, game_type):
+def eighteenth_card(player):
     check_player_has_cards(player)
     start_index = 2
     end_index = 5
-    if game_type == GameTypes.FOUR_PLAYER:
+    if len(player.get_cards()) == 4:
         start_index = 1
         end_index = 4
 
