@@ -80,43 +80,22 @@ class GameSession:
             )
 
     async def validate_and_play_condition_card(self, websocket, player_id, condition_card_id):
-        try:
-            players_list = list(self.__connected_players.keys())
+        players_list = list(self.__connected_players.keys())
 
-            if player_id != self.__current_player_at_hand:
-                await websocket.send(
-                    json.dumps(
-                        {
-                            "type": "error",
-                            "message": "It's not your turn!",
-                            "error_type": "not_your_turn",
-                        }
-                    )
+        if player_id != self.__current_player_at_hand:
+            await websocket.send(
+                json.dumps(
+                    {
+                        "type": "error",
+                        "message": "It's not your turn!",
+                        "error_type": "not_your_turn",
+                    }
                 )
-                return
+            )
+            return
 
+        try:
             card = self.__game_board.play_condition_card(self.__connected_players[player_id], condition_card_id)
-
-            current_player_index = players_list.index(self.__current_player_at_hand) + 1
-
-            self.__current_player_at_hand = players_list[
-                current_player_index if current_player_index < len(players_list) else 0
-            ]
-
-            if card == EndGame.ALL_CARDS_PLAYED:
-                # TODO: Implement end game
-                self.end_game_and_send_messages()
-
-            event = {"type": "card_condition_result", "message": "Returning results from playerd card condition", "card_condition": card.description}
-
-            for player, websocket_value in self.__connected_player_connections.items():
-                if player.get_id() != player_id:
-                    matching_card_condition = card.check_condition(player)
-                    event[player.get_id()] = matching_card_condition
-
-            websockets.broadcast(self.__connected_player_connections.values(), json.dumps(event))
-            self.give_out_condition_cards()
-
         except IncorrectCardPlayed:
             await websocket.send(
                 json.dumps(
@@ -127,6 +106,27 @@ class GameSession:
                     }
                 )
             )
+            return
+
+        current_player_index = players_list.index(self.__current_player_at_hand) + 1
+
+        self.__current_player_at_hand = players_list[
+            current_player_index if current_player_index < len(players_list) else 0
+        ]
+
+        if card == EndGame.ALL_CARDS_PLAYED:
+            # TODO: Implement end game
+            self.end_game_and_send_messages()
+
+        event = {"type": "card_condition_result", "message": "Returning results from playerd card condition", "card_condition": card.description}
+
+        for player, websocket_value in self.__connected_player_connections.items():
+            if player.get_id() != player_id:
+                matching_card_condition = card.check_condition(player)
+                event[player.get_id()] = matching_card_condition
+
+        websockets.broadcast(self.__connected_player_connections.values(), json.dumps(event))
+        self.give_out_condition_cards()
 
     def give_out_condition_cards(self):
         websockets.broadcast(
