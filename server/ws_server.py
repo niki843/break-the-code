@@ -101,7 +101,7 @@ async def handle_user_input(player_id, websocket, game_session):
             elif msg.get("type") == "play_tile":
                 await execute_condition_card_request(websocket, player_id, game_session, msg.get("condition_card_id"))
             elif msg.get("type") == "guess_numbers":
-                await validate_and_guess_number(websocket, player_id, game_session)
+                await validate_and_guess_number(websocket, player_id, game_session, json.loads(msg.get("player_guess")))
 
         except ConnectionClosed:
             # If the game has ended, delete the game session from the dict
@@ -159,7 +159,7 @@ async def execute_condition_card_request(websocket, player_id, game_session, con
     return await game_session.validate_and_play_condition_card(websocket, player_id, condition_card_id)
 
 
-async def validate_and_guess_number(websocket, player_id, game_session):
+async def validate_and_guess_number(websocket, player_id, game_session, player_guess):
     pass
 
 

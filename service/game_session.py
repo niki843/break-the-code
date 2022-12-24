@@ -6,7 +6,6 @@ import copy
 from entity.player import Player
 from exceptions.incorrect_card import IncorrectCardPlayed
 from exceptions.invalid_id import InvalidPlayerId
-from exceptions.not_your_turn import NotYourTurn
 from exceptions.session_full import SessionFull
 from utils.game_builder import GameBuilder
 from utils.enums import GameState, EndGame
@@ -29,6 +28,7 @@ class GameSession:
         self.__connected_player_connections = {self.__host: websocket}
         self.__state = GameState.PENDING
         self.__game_board = None
+        self.__current_player_at_hand = list(self.__connected_players.keys())[0]
 
     def join_player(self, player_id, player_name, websocket):
         # Check if game session is full
@@ -81,7 +81,27 @@ class GameSession:
 
     async def validate_and_play_condition_card(self, websocket, player_id, condition_card_id):
         try:
+            players_list = list(self.__connected_players.keys())
+
+            if player_id != self.__current_player_at_hand:
+                await websocket.send(
+                    json.dumps(
+                        {
+                            "type": "error",
+                            "message": "It's not your turn!",
+                            "error_type": "not_your_turn",
+                        }
+                    )
+                )
+                return
+
             card = self.__game_board.play_condition_card(self.__connected_players[player_id], condition_card_id)
+
+            current_player_index = players_list.index(self.__current_player_at_hand) + 1
+
+            self.__current_player_at_hand = players_list[
+                current_player_index if current_player_index < len(players_list) else 0
+            ]
 
             if card == EndGame.ALL_CARDS_PLAYED:
                 # TODO: Implement end game
@@ -97,16 +117,6 @@ class GameSession:
             websockets.broadcast(self.__connected_player_connections.values(), json.dumps(event))
             self.give_out_condition_cards()
 
-        except NotYourTurn:
-            await websocket.send(
-                json.dumps(
-                    {
-                        "type": "error",
-                        "message": "It's not your turn!",
-                        "error_type": "not_your_turn",
-                    }
-                )
-            )
         except IncorrectCardPlayed:
             await websocket.send(
                 json.dumps(

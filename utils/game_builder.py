@@ -22,7 +22,6 @@ class GameBuilder:
             for card in self.condition_cards
             if card not in self.__current_condition_cards
         ]
-        self.__current_player_at_hand = players[0]
 
     def build_game(self):
         number_cards = self.create_number_cards()
@@ -36,19 +35,11 @@ class GameBuilder:
         return deepcopy(self.__current_condition_cards)
 
     def play_condition_card(self, player, condition_card_id):
-        if player != self.__current_player_at_hand:
-            raise NotYourTurn(player.get_name())
 
         if not any(
             condition_card_id == card.id for card in self.__current_condition_cards
         ):
             raise IncorrectCardPlayed(player.get_id())
-
-        current_player_index = self.players.index(self.__current_player_at_hand) + 1
-
-        self.__current_player_at_hand = self.players[
-            current_player_index if current_player_index < len(self.players) else 0
-        ]
 
         for card in self.__current_condition_cards:
             if card.id == condition_card_id:
