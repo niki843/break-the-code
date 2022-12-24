@@ -66,19 +66,7 @@ class GameSession:
 
         self.__game_board = GameBuilder(list(self.__connected_players.values()))
 
-        websockets.broadcast(
-            self.__connected_player_connections.values(),
-            json.dumps(
-                {
-                    "type": "give_condition_cards",
-                    "message": "Giving out condition card ids",
-                    "condition_card_ids": [
-                        card.id
-                        for card in self.__game_board.get_current_condition_cards()
-                    ],
-                }
-            ),
-        )
+        self.give_out_condition_cards()
 
         for player, websocket in self.__connected_player_connections.items():
             await websocket.send(
@@ -107,6 +95,7 @@ class GameSession:
                     event[player.get_id()] = matching_card_condition
 
             websockets.broadcast(self.__connected_player_connections.values(), json.dumps(event))
+            self.give_out_condition_cards()
 
         except NotYourTurn:
             await websocket.send(
@@ -128,6 +117,21 @@ class GameSession:
                     }
                 )
             )
+
+    def give_out_condition_cards(self):
+        websockets.broadcast(
+            self.__connected_player_connections.values(),
+            json.dumps(
+                {
+                    "type": "give_condition_cards",
+                    "message": "Giving out condition card ids",
+                    "condition_card_ids": [
+                        card.id
+                        for card in self.__game_board.get_current_condition_cards()
+                    ],
+                }
+            ),
+        )
 
     def end_game_and_send_messages(self):
         pass
