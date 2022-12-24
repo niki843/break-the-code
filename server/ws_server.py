@@ -7,6 +7,8 @@ import uuid
 
 from websockets.exceptions import ConnectionClosed
 
+from exceptions.incorrect_card import IncorrectCardPlayed
+from exceptions.not_your_turn import NotYourTurn
 from service.game_session import GameSession
 from exceptions.invalid_id import InvalidPlayerId
 from exceptions.session_full import SessionFull
@@ -99,9 +101,16 @@ async def handle_user_input(player_id, websocket, game_session):
             if msg.get("type") == "start_game":
                 await validate_and_start_game(websocket, player_id, game_session)
             elif msg.get("type") == "play_tile":
-                await execute_condition_card_request(websocket, player_id, game_session, msg.get("condition_card_id"))
+                await validate_and_play_condition_card_request(
+                    websocket, player_id, game_session, msg.get("condition_card_id")
+                )
             elif msg.get("type") == "guess_numbers":
-                await validate_and_guess_number(websocket, player_id, game_session, json.loads(msg.get("player_guess")))
+                await validate_and_guess_number(
+                    websocket,
+                    player_id,
+                    game_session,
+                    json.loads(msg.get("player_guess")),
+                )
 
         except ConnectionClosed:
             # If the game has ended, delete the game session from the dict
@@ -155,8 +164,27 @@ async def validate_and_start_game(websocket, player_id, game_session):
 # The validation will be happening in the game session and game board
 # there is no validation that the server can do without too much information
 # transfer up the line
-async def execute_condition_card_request(websocket, player_id, game_session, condition_card_id):
-    return await game_session.validate_and_play_condition_card(websocket, player_id, condition_card_id)
+async def validate_and_play_condition_card_request(
+    websocket, player_id, game_session, condition_card_id
+):
+    try:
+        await game_session.play_condition_card_and_change_player(
+            player_id, condition_card_id
+        )
+    except NotYourTurn:
+        await send_message(
+            websocket,
+            message_type="error",
+            message="It's not your turn!",
+            error_type="not_your_turn",
+        )
+    except IncorrectCardPlayed:
+        await send_message(
+            websocket,
+            message_type="error",
+            message="The card you requested is not in the current drawn cards",
+            error_type="incorrect_card_player",
+        )
 
 
 async def validate_and_guess_number(websocket, player_id, game_session, player_guess):

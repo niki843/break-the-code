@@ -6,6 +6,7 @@ import copy
 from entity.player import Player
 from exceptions.incorrect_card import IncorrectCardPlayed
 from exceptions.invalid_id import InvalidPlayerId
+from exceptions.not_your_turn import NotYourTurn
 from exceptions.session_full import SessionFull
 from utils.game_builder import GameBuilder
 from utils.enums import GameState, EndGame
@@ -79,34 +80,15 @@ class GameSession:
                 )
             )
 
-    async def validate_and_play_condition_card(self, websocket, player_id, condition_card_id):
+    async def play_condition_card_and_change_player(self, player_id, condition_card_id):
         players_list = list(self.__connected_players.keys())
 
         if player_id != self.__current_player_at_hand:
-            await websocket.send(
-                json.dumps(
-                    {
-                        "type": "error",
-                        "message": "It's not your turn!",
-                        "error_type": "not_your_turn",
-                    }
-                )
-            )
-            return
+            raise NotYourTurn(player_id)
 
-        try:
-            card = self.__game_board.play_condition_card(self.__connected_players[player_id], condition_card_id)
-        except IncorrectCardPlayed:
-            await websocket.send(
-                json.dumps(
-                    {
-                        "type": "error",
-                        "message": "The card you requested is not in the current drawn cards",
-                        "error_type": "incorrect_card_player",
-                    }
-                )
-            )
-            return
+        card = self.__game_board.play_condition_card(
+            self.__connected_players[player_id], condition_card_id
+        )
 
         current_player_index = players_list.index(self.__current_player_at_hand) + 1
 
@@ -118,14 +100,20 @@ class GameSession:
             # TODO: Implement end game
             self.end_game_and_send_messages()
 
-        event = {"type": "card_condition_result", "message": "Returning results from playerd card condition", "card_condition": card.description}
+        event = {
+            "type": "card_condition_result",
+            "message": "Returning results from played card condition",
+            "card_condition": card.description,
+        }
 
         for player, websocket_value in self.__connected_player_connections.items():
             if player.get_id() != player_id:
                 matching_card_condition = card.check_condition(player)
                 event[player.get_id()] = matching_card_condition
 
-        websockets.broadcast(self.__connected_player_connections.values(), json.dumps(event))
+        websockets.broadcast(
+            self.__connected_player_connections.values(), json.dumps(event)
+        )
         self.give_out_condition_cards()
 
     def give_out_condition_cards(self):
