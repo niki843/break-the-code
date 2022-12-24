@@ -7,7 +7,9 @@ import uuid
 
 from websockets.exceptions import ConnectionClosed
 
+from exceptions.incorrect_amount_of_cards_in_guess import IncorrectAmountOfCardsInGuess
 from exceptions.incorrect_card import IncorrectCardPlayed
+from exceptions.incorrect_number_card_value import IncorrectNumberCardValue
 from exceptions.not_your_turn import NotYourTurn
 from service.game_session import GameSession
 from exceptions.invalid_id import InvalidPlayerId
@@ -105,11 +107,11 @@ async def handle_user_input(player_id, websocket, game_session):
                     websocket, player_id, game_session, msg.get("condition_card_id")
                 )
             elif msg.get("type") == "guess_numbers":
-                await validate_and_guess_number(
+                await validate_and_guess_numbers(
                     websocket,
                     player_id,
                     game_session,
-                    json.loads(msg.get("player_guess")),
+                    msg.get("player_guess"),
                 )
 
         except ConnectionClosed:
@@ -187,8 +189,30 @@ async def validate_and_play_condition_card_request(
         )
 
 
-async def validate_and_guess_number(websocket, player_id, game_session, player_guess):
-    pass
+async def validate_and_guess_numbers(websocket, player_id, game_session, player_guess):
+    try:
+        await game_session.guess_number_and_change_player(player_id, player_guess)
+    except IncorrectNumberCardValue as e:
+        await send_message(
+            websocket,
+            message_type="error",
+            message="Incorrect number of cards",
+            error_type="incorrect_number_card_value",
+        )
+    except IncorrectAmountOfCardsInGuess as e:
+        await send_message(
+            websocket,
+            message_type="error",
+            message="Incorrect amount of cards",
+            error_type="incorrect_amount_of_cards",
+        )
+    except NotYourTurn as e:
+        await send_message(
+            websocket,
+            message_type="error",
+            message="It's not your turn!",
+            error_type="not_your_turn",
+        )
 
 
 # Handles all new incoming requests and distributes to appropriate functions

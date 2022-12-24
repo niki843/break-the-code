@@ -67,7 +67,7 @@ class GameSession:
 
         self.__game_board = GameBuilder(list(self.__connected_players.values()))
 
-        self.give_out_condition_cards()
+        await self.give_out_condition_cards()
 
         for player, websocket in self.__connected_player_connections.items():
             await websocket.send(
@@ -81,23 +81,17 @@ class GameSession:
             )
 
     async def play_condition_card_and_change_player(self, player_id, condition_card_id):
-        players_list = list(self.__connected_players.keys())
-
-        if player_id != self.__current_player_at_hand:
-            raise NotYourTurn(player_id)
+        self.validate_current_player(player_id)
 
         card = self.__game_board.play_condition_card(
             self.__connected_players[player_id], condition_card_id
         )
 
-        current_player_index = players_list.index(self.__current_player_at_hand) + 1
-
-        self.__current_player_at_hand = players_list[
-            current_player_index if current_player_index < len(players_list) else 0
-        ]
+        # change the current player at hand to the next in line
+        self.next_player()
 
         if card == EndGame.ALL_CARDS_PLAYED:
-            # TODO: Implement end game
+            # TODO: Implement end game and request one final turn for each to guess before end
             self.end_game_and_send_messages()
 
         event = {
@@ -114,9 +108,25 @@ class GameSession:
         websockets.broadcast(
             self.__connected_player_connections.values(), json.dumps(event)
         )
-        self.give_out_condition_cards()
+        await self.give_out_condition_cards()
 
-    def give_out_condition_cards(self):
+    async def guess_number_and_change_player(self, player_id, player_guess):
+        self.validate_current_player(player_id)
+
+        is_guess_correct = self.__game_board.guess_cards(player_id, player_guess)
+
+        if is_guess_correct:
+            # TODO: Implement end game
+            self.end_game_and_send_messages()
+            print(f"Player {self.__current_player_at_hand} wins!")
+
+        # TODO: Implement player can't guess anymore
+        print(f"Incorrect guess {self.__current_player_at_hand} is eliminated")
+
+        # change the current player at hand to the next in line
+        self.next_player()
+
+    async def give_out_condition_cards(self):
         websockets.broadcast(
             self.__connected_player_connections.values(),
             json.dumps(
@@ -130,6 +140,19 @@ class GameSession:
                 }
             ),
         )
+
+    def next_player(self):
+        players_list = list(self.__connected_players.keys())
+
+        current_player_index = players_list.index(self.__current_player_at_hand) + 1
+
+        self.__current_player_at_hand = players_list[
+            current_player_index if current_player_index < len(players_list) else 0
+        ]
+
+    def validate_current_player(self, player_id):
+        if player_id != self.__current_player_at_hand:
+            raise NotYourTurn(player_id)
 
     def end_game_and_send_messages(self):
         pass

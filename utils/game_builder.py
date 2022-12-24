@@ -4,7 +4,9 @@ from copy import deepcopy
 from types import SimpleNamespace
 
 from cards.card_reader import CardReader
+from exceptions.incorrect_amount_of_cards_in_guess import IncorrectAmountOfCardsInGuess
 from exceptions.incorrect_card import IncorrectCardPlayed
+from exceptions.incorrect_number_card_value import IncorrectNumberCardValue
 from utils.enums import Colors, GameTypes, EndGame
 
 # Setting the GameBuilder to Singleton will prevent re-loading the game assets like cards, players etc.
@@ -57,6 +59,25 @@ class GameBuilder:
 
         # if no cards left in current_cards send end game message
         return EndGame.ALL_CARDS_PLAYED
+
+    def guess_cards(self, player_id, player_guess):
+        if (self.game_type == GameTypes.FOUR_PLAYER and len(player_guess) != 4) or (
+            self.game_type == GameTypes.THREE_PLAYER and len(player_guess) != 5
+        ):
+            raise IncorrectAmountOfCardsInGuess(player_id)
+
+        is_correct_guess = True
+        for count, card in enumerate(self.number_cards):
+            if len(player_guess[count]) != 2:
+                raise IncorrectNumberCardValue(player_id)
+
+            if (
+                int(player_guess[count][0]) != card.color.value
+                or int(player_guess[count][1]) != card.number
+            ):
+                is_correct_guess = False
+
+        return is_correct_guess
 
     @staticmethod
     def create_number_cards():
