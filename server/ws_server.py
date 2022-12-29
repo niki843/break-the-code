@@ -98,6 +98,13 @@ async def join_game(websocket, game_session_id, player_id, player_name):
 async def handle_user_input(player_id, websocket, game_session):
     while True:
         try:
+            if game_session.get_current_player().is_eliminated:
+                if game_session.get_state() == GameState.END:
+                    return
+
+                game_session.next_player()
+                continue
+
             msg = json.loads(await websocket.recv())
 
             if msg.get("type") == "start_game" and game_session.get_state() not in (

@@ -6,16 +6,12 @@ from exceptions.player_cards_missing import PlayerCardsMissingException
 from utils.enums import Colors
 
 
-def first_card(player):
+def first_card(player, number):
     check_player_has_cards(player)
-    card_number = int(input("Please chose a value for the players(8 or 9):"))
+    if number not in (8, 9):
+        return False
 
-    while card_number not in [8, 9]:
-        card_number = int(
-            input("Incorrect value, please choose a value between 8 or 9:")
-        )
-
-    return get_card_index_list_from_property(player, "number", card_number)
+    return get_card_index_list_from_property(player, "number", number)
 
 
 def second_card(player):
@@ -109,16 +105,12 @@ def fifteenth_card(player):
     return get_even_or_odd_from_player_tiles(player, 0, "even")
 
 
-def sixteenth_card(player):
+def sixteenth_card(player, number):
     check_player_has_cards(player)
-    card_number = int(input("Please chose a value for the players(1 or 2):"))
+    if number not in (1, 2):
+        return False
 
-    while card_number not in [1, 2]:
-        card_number = int(
-            input("Incorrect value, please choose a value between 1 or 2:")
-        )
-
-    return get_card_index_list_from_property(player, "number", card_number)
+    return get_card_index_list_from_property(player, "number", number)
 
 
 def seventeenth_card(player):
@@ -161,16 +153,12 @@ def twentieth_card(player):
     return get_sum_for_color(player, Colors.COLOR_WHITE)
 
 
-def twenty_first_card(player):
+def twenty_first_card(player, number):
     check_player_has_cards(player)
-    card_number = int(input("Please chose a value for the players(3 or 4):"))
+    if number not in (3, 4):
+        return False
 
-    while card_number not in [3, 4]:
-        card_number = int(
-            input("Incorrect value, please choose a value between 3 or 4:")
-        )
-
-    return get_card_index_list_from_property(player, "number", card_number)
+    return get_card_index_list_from_property(player, "number", number)
 
 
 def get_card_index_list_from_property(player, attr, value):

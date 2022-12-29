@@ -28,7 +28,9 @@ class GameSession:
         self.__connected_player_connections = {self.__host: websocket}
         self.__state = GameState.PENDING
         self.__game_board = None
-        self.__current_player_at_hand = list(self.__connected_players.keys())[0]
+        self.__current_player_at_hand_id = list(self.__connected_players.keys())[0]
+        # This counter will count to the count of players
+        # before it ends the game after all the condition cards have been used
         self.end_game_counter = 0
 
     def join_player(self, player_id, player_name, websocket):
@@ -83,15 +85,24 @@ class GameSession:
     async def play_condition_card_and_change_player(self, player_id, condition_card_id):
         self.validate_current_player(player_id)
 
-        card = self.__game_board.play_condition_card(
+        card, end_game = self.__game_board.play_condition_card(
             self.__connected_players[player_id], condition_card_id
         )
 
         # change the current player at hand to the next in line
         self.next_player()
 
-        if card == EndGame.ALL_CARDS_PLAYED:
+        if end_game == EndGame.ALL_CARDS_PLAYED:
             # The game should end after everyone receives one final guess
+            websockets.broadcast(
+                self.__connected_player_connections.values(),
+                json.dumps(
+                    {
+                        "type": "warning_all_cards_played",
+                        "message": "All the condition cards have been played, each player has a turn to try to guess!",
+                    }
+                ),
+            )
             self.__state = GameState.END_ALL_CARDS_PLAYED
 
         event = {
@@ -112,15 +123,31 @@ class GameSession:
 
     async def guess_number_and_change_player(self, player_id, player_guess):
         self.validate_current_player(player_id)
+        player = self.__connected_players[self.__current_player_at_hand_id]
+
+        if self.__state == GameState.END_ALL_CARDS_PLAYED:
+            self.end_game_counter += 1
 
         is_guess_correct = self.__game_board.guess_cards(player_id, player_guess)
 
         if is_guess_correct:
-            self.end_game_and_send_messages()
-            print(f"Player {self.__connected_players[self.__current_player_at_hand].get_name()} wins!")
+            self.end_game_and_send_messages(player)
+            print(
+                f"Player {player.get_name()} wins!"
+            )
 
-        # TODO: Implement player can't guess anymore
-        print(f"Incorrect guess {self.__current_player_at_hand} is eliminated")
+        player.is_eliminated = True
+        websockets.broadcast(
+            self.__connected_player_connections.values(),
+            json.dumps(
+                {
+                    "type": "player_eliminated",
+                    "message": f"{player.get_name()} guessed the wrong cards and is eliminated",
+                    "player_id": str(self.__current_player_at_hand_id),
+                }
+            ),
+        )
+        print(f"Incorrect guess {self.__current_player_at_hand_id} is eliminated")
 
         # change the current player at hand to the next in line
         self.next_player()
@@ -143,25 +170,25 @@ class GameSession:
     def next_player(self):
         players_list = list(self.__connected_players.keys())
 
-        current_player_index = players_list.index(self.__current_player_at_hand) + 1
+        current_player_index = players_list.index(self.__current_player_at_hand_id) + 1
 
-        self.__current_player_at_hand = players_list[
+        self.__current_player_at_hand_id = players_list[
             current_player_index if current_player_index < len(players_list) else 0
         ]
 
     def validate_current_player(self, player_id):
-        if player_id != self.__current_player_at_hand:
+        if player_id != self.__current_player_at_hand_id:
             raise NotYourTurn(player_id)
 
-    def end_game_and_send_messages(self):
+    def end_game_and_send_messages(self, player):
         self.__state = GameState.END
         websockets.broadcast(
             self.__connected_player_connections.values(),
             json.dumps(
                 {
                     "type": "end_game",
-                    "message": f"End game winner {self.__connected_players[self.__current_player_at_hand].get_name()}",
-                    "winner_id": self.__current_player_at_hand
+                    "message": f"End game winner {player.get_name()}",
+                    "winner_id": player.get_id(),
                 }
             ),
         )
@@ -174,3 +201,6 @@ class GameSession:
 
     def get_host(self):
         return self.__host
+
+    def get_current_player(self):
+        return copy.deepcopy(self.__connected_players[self.__current_player_at_hand_id])

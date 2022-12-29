@@ -3,6 +3,7 @@ class Player:
         self.id = player_id
         self.name = name
         self.number_cards = []
+        self.is_eliminated = False
 
     def get_name(self):
         return self.name

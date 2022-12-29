@@ -10,7 +10,8 @@ class GameState(Enum):
 
 
 class EndGame(Enum):
-    ALL_CARDS_PLAYED = 0
+    CONTINUE = 0
+    ALL_CARDS_PLAYED = 1
 
 
 class GameTypes(IntEnum):
