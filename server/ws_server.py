@@ -146,6 +146,13 @@ async def handle_user_input(player_id, websocket, game_session):
                 del GAME_SESSIONS[game_session.id]
                 return
 
+            await send_message(
+                websocket,
+                message_type="player_disconnected",
+                message=f"Player {game_session.get_player_name_by_id(player_id)} disconnected",
+                player_id=str(player_id),
+            )
+
             # TODO: Implement reconnecting
             print("Waiting for player to reconnect")
             return

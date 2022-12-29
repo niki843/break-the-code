@@ -94,7 +94,7 @@ class GameSession:
             and card_number_choice not in CARDS_REQUIRING_USER_INPUT_MAP[condition_card_id]
         ):
             raise IncorrectCardNumberInput(
-                self.__connected_players[player_id].get_name()
+                self.get_player_name_by_id(player_id)
             )
 
         card, end_game = self.__game_board.play_condition_card(
@@ -220,3 +220,6 @@ class GameSession:
 
     def get_current_player(self):
         return copy.deepcopy(self.__connected_players[self.__current_player_at_hand_id])
+
+    def get_player_name_by_id(self, player_id):
+        return self.__connected_players.get(player_id).get_name()
