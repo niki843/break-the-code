@@ -9,9 +9,6 @@ from exceptions.incorrect_card import IncorrectCardPlayed
 from exceptions.incorrect_number_card_value import IncorrectNumberCardValue
 from utils.enums import Colors, GameTypes, EndGame
 
-# Setting the GameBuilder to Singleton will prevent re-loading the game assets like cards, players etc.
-from exceptions.not_your_turn import NotYourTurn
-
 
 class GameBuilder:
     def __init__(self, players: list):
@@ -24,12 +21,14 @@ class GameBuilder:
             for card in self.condition_cards
             if card not in self.__current_condition_cards
         ]
+        print(f"Cards left: {str(self.number_cards)}")
 
     def build_game(self):
         number_cards = self.create_number_cards()
         self.populate_number_cards(number_cards)
 
         self.hand_out_number_cards_to_players(self.players, number_cards)
+        GameBuilder.order_cards(number_cards)
         condition_cards = CardReader().cards
         return condition_cards, number_cards
 
@@ -102,6 +101,12 @@ class GameBuilder:
             setattr(numbers[index], "number", index % 10)
 
     @staticmethod
+    def order_cards(number_cards):
+        number_cards.sort(key=lambda x: x.color.value)
+        number_cards.sort(key=lambda x: x.number)
+        return number_cards
+
+    @staticmethod
     def hand_out_number_cards_to_players(players, cards):
         number_cards_amount = (
             constants.NUMBER_CARDS_PER_PLAYER_FOUR_PLAYERS
@@ -114,7 +119,5 @@ class GameBuilder:
                 current_player_numbers.append(
                     cards.pop(random.randint(0, len(cards) - 1))
                 )
-
-            player.order_cards()
-            current_player_numbers.sort(key=lambda x: x.number)
+            GameBuilder.order_cards(current_player_numbers)
             player.update_number_cards(current_player_numbers)

@@ -100,19 +100,33 @@ async def handle_user_input(player_id, websocket, game_session):
         try:
             msg = json.loads(await websocket.recv())
 
-            if msg.get("type") == "start_game":
+            if msg.get("type") == "start_game" and game_session.get_state() not in (
+                GameState.END_ALL_CARDS_PLAYED,
+                GameState.END,
+            ):
                 await validate_and_start_game(websocket, player_id, game_session)
-            elif msg.get("type") == "play_tile":
+            elif msg.get("type") == "play_tile" and game_session.get_state() not in (
+                GameState.END_ALL_CARDS_PLAYED,
+                GameState.END,
+            ):
                 await validate_and_play_condition_card_request(
                     websocket, player_id, game_session, msg.get("condition_card_id")
                 )
-            elif msg.get("type") == "guess_numbers":
+            elif (
+                msg.get("type") == "guess_numbers"
+                and game_session.get_state() != GameState.END
+            ):
                 await validate_and_guess_numbers(
                     websocket,
                     player_id,
                     game_session,
                     msg.get("player_guess"),
                 )
+
+            # end the game session and delete it from list
+            if game_session.get_state() == GameState.END:
+                GAME_SESSIONS.pop(game_session.id, None)
+                return
 
         except ConnectionClosed:
             # If the game has ended, delete the game session from the dict
@@ -219,6 +233,7 @@ async def validate_and_guess_numbers(websocket, player_id, game_session, player_
 async def handler(websocket):
     # message = await websocket.recv()
     event_msg = None
+    CURRENT_WEBSOCKET_CONNECTIONS.append(websocket)
 
     async for message in websocket:
         event_msg = json.loads(message)
@@ -229,9 +244,13 @@ async def handler(websocket):
             return
 
         if event_msg.get("type") == "get_current_games":
-            await websocket.send(
-                json.dumps({"game_session_ids": list(GAME_SESSIONS.keys())})
-            )
+            event = {}
+            for game_session in GAME_SESSIONS.values():
+                event["game_session"] = {
+                    "id": game_session.id,
+                    "connected_players": game_session.get_players_count,
+                }
+            await websocket.send(json.dumps(event))
 
     if event_msg.get("type") == "join_game":
         await join_game(

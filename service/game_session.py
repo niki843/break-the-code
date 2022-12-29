@@ -4,7 +4,6 @@ import websockets
 import copy
 
 from entity.player import Player
-from exceptions.incorrect_card import IncorrectCardPlayed
 from exceptions.invalid_id import InvalidPlayerId
 from exceptions.not_your_turn import NotYourTurn
 from exceptions.session_full import SessionFull
@@ -30,6 +29,7 @@ class GameSession:
         self.__state = GameState.PENDING
         self.__game_board = None
         self.__current_player_at_hand = list(self.__connected_players.keys())[0]
+        self.end_game_counter = 0
 
     def join_player(self, player_id, player_name, websocket):
         # Check if game session is full
@@ -91,8 +91,8 @@ class GameSession:
         self.next_player()
 
         if card == EndGame.ALL_CARDS_PLAYED:
-            # TODO: Implement end game and request one final turn for each to guess before end
-            self.end_game_and_send_messages()
+            # The game should end after everyone receives one final guess
+            self.__state = GameState.END_ALL_CARDS_PLAYED
 
         event = {
             "type": "card_condition_result",
@@ -116,9 +116,8 @@ class GameSession:
         is_guess_correct = self.__game_board.guess_cards(player_id, player_guess)
 
         if is_guess_correct:
-            # TODO: Implement end game
             self.end_game_and_send_messages()
-            print(f"Player {self.__current_player_at_hand} wins!")
+            print(f"Player {self.__connected_players[self.__current_player_at_hand].get_name()} wins!")
 
         # TODO: Implement player can't guess anymore
         print(f"Incorrect guess {self.__current_player_at_hand} is eliminated")
@@ -155,7 +154,17 @@ class GameSession:
             raise NotYourTurn(player_id)
 
     def end_game_and_send_messages(self):
-        pass
+        self.__state = GameState.END
+        websockets.broadcast(
+            self.__connected_player_connections.values(),
+            json.dumps(
+                {
+                    "type": "end_game",
+                    "message": f"End game winner {self.__connected_players[self.__current_player_at_hand].get_name()}",
+                    "winner_id": self.__current_player_at_hand
+                }
+            ),
+        )
 
     def get_players_count(self):
         return len(self.__connected_players)

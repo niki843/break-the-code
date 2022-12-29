@@ -5,6 +5,8 @@ class GameState(Enum):
     PENDING = 1
     IN_PROGRESS = 2
     END = 3
+    # The game is ending after all players receive one try to guess
+    END_ALL_CARDS_PLAYED = 3
 
 
 class EndGame(Enum):
