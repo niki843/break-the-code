@@ -1,5 +1,6 @@
 {
    "id":13,
    "description":"Where are your #5 tiles?",
+   "has_user_choice": false,
    "additional_info":null
 }

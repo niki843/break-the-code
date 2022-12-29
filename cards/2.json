@@ -1,5 +1,6 @@
 {
    "id":2,
    "description":"Which neighbouring tiles have consecutive numbers?",
+   "has_user_choice": false,
    "additional_info":null
 }

@@ -1,5 +1,6 @@
 {
    "id":12,
    "description":"Is your C Tile greater than 4?",
+   "has_user_choice": false,
    "additional_info":null
 }

@@ -9,6 +9,7 @@ from websockets.exceptions import ConnectionClosed
 
 from exceptions.incorrect_amount_of_cards_in_guess import IncorrectAmountOfCardsInGuess
 from exceptions.incorrect_card import IncorrectCardPlayed
+from exceptions.incorrect_card_number_input import IncorrectCardNumberInput
 from exceptions.incorrect_number_card_value import IncorrectNumberCardValue
 from exceptions.not_your_turn import NotYourTurn
 from service.game_session import GameSession
@@ -117,7 +118,11 @@ async def handle_user_input(player_id, websocket, game_session):
                 GameState.END,
             ):
                 await validate_and_play_condition_card_request(
-                    websocket, player_id, game_session, msg.get("condition_card_id")
+                    websocket,
+                    player_id,
+                    game_session,
+                    msg.get("condition_card_id"),
+                    msg.get("card_number_choice", None),
                 )
             elif (
                 msg.get("type") == "guess_numbers"
@@ -188,11 +193,11 @@ async def validate_and_start_game(websocket, player_id, game_session):
 # there is no validation that the server can do without too much information
 # transfer up the line
 async def validate_and_play_condition_card_request(
-    websocket, player_id, game_session, condition_card_id
+    websocket, player_id, game_session, condition_card_id, card_number_choice
 ):
     try:
         await game_session.play_condition_card_and_change_player(
-            player_id, condition_card_id
+            player_id, condition_card_id, card_number_choice
         )
     except NotYourTurn:
         await send_message(
@@ -207,6 +212,13 @@ async def validate_and_play_condition_card_request(
             message_type="error",
             message="The card you requested is not in the current drawn cards",
             error_type="incorrect_card_player",
+        )
+    except IncorrectCardNumberInput:
+        await send_message(
+            websocket,
+            message_type="error",
+            message="The card number you provided is not accepted by the card condition",
+            error_type="incorrect_card_number_input",
         )
 
 

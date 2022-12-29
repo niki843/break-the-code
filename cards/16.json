@@ -1,5 +1,6 @@
 {
    "id":16,
    "description":"Where are your #1 or #2 tiles?",
+   "has_user_choice": true,
    "additional_info":"You must chose one number before asking a question."
 }

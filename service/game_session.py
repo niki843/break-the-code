@@ -3,7 +3,9 @@ import json
 import websockets
 import copy
 
+from constants import CARDS_REQUIRING_USER_INPUT_MAP
 from entity.player import Player
+from exceptions.incorrect_card_number_input import IncorrectCardNumberInput
 from exceptions.invalid_id import InvalidPlayerId
 from exceptions.not_your_turn import NotYourTurn
 from exceptions.session_full import SessionFull
@@ -82,15 +84,22 @@ class GameSession:
                 )
             )
 
-    async def play_condition_card_and_change_player(self, player_id, condition_card_id):
+    async def play_condition_card_and_change_player(
+        self, player_id, condition_card_id, card_number_choice
+    ):
         self.validate_current_player(player_id)
+
+        if (
+            condition_card_id in CARDS_REQUIRING_USER_INPUT_MAP.keys()
+            and card_number_choice not in CARDS_REQUIRING_USER_INPUT_MAP[condition_card_id]
+        ):
+            raise IncorrectCardNumberInput(
+                self.__connected_players[player_id].get_name()
+            )
 
         card, end_game = self.__game_board.play_condition_card(
             self.__connected_players[player_id], condition_card_id
         )
-
-        # change the current player at hand to the next in line
-        self.next_player()
 
         if end_game == EndGame.ALL_CARDS_PLAYED:
             # The game should end after everyone receives one final guess
@@ -113,8 +122,17 @@ class GameSession:
 
         for player, websocket_value in self.__connected_player_connections.items():
             if player.get_id() != player_id:
-                matching_card_condition = card.check_condition(player)
+                if card.has_user_choice:
+                    matching_card_condition = card.check_condition(
+                        player, card_number_choice
+                    )
+                    event["card_number_choice"] = card_number_choice
+                else:
+                    matching_card_condition = card.check_condition(player)
                 event[player.get_id()] = matching_card_condition
+
+        # change the current player at hand to the next in line
+        self.next_player()
 
         websockets.broadcast(
             self.__connected_player_connections.values(), json.dumps(event)
@@ -132,9 +150,7 @@ class GameSession:
 
         if is_guess_correct:
             self.end_game_and_send_messages(player)
-            print(
-                f"Player {player.get_name()} wins!"
-            )
+            print(f"Player {player.get_name()} wins!")
 
         player.is_eliminated = True
         websockets.broadcast(

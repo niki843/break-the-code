@@ -8,8 +8,6 @@ from utils.enums import Colors
 
 def first_card(player, number):
     check_player_has_cards(player)
-    if number not in (8, 9):
-        return False
 
     return get_card_index_list_from_property(player, "number", number)
 
@@ -107,8 +105,6 @@ def fifteenth_card(player):
 
 def sixteenth_card(player, number):
     check_player_has_cards(player)
-    if number not in (1, 2):
-        return False
 
     return get_card_index_list_from_property(player, "number", number)
 
@@ -155,8 +151,6 @@ def twentieth_card(player):
 
 def twenty_first_card(player, number):
     check_player_has_cards(player)
-    if number not in (3, 4):
-        return False
 
     return get_card_index_list_from_property(player, "number", number)
 

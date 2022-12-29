@@ -1,5 +1,6 @@
 {
    "id":7,
    "description":"Which neighbouring tiles have the same color?",
+   "has_user_choice": false,
    "additional_info":null
 }

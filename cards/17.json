@@ -1,5 +1,6 @@
 {
    "id":17,
    "description":"How many of your tiles have the same number?",
+   "has_user_choice": false,
    "additional_info":null
 }
