@@ -22,8 +22,7 @@ from utils.enums import GameState, PlayerStatus
 # value: ids of the players so they can rejoin
 GAME_SESSIONS = {}
 
-# TODO: Add all live websocket connections
-#  for sending messages to all players
+# Can be used to send message to all players
 CURRENT_WEBSOCKET_CONNECTIONS = []
 
 # This will keep the player id of disconnected players
@@ -97,20 +96,20 @@ async def join_game(websocket, game_session_id, player_id, player_name):
 
 
 async def handle_user_input(player_id, websocket, game_session):
-    player_disconnected = False
     while True:
+        if game_session.get_state() == GameState.END:
+            return
+
         try:
-            if (
-                game_session.get_current_player().is_eliminated
-                or player_disconnected
-            ):
-                if game_session.get_state() == GameState.END:
-                    return
-
-                game_session.next_player()
-                continue
-
             msg = json.loads(await websocket.recv())
+
+            if game_session.get_player_by_id(player_id).is_eliminated:
+                await send_message(
+                    websocket,
+                    message_type="player_eliminated",
+                    message="You are eliminated and can't play anymore",
+                )
+                continue
 
             if msg.get("type") == "start_game" and game_session.get_state() not in (
                 GameState.END_ALL_CARDS_PLAYED,
@@ -167,15 +166,18 @@ async def handle_user_input(player_id, websocket, game_session):
 
             if (
                 game_session.get_player_status_by_id(player_id)
-                != PlayerStatus.ONLINE
+                == PlayerStatus.DISCONNECTED
             ):
+                print("Player did not re-connect")
                 if game_session.have_all_players_disconnected():
+                    print("All players disconnected deleting session")
                     del GAME_SESSIONS[game_session.id]
                     return
-                player_disconnected = True
 
                 game_session.player_not_reconnect_broadcast(player_id)
+                game_session.get_current_player().is_eliminated = True
                 game_session.next_player()
+                return
             else:
                 game_session.player_reconnected_broadcast(player_id)
                 print("Player re-connected")

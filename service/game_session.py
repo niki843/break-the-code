@@ -33,17 +33,21 @@ class GameSession:
         self.__state = GameState.PENDING
         self.__game_board = None
         self.__current_player_at_hand_id = list(self.__connected_players.keys())[0]
-        # This counter will count to the count of players
-        # before it ends the game after all the condition cards have been used
-        self.end_game_counter = 0
+        self.__played_condition_cards_and_results = []
 
     async def join_player(self, player_id, player_name, websocket):
         # Check if player is trying to reconnect
-        if player_id in self.__connected_players.keys():
+        if (
+            player_id in self.__connected_players.keys()
+            and self.get_player_status_by_id(player_id) != PlayerStatus.ONLINE
+        ):
             player = self.__connected_players.get(player_id)
             self.__connected_players_status[player_id] = PlayerStatus.ONLINE
             self.__connected_player_connections[player] = websocket
-            await self.send_current_cards_message_to_reconnected_player(websocket, player)
+            player.is_eliminated = False
+            await self.send_current_cards_message_to_reconnected_player(
+                websocket, player
+            )
             return
 
         if self.__state != GameState.PENDING:
@@ -105,11 +109,10 @@ class GameSession:
 
         if (
             condition_card_id in CARDS_REQUIRING_USER_INPUT_MAP.keys()
-            and card_number_choice not in CARDS_REQUIRING_USER_INPUT_MAP[condition_card_id]
+            and card_number_choice
+            not in CARDS_REQUIRING_USER_INPUT_MAP[condition_card_id]
         ):
-            raise IncorrectCardNumberInput(
-                self.get_player_name_by_id(player_id)
-            )
+            raise IncorrectCardNumberInput(self.get_player_name_by_id(player_id))
 
         card, end_game = self.__game_board.play_condition_card(
             self.__connected_players[player_id], condition_card_id
@@ -134,6 +137,8 @@ class GameSession:
             "card_condition": card.description,
         }
 
+        self.__played_condition_cards_and_results.append(event)
+
         for player, websocket_value in self.__connected_player_connections.items():
             if player.get_id() != player_id:
                 if card.has_user_choice:
@@ -157,9 +162,6 @@ class GameSession:
         self.validate_current_player(player_id)
         player = self.__connected_players[self.__current_player_at_hand_id]
 
-        if self.__state == GameState.END_ALL_CARDS_PLAYED:
-            self.end_game_counter += 1
-
         is_guess_correct = self.__game_board.guess_cards(player_id, player_guess)
 
         if is_guess_correct:
@@ -178,6 +180,10 @@ class GameSession:
             ),
         )
         print(f"Incorrect guess {self.__current_player_at_hand_id} is eliminated")
+
+        if self.are_all_players_eliminated():
+            self.end_game_and_send_messages()
+            return
 
         # change the current player at hand to the next in line
         self.next_player()
@@ -201,27 +207,45 @@ class GameSession:
         players_list = list(self.__connected_players.keys())
 
         current_player_index = players_list.index(self.__current_player_at_hand_id) + 1
-
-        self.__current_player_at_hand_id = players_list[
+        current_player_index = (
             current_player_index if current_player_index < len(players_list) else 0
-        ]
+        )
+        self.__current_player_at_hand_id = players_list[current_player_index]
+        print(f"Player at hand: {self.__current_player_at_hand_id}")
+
+        if (
+            self.__connected_players_status[self.__current_player_at_hand_id] == PlayerStatus.DISCONNECTED
+            or self.__connected_players[self.__current_player_at_hand_id].is_eliminated
+        ):
+            self.next_player()
 
     def validate_current_player(self, player_id):
         if player_id != self.__current_player_at_hand_id:
             raise NotYourTurn(player_id)
 
-    def end_game_and_send_messages(self, player):
+    def end_game_and_send_messages(self, player=None):
         self.__state = GameState.END
-        websockets.broadcast(
-            self.__connected_player_connections.values(),
-            json.dumps(
-                {
-                    "type": "end_game",
-                    "message": f"End game winner {player.get_name()}",
-                    "winner_id": player.get_id(),
-                }
-            ),
-        )
+        if player:
+            websockets.broadcast(
+                self.__connected_player_connections.values(),
+                json.dumps(
+                    {
+                        "type": "end_game",
+                        "message": f"End game winner {player.get_name()}",
+                        "winner_id": player.get_id(),
+                    }
+                ),
+            )
+        else:
+            websockets.broadcast(
+                self.__connected_player_connections.values(),
+                json.dumps(
+                    {
+                        "type": "end_game_no_winners",
+                        "message": f"No winners",
+                    }
+                ),
+            )
 
     def replace_host(self, player_id):
         if self.__host.get_id() != player_id:
@@ -258,6 +282,9 @@ class GameSession:
 
     def get_player_status_by_id(self, player_id):
         return self.__connected_players_status.get(player_id)
+
+    def get_player_by_id(self, player_id):
+        return self.__connected_players.get(player_id)
 
     def player_reconnected_broadcast(self, player_id):
         event = {
@@ -304,7 +331,13 @@ class GameSession:
         return True
 
     def have_all_players_disconnected(self):
-        return any(player_status == PlayerStatus.ONLINE for player, player_status in self.__connected_players_status.items())
+        return not any(
+            player_status == PlayerStatus.ONLINE
+            for player_status in self.__connected_players_status.values()
+        )
+
+    def are_all_players_eliminated(self):
+        return all([player.is_eliminated for player in self.__connected_players.values()])
 
     async def send_current_cards_message_to_reconnected_player(self, websocket, player):
         await websocket.send(
@@ -326,6 +359,16 @@ class GameSession:
                         card.id
                         for card in self.__game_board.get_current_condition_cards()
                     ],
+                }
+            )
+        )
+
+        await websocket.send(
+            json.dumps(
+                {
+                    "type": "give_played_condition_cards",
+                    "message": "Giving out condition card that were played and results",
+                    "results": self.__played_condition_cards_and_results,
                 }
             )
         )
