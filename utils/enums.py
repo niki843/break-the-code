@@ -7,7 +7,6 @@ class GameState(Enum):
     END = 3
     # The game is ending after all players receive one try to guess
     END_ALL_CARDS_PLAYED = 4
-    END_ALL_PLAYERS_DISCONNECTED = 5
 
 
 class EndGame(Enum):

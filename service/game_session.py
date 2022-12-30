@@ -251,12 +251,19 @@ class GameSession:
         if self.__host.get_id() != player_id:
             return
 
+        player = self.__connected_players.get(player_id)
+        self.__connected_player_connections.pop(player)
         self.__connected_players.pop(player_id)
+        self.__connected_players_status.pop(player_id)
 
-        if len(self.__connected_players) == 0:
-            self.__state = GameState.END_ALL_PLAYERS_DISCONNECTED
+        new_host = list(self.__connected_players.values())[0]
+        self.__host = new_host
+        self.__current_player_at_hand_id = new_host.get_id()
 
-        self.__host = list(self.__connected_players.values())[1]
+        self.send_replaced_host_message(new_host)
+
+    def are_all_players_disconnected(self):
+        return len(self.__connected_players) == 0
 
     def get_players_count(self):
         return len(self.__connected_players)
@@ -319,6 +326,18 @@ class GameSession:
 
         websockets.broadcast(
             self.get_player_connection_without_id(player_id),
+            json.dumps(event),
+        )
+
+    def send_replaced_host_message(self, player):
+        event = {
+            "type": "host_disconnected",
+            "message": f"New host {player.get_name()}",
+            "player_id": str(player.get_id()),
+        }
+
+        websockets.broadcast(
+            self.__connected_player_connections.values(),
             json.dumps(event),
         )
 

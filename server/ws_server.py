@@ -144,8 +144,11 @@ async def handle_user_input(player_id, websocket, game_session):
                 return
 
         except ConnectionClosed:
-            # If the game has ended, delete the game session from the dict
-            if game_session.get_state() == GameState.END:
+            # If the game has ended or all players are disconnected, delete the game session from the dict
+            if (
+                game_session.get_state() == GameState.END
+                or game_session.are_all_players_disconnected()
+            ):
                 del GAME_SESSIONS[game_session.id]
                 return
 
@@ -153,10 +156,9 @@ async def handle_user_input(player_id, websocket, game_session):
                 player_id == game_session.get_host().get_id()
                 and game_session.get_state() == GameState.PENDING
             ):
+                # TODO: Replace host logic not working properly
                 game_session.replace_host(player_id)
-                if game_session.get_state() == GameState.END_ALL_PLAYERS_DISCONNECTED:
-                    del GAME_SESSIONS[game_session.id]
-                    return
+                return
 
             game_session.player_disconnected_broadcast(player_id)
             game_session.set_player_disconnected(player_id)
