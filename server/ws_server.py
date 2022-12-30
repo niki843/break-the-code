@@ -16,7 +16,7 @@ from service.game_session import GameSession
 from exceptions.invalid_id import InvalidPlayerId
 from exceptions.session_full import SessionFull
 
-from utils.enums import GameState
+from utils.enums import GameState, PlayerStatus
 
 # key: id of the game session
 # value: ids of the players so they can rejoin
@@ -74,7 +74,7 @@ async def join_game(websocket, game_session_id, player_id, player_name):
     current_game_session = GAME_SESSIONS[game_session_id]
 
     try:
-        current_game_session.join_player(player_id, player_name, websocket)
+        await current_game_session.join_player(player_id, player_name, websocket)
     except SessionFull:
         await send_message(
             websocket,
@@ -97,9 +97,13 @@ async def join_game(websocket, game_session_id, player_id, player_name):
 
 
 async def handle_user_input(player_id, websocket, game_session):
+    player_disconnected = False
     while True:
         try:
-            if game_session.get_current_player().is_eliminated:
+            if (
+                game_session.get_current_player().is_eliminated
+                or player_disconnected
+            ):
                 if game_session.get_state() == GameState.END:
                     return
 
@@ -146,16 +150,36 @@ async def handle_user_input(player_id, websocket, game_session):
                 del GAME_SESSIONS[game_session.id]
                 return
 
-            await send_message(
-                websocket,
-                message_type="player_disconnected",
-                message=f"Player {game_session.get_player_name_by_id(player_id)} disconnected",
-                player_id=str(player_id),
-            )
+            if (
+                player_id == game_session.get_host().get_id()
+                and game_session.get_state() == GameState.PENDING
+            ):
+                game_session.replace_host(player_id)
+                if game_session.get_state() == GameState.END_ALL_PLAYERS_DISCONNECTED:
+                    del GAME_SESSIONS[game_session.id]
+                    return
 
-            # TODO: Implement reconnecting
-            print("Waiting for player to reconnect")
-            return
+            game_session.player_disconnected_broadcast(player_id)
+            game_session.set_player_disconnected(player_id)
+
+            print(f"Waiting 30 seconds for player {player_id} to reconnect.")
+            await asyncio.sleep(30)
+
+            if (
+                game_session.get_player_status_by_id(player_id)
+                != PlayerStatus.ONLINE
+            ):
+                if game_session.have_all_players_disconnected():
+                    del GAME_SESSIONS[game_session.id]
+                    return
+                player_disconnected = True
+
+                game_session.player_not_reconnect_broadcast(player_id)
+                game_session.next_player()
+            else:
+                game_session.player_reconnected_broadcast(player_id)
+                print("Player re-connected")
+                return
 
 
 async def send_message(websocket, message_type, message, **kwargs):

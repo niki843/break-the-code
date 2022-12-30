@@ -46,14 +46,14 @@ class GameBuilder:
             if card.id == condition_card_id:
                 end_game = EndGame.CONTINUE
                 self.__current_condition_cards.remove(card)
+                # TODO: Test this
                 # In the case that all the cards are drawn the game should play until the last card is called
                 if len(self.condition_cards) == 0:
-                    return card
+                    new_card = random.choice(self.condition_cards)
+                    self.__current_condition_cards.append(new_card)
 
-                new_card = random.choice(self.condition_cards)
-                self.__current_condition_cards.append(new_card)
+                    self.condition_cards.remove(new_card)
 
-                self.condition_cards.remove(new_card)
                 if len(self.__current_condition_cards) == 0:
                     end_game = EndGame.ALL_CARDS_PLAYED
 

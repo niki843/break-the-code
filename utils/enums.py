@@ -6,7 +6,8 @@ class GameState(Enum):
     IN_PROGRESS = 2
     END = 3
     # The game is ending after all players receive one try to guess
-    END_ALL_CARDS_PLAYED = 3
+    END_ALL_CARDS_PLAYED = 4
+    END_ALL_PLAYERS_DISCONNECTED = 5
 
 
 class EndGame(Enum):
@@ -32,3 +33,8 @@ class Colors(IntEnum):
             return "White"
         else:
             return "Green"
+
+
+class PlayerStatus(IntEnum):
+    DISCONNECTED = 0
+    ONLINE = 1
