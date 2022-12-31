@@ -12,9 +12,10 @@ def first_card(player, number):
     return get_card_index_list_from_property(player, "number", number)
 
 
-def second_card(player):
+def second_card(player, number):
     check_player_has_cards(player)
-    return get_consecutive_cards(player, "number")
+
+    return get_card_index_list_from_property(player, "number", number)
 
 
 def third_card(player):
