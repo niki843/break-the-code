@@ -22,8 +22,6 @@ def start_game():
     screen.blit(pygame.transform.scale(background, (800, 600)), (0, 0))
     pygame.display.flip()
 
-    GameBuilder()
-
     running = True
     while running:
         running = check_events(background, screen) is None
