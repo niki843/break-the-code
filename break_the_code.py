@@ -1,8 +1,6 @@
 import pygame
 import os
 
-from utils.game_builder import GameBuilder
-
 from utils.game_events import check_events
 
 img_path = f".{os.path.sep}images{os.path.sep}"
