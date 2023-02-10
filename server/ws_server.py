@@ -156,7 +156,6 @@ async def handle_user_input(player_id, websocket, game_session):
                 player_id == game_session.get_host().get_id()
                 and game_session.get_state() == GameState.PENDING
             ):
-                # TODO: Replace host logic not working properly
                 game_session.replace_host(player_id)
                 return
 
@@ -303,7 +302,7 @@ async def handler(websocket):
             for game_session in GAME_SESSIONS.values():
                 event["game_session"] = {
                     "id": game_session.id,
-                    "connected_players": game_session.get_players_count,
+                    "connected_players": game_session.get_players_count(),
                 }
             await websocket.send(json.dumps(event))
 
