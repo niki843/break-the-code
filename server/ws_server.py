@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import asyncio
+
 import websockets
 import json
 import uuid
@@ -304,9 +305,11 @@ async def handler(websocket):
                     "id": game_session.id,
                     "connected_players": game_session.get_players_count(),
                 }
+            print("SENDING OUT GAME SESSIONS")
             await websocket.send(json.dumps(event))
 
     if event_msg.get("type") == "join_game":
+        print("JOINING GAME")
         await join_game(
             websocket,
             event_msg.get("game_session_id"),
@@ -315,14 +318,17 @@ async def handler(websocket):
         )
 
     if event_msg.get("type") == "new_game":
+        print("NEW GAME CREATION")
         await create_game(
             websocket, event_msg.get("player_id"), event_msg.get("player_name")
         )
 
 
 async def main():
+    print("STARTING SERVER")
     async with websockets.serve(handler, "localhost", 8765):
         await asyncio.Future()  # run forever
+    print("CLOSING SERVER")
 
 
 if __name__ == "__main__":

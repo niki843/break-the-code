@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-
-import asyncio
-import aioconsole
-
 import websockets
 import pygame
 
@@ -24,8 +19,8 @@ class WebsocketClient:
         try:
             async with websockets.connect(f"ws://{IPADDRESS}:{PORT}") as websocket:
                 self.websocket = websocket
+                print("Connected to server")
                 await self.wait_for_server_message()
-
         except ConnectionRefusedError:
             print("Could not connect to server")
 
