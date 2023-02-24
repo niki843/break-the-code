@@ -1,3 +1,5 @@
+from time import sleep
+
 import pygame
 import os
 import asyncio
@@ -16,8 +18,7 @@ async def connect():
 
 
 async def send_message(message):
-
-    await ws_client.send_server_messages('{"type": "new_game", "player_id": "0ed61f48-2761-4c82-9460-788af1f52795", "player_name": "first_player"}')
+    await ws_client.send_server_messages(message)
 
     print("Message sent")
 
@@ -47,16 +48,19 @@ def start_game():
     screen.blit(pygame.transform.scale(background, (1280, 720)), (0, 0))
     pygame.display.flip()
     running = True
-
     while running:
         events = pygame.event.get()
         for e in events:
             if e.type == pygame.QUIT:
+                loop.create_task(send_message('{"type": "close_connection"}'))
+                # loop.create_task(send_message('{"type": "new_game", "player_id": "0ed61f48-2761-4c82-9460-788af1f52795", "player_name": "first_player"}'))
                 running = False
             elif e.type == client.EVENT_TYPE:
                 print(e.message)
-            elif e.type == pygame.KEYDOWN and e.key == pygame.K_UP:
-                loop.create_task(send_message("test"))
+            elif e.type == pygame.KEYUP and e.key == pygame.K_q:
+                loop.create_task(send_message('{"type": "new_game", "player_id": "0ed61f48-2761-4c82-9460-788af1f52795", "player_name": "first_player"}'))
+            elif e.type == pygame.KEYUP and e.key == pygame.K_w:
+                loop.create_task(send_message('{"type": "get_current_games"}'))
 
         # tell event loop to run once
         # if there are no i/o events, this might return right away
@@ -64,7 +68,11 @@ def start_game():
         # run ONE task until the next "await" statement
         run_once(loop)
 
-    loop.shutdown_asyncgens()
+    # Sleeping for half a second to wait for websocket connection termination
+    loop.run_until_complete(asyncio.sleep(0.5))
+
+    # Shutdown any async processes and close the event loop
+    loop.run_until_complete(loop.shutdown_asyncgens())
     loop.close()
     print("Thank you for playing!")
 

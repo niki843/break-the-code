@@ -263,7 +263,7 @@ class GameSession:
         self.send_replaced_host_message(new_host)
 
     def are_all_players_disconnected(self):
-        return len(self.__connected_players) == 0
+        return len([player for player, status in self.__connected_players_status.items() if status == PlayerStatus.ONLINE]) <= 1
 
     def get_players_count(self):
         return len(self.__connected_players)

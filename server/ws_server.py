@@ -103,6 +103,15 @@ async def handle_user_input(player_id, websocket, game_session):
 
         try:
             msg = json.loads(await websocket.recv())
+            msg_type = msg.get("type")
+
+            # When we receive a close connection request
+            # we send a message confirming a close the connection
+            # then on the msg = json.loads(await websocket.recv()) we receive a
+            # ConnectionClosed exception which is handled
+            if msg_type == "close_connection":
+                await send_message_and_close_connection(websocket)
+                continue
 
             if game_session.get_player_by_id(player_id).is_eliminated:
                 await send_message(
@@ -112,12 +121,12 @@ async def handle_user_input(player_id, websocket, game_session):
                 )
                 continue
 
-            if msg.get("type") == "start_game" and game_session.get_state() not in (
+            if msg_type == "start_game" and game_session.get_state() not in (
                 GameState.END_ALL_CARDS_PLAYED,
                 GameState.END,
             ):
                 await validate_and_start_game(websocket, player_id, game_session)
-            elif msg.get("type") == "play_tile" and game_session.get_state() not in (
+            elif msg_type == "play_tile" and game_session.get_state() not in (
                 GameState.END_ALL_CARDS_PLAYED,
                 GameState.END,
             ):
@@ -129,7 +138,7 @@ async def handle_user_input(player_id, websocket, game_session):
                     msg.get("card_number_choice", None),
                 )
             elif (
-                msg.get("type") == "guess_numbers"
+                msg_type == "guess_numbers"
                 and game_session.get_state() != GameState.END
             ):
                 await validate_and_guess_numbers(
@@ -138,6 +147,8 @@ async def handle_user_input(player_id, websocket, game_session):
                     game_session,
                     msg.get("player_guess"),
                 )
+            else:
+                await send_message(websocket=websocket, message_type="incorrect_input", message=f"Incorrect input type for the state {msg_type}")
 
             # end the game session and delete it from list
             if game_session.get_state() == GameState.END:
@@ -284,21 +295,29 @@ async def validate_and_guess_numbers(websocket, player_id, game_session, player_
         )
 
 
+async def send_message_and_close_connection(websocket):
+    await send_message(websocket, message_type="connection_closed", message="Closing the current connection")
+    await websocket.close()
+    print("CLOSED CONNECTION")
+
+
 # Handles all new incoming requests and distributes to appropriate functions
 async def handler(websocket):
     # message = await websocket.recv()
     event_msg = None
+    event_msg_type = None
     CURRENT_WEBSOCKET_CONNECTIONS.append(websocket)
 
     async for message in websocket:
         event_msg = json.loads(message)
-        if event_msg.get("type") == "join_game" or event_msg.get("type") == "new_game":
+        event_msg_type = event_msg.get("type")
+        if event_msg_type == "join_game" or event_msg_type == "new_game" or event_msg_type == "close_connection":
             break
 
-        if event_msg.get("type") == "end_session":
+        if event_msg_type == "end_session":
             return
 
-        if event_msg.get("type") == "get_current_games":
+        if event_msg_type == "get_current_games":
             event = {
                 "game_session": []
             }
@@ -310,7 +329,7 @@ async def handler(websocket):
             print("SENDING OUT GAME SESSIONS")
             await websocket.send(json.dumps(event))
 
-    if event_msg.get("type") == "join_game":
+    if event_msg and event_msg_type == "join_game":
         print("JOINING GAME")
         await join_game(
             websocket,
@@ -319,11 +338,15 @@ async def handler(websocket):
             event_msg.get("player_name"),
         )
 
-    if event_msg.get("type") == "new_game":
+    if event_msg and event_msg_type == "new_game":
         print("NEW GAME CREATION")
         await create_game(
             websocket, event_msg.get("player_id"), event_msg.get("player_name")
         )
+
+    if event_msg and event_msg_type == "close_connection":
+        await send_message_and_close_connection(websocket)
+        return
 
 
 async def main():
