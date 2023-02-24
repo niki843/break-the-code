@@ -299,12 +299,14 @@ async def handler(websocket):
             return
 
         if event_msg.get("type") == "get_current_games":
-            event = {}
+            event = {
+                "game_session": []
+            }
             for game_session in GAME_SESSIONS.values():
-                event["game_session"] = {
+                event.get("game_session").append({
                     "id": game_session.id,
                     "connected_players": game_session.get_players_count(),
-                }
+                })
             print("SENDING OUT GAME SESSIONS")
             await websocket.send(json.dumps(event))
 

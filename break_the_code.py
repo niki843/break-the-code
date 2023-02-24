@@ -26,6 +26,7 @@ def run_once(loop):
     loop.call_soon(loop.stop)
     loop.run_forever()
 
+
 # Connect to server
 loop.create_task(connect())
 
@@ -48,13 +49,13 @@ def start_game():
     running = True
 
     while running:
-        events=pygame.event.get()
+        events = pygame.event.get()
         for e in events:
-            if e.type==pygame.QUIT:
-                running=False
+            if e.type == pygame.QUIT:
+                running = False
             elif e.type == client.EVENT_TYPE:
                 print(e.message)
-            elif e.type==pygame.KEYDOWN and e.key==pygame.K_UP:
+            elif e.type == pygame.KEYDOWN and e.key == pygame.K_UP:
                 loop.create_task(send_message("test"))
 
         # tell event loop to run once
@@ -63,8 +64,6 @@ def start_game():
         # run ONE task until the next "await" statement
         run_once(loop)
 
-    while len(asyncio.Task.all_tasks(loop)):
-        run_once(loop)
     loop.shutdown_asyncgens()
     loop.close()
     print("Thank you for playing!")
