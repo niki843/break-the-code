@@ -1,4 +1,4 @@
-from time import sleep
+import uuid
 
 import pygame
 import os
@@ -32,7 +32,22 @@ def run_once(loop):
 loop.create_task(connect())
 
 
+def get_or_generate_player_id():
+    # Open the player_id file or create it if not existing
+    # and read the uuid or created if missing
+    with open("player_id.txt", "a+") as f:
+        if os.stat("player_id.txt").st_size == 0:
+            f.write(str(uuid.uuid4()))
+
+    # Open the player_id file and read the uuid
+    f = open("player_id.txt", "r")
+    player_id = f.read()
+    return player_id
+
+
 def start_game():
+    player_id = get_or_generate_player_id()
+
     pygame.init()
     pygame.fastevent.init()
     # pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
@@ -53,13 +68,16 @@ def start_game():
         for e in events:
             if e.type == pygame.QUIT:
                 loop.create_task(send_message('{"type": "close_connection"}'))
-                # loop.create_task(send_message('{"type": "new_game", "player_id": "0ed61f48-2761-4c82-9460-788af1f52795", "player_name": "first_player"}'))
                 running = False
             elif e.type == client.EVENT_TYPE:
                 print(e.message)
-            elif e.type == pygame.KEYUP and e.key == pygame.K_q:
+            elif e.type == pygame.KEYUP and e.key == pygame.K_n:
                 loop.create_task(send_message('{"type": "new_game", "player_id": "0ed61f48-2761-4c82-9460-788af1f52795", "player_name": "first_player"}'))
-            elif e.type == pygame.KEYUP and e.key == pygame.K_w:
+            elif e.type == pygame.KEYUP and e.key == pygame.K_c:
+                loop.create_task(send_message('{"type": "get_current_games"}'))
+            elif e.type == pygame.KEYUP and e.key == pygame.K_j:
+                loop.create_task(send_message('{"type": "get_current_games"}'))
+            elif e.type == pygame.KEYUP and e.key == pygame.K_j:
                 loop.create_task(send_message('{"type": "get_current_games"}'))
 
         # tell event loop to run once
