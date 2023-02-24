@@ -1,0 +1,30 @@
+NEW_GAME:
+{"type": "new_game", "player_id": "0ed61f48-2761-4c82-9460-788af1f52795", "player_name": "first_player"}
+
+JOIN_GAME FIRST PLAYER
+{"type": "join_game", "player_id": "0ed61f48-2761-4c82-9460-788af1f52795", "player_name": "first_player", "game_session_id": "9906061a-508a-4b9f-91ff-11055baeb6d5"}
+
+START_GAME:
+{"type": "start_game"}
+
+JOIN_GAME
+{"type": "join_game", "player_id": "2c85f2d0-7fd1-4736-9c10-247db035d7f2", "player_name": "second_player", "game_session_id": ""}
+
+JOIN_GAME2
+{"type": "join_game", "player_id": "464021c8-1e75-4dca-a2e4-4641c9845c5a", "player_name": "third_player", "game_session_id": ""}
+
+GET_CURRENT_GAMES:
+{"type": "get_current_games"}
+
+PLAY_TILE
+{"type": "play_tile", "condition_card_id": 9}
+
+GUESS_NUMBERS
+{"type": "guess_numbers", "player_guess": ["03", "13", "25", "09", "19"]}
+
+PLAY_TILE for [1, 16, 21]
+{"type": "play_tile", "condition_card_id": 1, "card_number_choice": 8}
+
+TILES WITH CARD_NUNBER_CHOICE
+16- 1,2; 21- 3, 4; 1- 8,9; 2- 6,7
+
