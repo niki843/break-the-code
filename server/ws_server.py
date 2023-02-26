@@ -301,10 +301,18 @@ async def handler(websocket):
         if event_msg.get("type") == "get_current_games":
             event = {}
             for game_session in GAME_SESSIONS.values():
-                event["game_session"] = {
-                    "id": game_session.id,
-                    "connected_players": game_session.get_players_count(),
-                }
+                if not event.get("game_sessions"):
+                    event["game_sessions"] = [{
+                        "id": game_session.id,
+                        "connected_players": game_session.get_players_count(),
+                        "game_state": game_session.get_state().name
+                    }]
+                    break
+                event["game_sessions"].append({
+                        "id": game_session.id,
+                        "connected_players": game_session.get_players_count(),
+                        "game_state": game_session.get_state().name
+                })
             print("SENDING OUT GAME SESSIONS")
             await websocket.send(json.dumps(event))
 

@@ -1,0 +1,17 @@
+Get all current games:
+{"type": "get_current_games"}
+
+New game player 1:
+{"type": "new_game", "player_id":"36c79d11-cf02-4367-bb07-f107fda576ba", "player_name": "player1"}
+
+Join game player 2:
+{"type": "join_game", "game_session_id": "", "player_id": "5f70b262-66d6-489f-a356-a1953496acd8", "player_name": "player2"}
+
+Join game player 3:
+{"type": "join_game", "game_session_id": "", "player_id": "fd943e68-4c76-440e-8b93-d9552070a502", "player_name": "player3"}
+
+Start game:
+{"type": "start_game"}
+
+Play tile with card number choice:
+{"type": "play_tile", "condition_card_id": "1", "card_number_choice": "1"}
