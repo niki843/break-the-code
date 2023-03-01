@@ -1,9 +1,9 @@
-from constants import (
+from server.constants import (
     CARD_INDEX_TO_LETTER_MAP,
     MISSING_PROPERTY_DEFAULT,
 )
-from exceptions.player_cards_missing import PlayerCardsMissingException
-from utils.enums import Colors
+from server.exceptions.player_cards_missing import PlayerCardsMissingException
+from server.utils.enums import Colors
 
 
 def first_card(player, number):

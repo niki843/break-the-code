@@ -3,16 +3,16 @@ import json
 import websockets
 import copy
 
-from constants import CARDS_REQUIRING_USER_INPUT_MAP
-from entity.player import Player
-from exceptions.incorrect_card_number_input import IncorrectCardNumberInput
-from exceptions.invalid_id import InvalidPlayerId
-from exceptions.not_your_turn import NotYourTurn
-from exceptions.session_full import SessionFull
-from exceptions.session_in_progress import SessionInProgress
-from utils.game_builder import GameBuilder
-from utils.enums import GameState, EndGame, PlayerStatus
-from utils.validate import is_valid_uuid
+from server.constants import CARDS_REQUIRING_USER_INPUT_MAP
+from server.entity.player import Player
+from server.exceptions.incorrect_card_number_input import IncorrectCardNumberInput
+from server.exceptions.invalid_id import InvalidPlayerId
+from server.exceptions.not_your_turn import NotYourTurn
+from server.exceptions.session_full import SessionFull
+from server.exceptions.session_in_progress import SessionInProgress
+from server.utils.game_builder import GameBuilder
+from server.utils.enums import GameState, EndGame, PlayerStatus
+from server.utils.validate import is_valid_uuid
 
 
 class GameSession:

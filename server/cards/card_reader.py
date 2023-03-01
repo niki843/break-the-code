@@ -3,9 +3,9 @@ import os
 import re
 import pathlib
 
-from entity.condition_card import ConditionCard
-from cards.card_conditions import CARD_ID_TO_CONDITION_MAP
-from utils.singelton import Singleton
+from server.entity.condition_card import ConditionCard
+from server.cards.card_conditions import CARD_ID_TO_CONDITION_MAP
+from server.utils.singelton import Singleton
 
 
 class CardReader(Singleton):

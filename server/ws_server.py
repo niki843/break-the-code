@@ -8,16 +8,16 @@ import uuid
 
 from websockets.exceptions import ConnectionClosed
 
-from exceptions.incorrect_amount_of_cards_in_guess import IncorrectAmountOfCardsInGuess
-from exceptions.incorrect_card import IncorrectCardPlayed
-from exceptions.incorrect_card_number_input import IncorrectCardNumberInput
-from exceptions.incorrect_number_card_value import IncorrectNumberCardValue
-from exceptions.not_your_turn import NotYourTurn
-from service.game_session import GameSession
-from exceptions.invalid_id import InvalidPlayerId
-from exceptions.session_full import SessionFull
+from server.exceptions.incorrect_amount_of_cards_in_guess import IncorrectAmountOfCardsInGuess
+from server.exceptions.incorrect_card import IncorrectCardPlayed
+from server.exceptions.incorrect_card_number_input import IncorrectCardNumberInput
+from server.exceptions.incorrect_number_card_value import IncorrectNumberCardValue
+from server.exceptions.not_your_turn import NotYourTurn
+from server.service.game_session import GameSession
+from server.exceptions.invalid_id import InvalidPlayerId
+from server.exceptions.session_full import SessionFull
 
-from utils.enums import GameState, PlayerStatus
+from server.utils.enums import GameState, PlayerStatus
 
 # key: id of the game session
 # value: ids of the players so they can rejoin

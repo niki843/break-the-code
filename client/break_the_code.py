@@ -1,11 +1,11 @@
 import uuid
+import json
 
 import pygame
 import os
 import asyncio
 from client import ws_client as client
 
-img_path = f".{os.path.sep}images{os.path.sep}"
 loop = asyncio.get_event_loop()
 
 ws_client = client.WebsocketClient()
@@ -46,21 +46,22 @@ def get_or_generate_player_id():
 
 
 def start_game():
-    player_id = get_or_generate_player_id()
+    # player_id = get_or_generate_player_id()
+    player_id = str(uuid.uuid4())
 
     pygame.init()
     pygame.fastevent.init()
     # pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     screen = pygame.display.set_mode((1280, 720), pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.RESIZABLE)
     pygame.display.set_caption("Break The Code")
-    thumbnail = pygame.image.load(
-        f"{img_path}crack-the-code-thumbnail.png"
-    )
-    pygame.display.set_icon(thumbnail)
+    # thumbnail = pygame.image.load(
+    #     f"{img_path}crack-the-code-thumbnail.png"
+    # )
+    # pygame.display.set_icon(thumbnail)
 
-    background = pygame.image.load(f"{img_path}background.png")
+    # background = pygame.image.load(f"{img_path}background.png")
     # set up the drawing window
-    screen.blit(pygame.transform.scale(background, (1280, 720)), (0, 0))
+    # screen.blit(pygame.transform.scale(background, (1280, 720)), (0, 0))
     pygame.display.flip()
     running = True
     while running:
@@ -72,13 +73,29 @@ def start_game():
             elif e.type == client.EVENT_TYPE:
                 print(e.message)
             elif e.type == pygame.KEYUP and e.key == pygame.K_n:
-                loop.create_task(send_message('{"type": "new_game", "player_id": "0ed61f48-2761-4c82-9460-788af1f52795", "player_name": "first_player"}'))
+                loop.create_task(send_message(f'{{"type": "new_game", "player_id": "{player_id}", "player_name": "first_player"}}'))
             elif e.type == pygame.KEYUP and e.key == pygame.K_c:
                 loop.create_task(send_message('{"type": "get_current_games"}'))
             elif e.type == pygame.KEYUP and e.key == pygame.K_j:
-                loop.create_task(send_message('{"type": "get_current_games"}'))
-            elif e.type == pygame.KEYUP and e.key == pygame.K_j:
-                loop.create_task(send_message('{"type": "get_current_games"}'))
+                game_session_id = input("game_session_id: ")
+                loop.create_task(send_message(f'{{"type": "join_game", "player_id": "{player_id}", "player_name": "second_player", "game_session_id": "{game_session_id}"}}'))
+            elif e.type == pygame.KEYUP and e.key == pygame.K_s:
+                loop.create_task(send_message('{"type": "start_game"}'))
+            elif e.type == pygame.KEYUP and e.key == pygame.K_p:
+                condition_card_id = input("condition_card_id: ")
+                loop.create_task(send_message(f'{{"type": "play_tile", "condition_card_id": {condition_card_id}}}'))
+            elif e.type == pygame.KEYUP and e.key == pygame.K_o:
+                condition_card_id = input("condition_card_id: ")
+                card_number_choice = input("card_number_choice: ")
+                loop.create_task(send_message(f'{{"type": "play_tile", "condition_card_id": {condition_card_id}, "card_number_choice": {card_number_choice}}}'))
+            elif e.type == pygame and e.key == pygame.K_g:
+                cards = []
+                for i in range(0, 5):
+                    cards.append(input(f"{i} card"))
+                loop.create_task(send_message(f'{{"type": "guess_numbers", "player_guess": {json.dumps(cards)}}}'))
+
+
+
 
         # tell event loop to run once
         # if there are no i/o events, this might return right away

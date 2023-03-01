@@ -3,9 +3,8 @@ from unittest.mock import patch
 
 import pytest
 
-from cards.card_conditions import (
+from server.cards.card_conditions import (
     first_card,
-    second_card,
     third_card,
     fourth_card,
     fifth_card,
@@ -25,7 +24,7 @@ from cards.card_conditions import (
     twentieth_card,
     twenty_first_card,
 )
-from utils.enums import Colors, GameTypes
+from server.utils.enums import Colors, GameTypes
 
 
 class TestCardReaderCardConditions:

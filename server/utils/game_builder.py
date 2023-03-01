@@ -1,13 +1,13 @@
 import random
-import constants
+from server import constants
 from copy import deepcopy
 from types import SimpleNamespace
 
-from cards.card_reader import CardReader
-from exceptions.incorrect_amount_of_cards_in_guess import IncorrectAmountOfCardsInGuess
-from exceptions.incorrect_card import IncorrectCardPlayed
-from exceptions.incorrect_number_card_value import IncorrectNumberCardValue
-from utils.enums import Colors, GameTypes, EndGame
+from server.cards.card_reader import CardReader
+from server.exceptions.incorrect_amount_of_cards_in_guess import IncorrectAmountOfCardsInGuess
+from server.exceptions.incorrect_card import IncorrectCardPlayed
+from server.exceptions.incorrect_number_card_value import IncorrectNumberCardValue
+from server.utils.enums import Colors, GameTypes, EndGame
 
 
 class GameBuilder:
