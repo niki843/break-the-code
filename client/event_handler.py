@@ -14,7 +14,7 @@ class EventHandler:
         if event.type == pygame.QUIT:
             return '{"type": "close_connection"}', True
         if event.type == pygame.MOUSEBUTTONUP:
-            if event.type == 1:
+            if event.button == 1:
                 self.handle_mouse_click()
             return None, False
         elif event.type == client.EVENT_TYPE:
@@ -63,4 +63,6 @@ class EventHandler:
         self._current_window = new_window
 
     def handle_mouse_click(self):
-        pass
+        for tile in self._current_window.tiles_group.copy():
+            if tile.rect.collidepoint(pygame.mouse.get_pos()):
+                print(tile.name)

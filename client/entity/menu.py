@@ -40,8 +40,8 @@ class Menu:
         self.background_rect = self.background_image.get_rect()
 
     def build_join_game(self):
-        surface = pygame.image.load(f"{IMG_PATH}new_game.png").convert_alpha()
-        self.join_game_tile = Tile(surface, self.screen)
+        surface = pygame.image.load(f"{IMG_PATH}join_game.png").convert_alpha()
+        self.join_game_tile = Tile("join_game", surface, self.screen)
 
         self.join_game_tile.rect.centerx = self.screen_rect.centerx
         self.join_game_tile.rect.centery = self.screen_rect.centery
@@ -49,7 +49,7 @@ class Menu:
 
     def build_new_game(self):
         surface = pygame.image.load(f"{IMG_PATH}new_game.png").convert_alpha()
-        self.new_game_tile = Tile(surface, self.screen)
+        self.new_game_tile = Tile("new_game", surface, self.screen)
 
         self.new_game_tile.rect.centerx = self.screen_rect.centerx
         self.new_game_tile.rect.bottom = (
@@ -59,7 +59,7 @@ class Menu:
 
     def build_settings(self):
         surface = pygame.image.load(f"{IMG_PATH}settings.png").convert_alpha()
-        self.settings_tile = Tile(surface, self.screen)
+        self.settings_tile = Tile("settings", surface, self.screen)
 
         self.settings_tile.rect.centerx = self.screen_rect.centerx
         self.settings_tile.rect.top = (
@@ -69,7 +69,7 @@ class Menu:
 
     def build_quit_game(self):
         surface = pygame.image.load(f"{IMG_PATH}quit.png").convert_alpha()
-        self.quit_tile = Tile(surface, self.screen)
+        self.quit_tile = Tile("quit_game", surface, self.screen)
 
         self.quit_tile.rect.right = (
             self.screen_rect.right - BETWEEN_TILE_AND_SCREEN_SPACING

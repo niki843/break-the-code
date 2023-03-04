@@ -9,8 +9,10 @@ from client import (
 
 
 class Tile(sprite.Sprite):
-    def __init__(self, surface, screen):
+    def __init__(self, name, surface, screen):
         pygame.sprite.Sprite.__init__(self)
+
+        self.name = name
 
         self.image = surface
 
