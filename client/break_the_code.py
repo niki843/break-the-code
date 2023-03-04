@@ -25,7 +25,7 @@ async def send_message(message):
     print("Message sent")
 
 
-def run_once(loop):
+def run_once():
     loop.call_soon(loop.stop)
     loop.run_forever()
 
@@ -93,7 +93,7 @@ def start_game():
         # if there are no i/o events, this might return right away
         # if there are events or tasks that don't need to wait for i/o, then
         # run ONE task until the next "await" statement
-        run_once(loop)
+        run_once()
 
     # Sleeping for half a second to wait for websocket connection termination
     loop.run_until_complete(asyncio.sleep(ASYNC_SLEEP_TIME_ON_EXIT))
