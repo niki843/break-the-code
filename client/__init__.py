@@ -1,6 +1,6 @@
 import os
 
-IMG_PATH = f".{os.path.sep}images{os.path.sep}"
+IMG_PATH = f".{os.path.sep}resources{os.path.sep}images{os.path.sep}"
 
 TILE_WIDTH_ADDITION = 50
 TILE_HEIGHT_ADDITION = 0
