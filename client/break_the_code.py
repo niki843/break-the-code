@@ -69,11 +69,11 @@ def start_game():
 
     menu = Menu(screen)
 
-    event_handler = EventHandler(player_id, current_window=menu)
+    event_handler = EventHandler(player_id, current_window=menu, screen=screen)
 
     running = True
     while running:
-        menu.blit()
+        event_handler.current_window.blit()
         pygame.display.flip()
         events = pygame.event.get()
 

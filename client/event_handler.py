@@ -2,11 +2,13 @@ import pygame
 import json
 
 from client import ws_client as client
+from client.entity.settings import Settings
 
 
 class EventHandler:
-    def __init__(self, player_id, current_window):
-        self._current_window = current_window
+    def __init__(self, player_id, current_window, screen):
+        self.screen = screen
+        self.current_window = current_window
 
         self.player_id = player_id
 
@@ -60,9 +62,13 @@ class EventHandler:
             return None, False
 
     def change_window(self, new_window):
-        self._current_window = new_window
+        self.current_window = new_window
 
     def handle_mouse_click(self):
-        for tile in self._current_window.tiles_group.copy():
+        tiles_copy = self.current_window.tiles_group.copy()
+        for tile in tiles_copy:
             if tile.rect.collidepoint(pygame.mouse.get_pos()):
                 print(tile.name)
+                self.current_window.delete()
+                self.change_window(Settings(self.screen))
+                break
