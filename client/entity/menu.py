@@ -1,5 +1,4 @@
 from pygame import Color
-from pygame.sprite import Group
 
 from client import IMG_PATH, BETWEEN_TILE_AND_SCREEN_SPACING, BETWEEN_TILES_SPACING
 import pygame
