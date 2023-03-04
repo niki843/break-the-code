@@ -8,7 +8,9 @@ import uuid
 
 from websockets.exceptions import ConnectionClosed
 
-from server.exceptions.incorrect_amount_of_cards_in_guess import IncorrectAmountOfCardsInGuess
+from server.exceptions.incorrect_amount_of_cards_in_guess import (
+    IncorrectAmountOfCardsInGuess,
+)
 from server.exceptions.incorrect_card import IncorrectCardPlayed
 from server.exceptions.incorrect_card_number_input import IncorrectCardNumberInput
 from server.exceptions.incorrect_number_card_value import IncorrectNumberCardValue
@@ -148,7 +150,11 @@ async def handle_user_input(player_id, websocket, game_session):
                     msg.get("player_guess"),
                 )
             else:
-                await send_message(websocket=websocket, message_type="incorrect_input", message=f"Incorrect input type for the state {msg_type}")
+                await send_message(
+                    websocket=websocket,
+                    message_type="incorrect_input",
+                    message=f"Incorrect input type for the state {msg_type}",
+                )
 
             # end the game session and delete it from list
             if game_session.get_state() == GameState.END:
@@ -296,7 +302,11 @@ async def validate_and_guess_numbers(websocket, player_id, game_session, player_
 
 
 async def send_message_and_close_connection(websocket):
-    await send_message(websocket, message_type="connection_closed", message="Closing the current connection")
+    await send_message(
+        websocket,
+        message_type="connection_closed",
+        message="Closing the current connection",
+    )
     await websocket.close()
     print("CLOSED CONNECTION")
 
@@ -311,21 +321,25 @@ async def handler(websocket):
     async for message in websocket:
         event_msg = json.loads(message)
         event_msg_type = event_msg.get("type")
-        if event_msg_type == "join_game" or event_msg_type == "new_game" or event_msg_type == "close_connection":
+        if (
+            event_msg_type == "join_game"
+            or event_msg_type == "new_game"
+            or event_msg_type == "close_connection"
+        ):
             break
 
         if event_msg_type == "end_session":
             return
 
         if event_msg_type == "get_current_games":
-            event = {
-                "game_session": []
-            }
+            event = {"game_session": []}
             for game_session in GAME_SESSIONS.values():
-                event.get("game_session").append({
-                    "id": game_session.id,
-                    "connected_players": game_session.get_players_count(),
-                })
+                event.get("game_session").append(
+                    {
+                        "id": game_session.id,
+                        "connected_players": game_session.get_players_count(),
+                    }
+                )
             print("SENDING OUT GAME SESSIONS")
             await websocket.send(json.dumps(event))
 
