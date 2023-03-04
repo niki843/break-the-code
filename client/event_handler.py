@@ -3,9 +3,10 @@ import json
 
 from client import ws_client as client
 from client.entity.settings import Settings
+from client.utils.singelton import Singleton
 
 
-class EventHandler:
+class EventHandler(Singleton):
     def __init__(self, player_id, current_window, screen):
         self.screen = screen
         self.current_window = current_window
