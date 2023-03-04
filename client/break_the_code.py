@@ -4,7 +4,8 @@ import json
 import pygame
 import os
 import asyncio
-from client import ws_client as client
+from client import ws_client as client, IMG_PATH
+from client.entity.menu import Menu
 
 loop = asyncio.get_event_loop()
 
@@ -46,30 +47,42 @@ def get_or_generate_player_id():
 
 
 def start_game():
+    # This will stay commented for testing and will be removed when
+    # in actual release or specific testing of this feature
     # player_id = get_or_generate_player_id()
     player_id = str(uuid.uuid4())
 
     pygame.init()
     pygame.fastevent.init()
-    # pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-    screen = pygame.display.set_mode((1280, 720), pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.RESIZABLE)
-    pygame.display.set_caption("Break The Code")
-    # thumbnail = pygame.image.load(
-    #     f"{img_path}crack-the-code-thumbnail.png"
-    # )
-    # pygame.display.set_icon(thumbnail)
 
-    # background = pygame.image.load(f"{img_path}background.png")
-    # set up the drawing window
-    # screen.blit(pygame.transform.scale(background, (1280, 720)), (0, 0))
-    pygame.display.flip()
+    # Enable fullscreen mode
+    # pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+
+    # Enable resizable mode currently not working !!!!!
+    # screen = pygame.display.set_mode((1280, 720), pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.RESIZABLE)
+
+    screen = pygame.display.set_mode((1280, 720), pygame.HWSURFACE | pygame.DOUBLEBUF)
+    pygame.display.set_caption("Break The Code")
+
+    thumbnail = pygame.image.load(
+        f"{IMG_PATH}crack-the-code-thumbnail.png"
+    )
+    pygame.display.set_icon(thumbnail)
+
+    menu = Menu(screen)
+
     running = True
     while running:
+        menu.blit()
+        pygame.display.flip()
         events = pygame.event.get()
         for e in events:
             if e.type == pygame.QUIT:
                 loop.create_task(send_message('{"type": "close_connection"}'))
                 running = False
+            if e.type == pygame.MOUSEBUTTONUP:
+                if e.type == 1:
+                    handle_mouse_click()
             elif e.type == client.EVENT_TYPE:
                 print(e.message)
             elif e.type == pygame.KEYUP and e.key == pygame.K_n:
@@ -96,7 +109,6 @@ def start_game():
 
 
 
-
         # tell event loop to run once
         # if there are no i/o events, this might return right away
         # if there are events or tasks that don't need to wait for i/o, then
@@ -110,6 +122,10 @@ def start_game():
     loop.run_until_complete(loop.shutdown_asyncgens())
     loop.close()
     print("Thank you for playing!")
+
+
+def handle_mouse_click():
+    pass
 
 
 if __name__ == "__main__":
