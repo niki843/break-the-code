@@ -1,8 +1,11 @@
 import pygame.sprite
 from pygame import sprite
 
-TILE_WIDTH_ADDITION = 50
-TILE_HEIGHT_ADDITION = 0
+from client import (
+    TILE_WIDTH_ADDITION,
+    TILE_HEIGHT_ADDITION,
+    TILE_WIDTH_PERCENTAGE_FROM_SCREEN,
+)
 
 
 class Tile(sprite.Sprite):
@@ -13,12 +16,10 @@ class Tile(sprite.Sprite):
 
         self.screen = screen
         width, height = self.screen.get_size()
-        self.standard_tile_width = width * 0.18
+        self.standard_tile_width = width * TILE_WIDTH_PERCENTAGE_FROM_SCREEN
 
         self.standard_tile_height = (
-            self.standard_tile_width
-            * self.image.get_height()
-            / self.image.get_width()
+            self.standard_tile_width * self.image.get_height() / self.image.get_width()
         )
 
         self.image = pygame.transform.scale(

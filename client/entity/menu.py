@@ -1,6 +1,6 @@
 from pygame.sprite import Group
 
-from client import IMG_PATH
+from client import IMG_PATH, BETWEEN_TILE_AND_SCREEN_SPACING, BETWEEN_TILES_SPACING
 import pygame
 
 from client.entity.tile import Tile
@@ -13,7 +13,9 @@ class Menu:
 
         self.tiles_group = Group()
 
-        self.background_image = pygame.image.load(f"{IMG_PATH}background.png").convert_alpha()
+        self.background_image = pygame.image.load(
+            f"{IMG_PATH}background.png"
+        ).convert_alpha()
 
         self.new_game_tile = None
         self.join_game_tile = None
@@ -50,7 +52,9 @@ class Menu:
         self.new_game_tile = Tile(surface, self.screen)
 
         self.new_game_tile.rect.centerx = self.screen_rect.centerx
-        self.new_game_tile.rect.bottom = self.join_game_tile.rect.top - 10
+        self.new_game_tile.rect.bottom = (
+            self.join_game_tile.rect.top - BETWEEN_TILES_SPACING
+        )
         self.tiles_group.add(self.new_game_tile)
 
     def build_settings(self):
@@ -58,15 +62,23 @@ class Menu:
         self.settings_tile = Tile(surface, self.screen)
 
         self.settings_tile.rect.centerx = self.screen_rect.centerx
-        self.settings_tile.rect.top = self.join_game_tile.rect.bottom + 10
+        self.settings_tile.rect.top = (
+            self.join_game_tile.rect.bottom + BETWEEN_TILES_SPACING
+        )
         self.tiles_group.add(self.settings_tile)
 
     def build_quit_game(self):
         surface = pygame.image.load(f"{IMG_PATH}quit.png").convert_alpha()
         self.quit_tile = Tile(surface, self.screen)
 
-        self.quit_tile.rect.right = self.screen_rect.right - 20
-        self.quit_tile.rect.top = self.screen_rect.bottom - self.quit_tile.image.get_height() - 20
+        self.quit_tile.rect.right = (
+            self.screen_rect.right - BETWEEN_TILE_AND_SCREEN_SPACING
+        )
+        self.quit_tile.rect.top = (
+            self.screen_rect.bottom
+            - self.quit_tile.image.get_height()
+            - BETWEEN_TILE_AND_SCREEN_SPACING
+        )
         self.tiles_group.add(self.quit_tile)
 
     def blit(self):
