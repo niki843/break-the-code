@@ -4,8 +4,9 @@ import json
 import pygame
 import os
 import asyncio
-from client import ws_client as client, IMG_PATH
+from client import ws_client as client, IMG_PATH, ASYNC_SLEEP_TIME_ON_EXIT
 from client.entity.menu import Menu
+from client.event_handler import EventHandler
 
 loop = asyncio.get_event_loop()
 
@@ -71,43 +72,22 @@ def start_game():
 
     menu = Menu(screen)
 
+    event_handler = EventHandler(player_id)
+
     running = True
     while running:
         menu.blit()
         pygame.display.flip()
         events = pygame.event.get()
-        for e in events:
-            if e.type == pygame.QUIT:
-                loop.create_task(send_message('{"type": "close_connection"}'))
+
+        for event in events:
+            message, quit_game = event_handler.handle_event(event)
+
+            if quit_game:
                 running = False
-            if e.type == pygame.MOUSEBUTTONUP:
-                if e.type == 1:
-                    handle_mouse_click()
-            elif e.type == client.EVENT_TYPE:
-                print(e.message)
-            elif e.type == pygame.KEYUP and e.key == pygame.K_n:
-                loop.create_task(send_message(f'{{"type": "new_game", "player_id": "{player_id}", "player_name": "first_player"}}'))
-            elif e.type == pygame.KEYUP and e.key == pygame.K_c:
-                loop.create_task(send_message('{"type": "get_current_games"}'))
-            elif e.type == pygame.KEYUP and e.key == pygame.K_j:
-                game_session_id = input("game_session_id: ")
-                loop.create_task(send_message(f'{{"type": "join_game", "player_id": "{player_id}", "player_name": "second_player", "game_session_id": "{game_session_id}"}}'))
-            elif e.type == pygame.KEYUP and e.key == pygame.K_s:
-                loop.create_task(send_message('{"type": "start_game"}'))
-            elif e.type == pygame.KEYUP and e.key == pygame.K_p:
-                condition_card_id = input("condition_card_id: ")
-                loop.create_task(send_message(f'{{"type": "play_tile", "condition_card_id": {condition_card_id}}}'))
-            elif e.type == pygame.KEYUP and e.key == pygame.K_o:
-                condition_card_id = input("condition_card_id: ")
-                card_number_choice = input("card_number_choice: ")
-                loop.create_task(send_message(f'{{"type": "play_tile", "condition_card_id": {condition_card_id}, "card_number_choice": {card_number_choice}}}'))
-            elif e.type == pygame and e.key == pygame.K_g:
-                cards = []
-                for i in range(0, 5):
-                    cards.append(input(f"{i} card"))
-                loop.create_task(send_message(f'{{"type": "guess_numbers", "player_guess": {json.dumps(cards)}}}'))
 
-
+            if message:
+                loop.create_task(send_message(message))
 
         # tell event loop to run once
         # if there are no i/o events, this might return right away
@@ -116,16 +96,12 @@ def start_game():
         run_once(loop)
 
     # Sleeping for half a second to wait for websocket connection termination
-    loop.run_until_complete(asyncio.sleep(0.5))
+    loop.run_until_complete(asyncio.sleep(ASYNC_SLEEP_TIME_ON_EXIT))
 
     # Shutdown any async processes and close the event loop
     loop.run_until_complete(loop.shutdown_asyncgens())
     loop.close()
     print("Thank you for playing!")
-
-
-def handle_mouse_click():
-    pass
 
 
 if __name__ == "__main__":
