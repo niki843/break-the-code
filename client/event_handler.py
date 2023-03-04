@@ -5,7 +5,9 @@ from client import ws_client as client
 
 
 class EventHandler:
-    def __init__(self, player_id):
+    def __init__(self, player_id, current_window):
+        self._current_window = current_window
+
         self.player_id = player_id
 
     def handle_event(self, event):
@@ -56,6 +58,9 @@ class EventHandler:
             )
         else:
             return None, False
+
+    def change_window(self, new_window):
+        self._current_window = new_window
 
     def handle_mouse_click(self):
         pass

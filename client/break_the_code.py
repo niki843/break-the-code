@@ -69,7 +69,7 @@ def start_game():
 
     menu = Menu(screen)
 
-    event_handler = EventHandler(player_id)
+    event_handler = EventHandler(player_id, current_window=Menu)
 
     running = True
     while running:
