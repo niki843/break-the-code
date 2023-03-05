@@ -4,21 +4,17 @@ from client import IMG_PATH, BETWEEN_TILE_AND_SCREEN_SPACING, BETWEEN_TILES_SPAC
 import pygame
 
 from client.entity.game_window import GameWindow
+from client.entity.settings import Settings
 from client.entity.tile import Tile
 
 
 class Menu(GameWindow):
     def __init__(self, screen):
         super().__init__(screen)
-        self.background_image = pygame.image.load(
-            f"{IMG_PATH}background.png"
-        ).convert_alpha()
-
         self.new_game_tile = None
         self.join_game_tile = None
         self.settings_tile = None
         self.quit_tile = None
-        self.background_rect = None
 
         self.build()
 
@@ -29,12 +25,6 @@ class Menu(GameWindow):
         self.build_new_game()
         self.build_settings()
         self.build_quit_game()
-
-    def build_background(self):
-        self.background_image = pygame.transform.scale(
-            self.background_image, (self.screen.get_width(), self.screen.get_height())
-        )
-        self.background_rect = self.background_image.get_rect()
 
     def build_join_game(self):
         surface = pygame.image.load(f"{IMG_PATH}join_game.png").convert_alpha()
@@ -104,3 +94,14 @@ class Menu(GameWindow):
         del self.quit_tile
 
         self.tiles_group.empty()
+
+    def activate_tile(self, tile, event_handler):
+        if tile.name == "new_game":
+            pass
+        elif tile.name == "join_game":
+            pass
+        elif tile.name == "settings":
+            event_handler.change_window(Settings(self.screen))
+            self.delete()
+        elif tile.name == "quit":
+            pass

@@ -69,7 +69,6 @@ class EventHandler(Singleton):
         tiles_copy = self.current_window.tiles_group.copy()
         for tile in tiles_copy:
             if tile.rect.collidepoint(pygame.mouse.get_pos()):
+                self.current_window.activate_tile(tile, self)
                 print(tile.name)
-                self.current_window.delete()
-                self.change_window(Settings(self.screen))
                 break
