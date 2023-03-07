@@ -2,7 +2,6 @@ import pygame
 import json
 
 from client import ws_client as client
-from client.entity.settings import Settings
 from client.utils.singelton import Singleton
 
 
