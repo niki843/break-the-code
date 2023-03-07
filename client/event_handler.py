@@ -13,6 +13,7 @@ class EventHandler(Singleton):
         self.player_id = player_id
 
     def handle_event(self, event):
+        keys = pygame.key.get_pressed()
         if event.type == pygame.QUIT:
             return '{"type": "close_connection"}', True
         if event.type == pygame.MOUSEBUTTONUP:
@@ -22,6 +23,11 @@ class EventHandler(Singleton):
         elif event.type == client.EVENT_TYPE:
             # TODO Implement when a server event happens
             print(event.message)
+            return None, False
+        elif (keys[pygame.K_LALT] or keys[pygame.K_RALT]) and (keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]):
+            self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN | pygame.NOFRAME)
+            self.current_window.change_screen(self.screen)
+            self.current_window.build()
             return None, False
         elif event.type == pygame.KEYUP and event.key == pygame.K_n:
             # TODO Remove this and all bellow when the game is complete
@@ -72,3 +78,5 @@ class EventHandler(Singleton):
             if tile.rect.collidepoint(pygame.mouse.get_pos()):
                 print(tile.name)
                 return self.current_window.activate_tile(tile, self)
+        # Unclickable tile pressed
+        return None, False

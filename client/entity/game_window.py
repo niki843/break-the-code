@@ -34,3 +34,7 @@ class GameWindow:
 
     def blit(self):
         self.screen.blit(self.background_image, self.background_rect)
+
+    def change_screen(self, screen):
+        self.screen = screen
+        self.screen_rect = self.screen.get_rect()

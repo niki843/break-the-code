@@ -55,13 +55,10 @@ def start_game():
     pygame.init()
     pygame.fastevent.init()
 
-    # Enable fullscreen mode
-    # pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-
     # Enable resizable mode currently not working !!!!!
     # screen = pygame.display.set_mode((1280, 720), pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.RESIZABLE)
 
-    screen = pygame.display.set_mode((1024, 620), pygame.HWSURFACE | pygame.DOUBLEBUF)
+    screen = pygame.display.set_mode((1366, 768), pygame.HWSURFACE | pygame.DOUBLEBUF)
     pygame.display.set_caption("Break The Code")
 
     thumbnail = pygame.image.load(f"{IMG_PATH}crack-the-code-thumbnail.png")
