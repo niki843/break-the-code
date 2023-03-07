@@ -18,7 +18,7 @@ class EventHandler(Singleton):
             return '{"type": "close_connection"}', True
         if event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
-                self.handle_mouse_click()
+                return self.handle_mouse_click()
             return None, False
         elif event.type == client.EVENT_TYPE:
             print(event.message)
@@ -69,6 +69,5 @@ class EventHandler(Singleton):
         tiles_copy = self.current_window.tiles_group.copy()
         for tile in tiles_copy:
             if tile.rect.collidepoint(pygame.mouse.get_pos()):
-                self.current_window.activate_tile(tile, self)
                 print(tile.name)
-                break
+                return self.current_window.activate_tile(tile, self)

@@ -103,5 +103,7 @@ class Menu(GameWindow):
         elif tile.name == "settings":
             event_handler.change_window(Settings(self.screen))
             self.delete()
-        elif tile.name == "quit":
-            pass
+            return None, False
+        elif tile.name == "quit_game":
+            print("Closing the game")
+            return '{"type": "close_connection"}', True
