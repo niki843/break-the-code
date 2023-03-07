@@ -3,6 +3,8 @@ from pygame import Color
 from client import IMG_PATH, BETWEEN_TILE_AND_SCREEN_SPACING, BETWEEN_TILES_SPACING
 import pygame
 
+from client.entity.join_game import JoinGame
+from client.entity.new_game import NewGame
 from client.entity.game_window import GameWindow
 from client.entity.settings import Settings
 from client.entity.tile import Tile
@@ -97,13 +99,14 @@ class Menu(GameWindow):
 
     def activate_tile(self, tile, event_handler):
         if tile.name == "new_game":
-            pass
+            event_handler.change_window(NewGame(self.screen))
         elif tile.name == "join_game":
-            pass
+            event_handler.change_window(JoinGame(self.screen))
         elif tile.name == "settings":
             event_handler.change_window(Settings(self.screen))
-            self.delete()
-            return None, False
         elif tile.name == "quit_game":
             print("Closing the game")
             return '{"type": "close_connection"}', True
+
+        self.delete()
+        return None, False

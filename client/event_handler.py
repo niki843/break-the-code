@@ -21,6 +21,7 @@ class EventHandler(Singleton):
                 return self.handle_mouse_click()
             return None, False
         elif event.type == client.EVENT_TYPE:
+            # TODO Implement when a server event happens
             print(event.message)
             return None, False
         elif event.type == pygame.KEYUP and event.key == pygame.K_n:
