@@ -25,6 +25,7 @@ class EventHandler(Singleton):
             print(event.message)
             return None, False
         elif event.type == pygame.KEYUP and event.key == pygame.K_n:
+            # TODO Remove this and all bellow when the game is complete
             return (
                 f'{{"type": "new_game", "player_id": "{self.player_id}", "player_name": "first_player"}}',
                 False,
