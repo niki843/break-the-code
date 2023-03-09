@@ -26,12 +26,8 @@ class SlideshowTile(Tile):
         self.left_arrow_rect = self.left_arrow.get_rect()
 
     def update(self, *args, **kwargs) -> None:
-        # self.right_arrow_rect.right = self.rect.right - self.right_arrow.get_width() - 5
-        self.right_arrow_rect.centerx = 500
-        self.right_arrow_rect.centery = 500
+        self.right_arrow_rect.left = self.rect.right
+        self.right_arrow_rect.centery = self.rect.centery
 
-        self.left_arrow_rect.left = self.rect.left - self.left_arrow.get_width() + 5
+        self.left_arrow_rect.right = self.rect.left
         self.left_arrow_rect.centery = self.rect.centery
-
-        self.screen.blit(self.right_arrow, self.right_arrow_rect)
-        self.screen.blit(self.left_arrow, self.left_arrow_rect)

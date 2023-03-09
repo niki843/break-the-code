@@ -3,7 +3,6 @@ import pygame.image
 from client import IMG_PATH
 from client.entity.game_window import GameWindow
 from client.entity.slideshow_tile import SlideshowTile
-from client.entity.tile import Tile
 
 
 class Settings(GameWindow):
@@ -23,13 +22,14 @@ class Settings(GameWindow):
 
         self.screen_size_tile.rect.centerx = self.screen_rect.centerx
         self.screen_size_tile.rect.centery = self.screen_rect.centery
-        self.tiles_group.add(self.screen_size_tile)
 
         self.screen_size_tile.update()
 
     def blit(self):
         self.screen.blit(self.background_image, self.background_rect)
         self.screen.blit(self.screen_size_tile.image, self.screen_size_tile.rect)
+        self.screen.blit(self.screen_size_tile.right_arrow, self.screen_size_tile.right_arrow_rect)
+        self.screen.blit(self.screen_size_tile.left_arrow, self.screen_size_tile.left_arrow_rect)
 
     def activate_tile(self, tile, event_handler):
         if tile.name == "screen_size":
