@@ -13,6 +13,8 @@ class EventHandler(Singleton):
         self.player_id = player_id
 
     def handle_event(self, event):
+        info_object = pygame.display.Info()
+        current_w = info_object.current_w
         keys = pygame.key.get_pressed()
         if event.type == pygame.QUIT:
             return '{"type": "close_connection"}', True
@@ -27,12 +29,20 @@ class EventHandler(Singleton):
         elif (keys[pygame.K_LALT] or keys[pygame.K_RALT]) and (
             keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]
         ):
-            self.screen = pygame.display.set_mode(
-                (0, 0), pygame.FULLSCREEN | pygame.NOFRAME
-            )
-            self.current_window.change_screen(self.screen)
-            self.current_window.build()
-            return None, False
+            if current_w == 1280:
+                self.screen = pygame.display.set_mode(
+                    (0, 0), pygame.FULLSCREEN | pygame.DOUBLEBUF
+                )
+                self.current_window.change_screen(self.screen)
+                self.current_window.build()
+                return None, False
+            if current_w == 1920:
+                self.screen = pygame.display.set_mode(
+                    (1280, 720), pygame.HWSURFACE | pygame.DOUBLEBUF
+                )
+                self.current_window.change_screen(self.screen)
+                self.current_window.build()
+                return None, False
         elif event.type == pygame.KEYUP and event.key == pygame.K_n:
             # TODO Remove this and all bellow when the game is complete
             return (
