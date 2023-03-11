@@ -24,8 +24,12 @@ class EventHandler(Singleton):
             # TODO Implement when a server event happens
             print(event.message)
             return None, False
-        elif (keys[pygame.K_LALT] or keys[pygame.K_RALT]) and (keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]):
-            self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN | pygame.NOFRAME)
+        elif (keys[pygame.K_LALT] or keys[pygame.K_RALT]) and (
+            keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]
+        ):
+            self.screen = pygame.display.set_mode(
+                (0, 0), pygame.FULLSCREEN | pygame.NOFRAME
+            )
             self.current_window.change_screen(self.screen)
             self.current_window.build()
             return None, False
@@ -73,6 +77,7 @@ class EventHandler(Singleton):
         self.current_window = new_window
 
     def handle_mouse_click(self):
+        print("Mouse is clicked")
         tiles_copy = self.current_window.tiles_group.copy()
         for tile in tiles_copy:
             if tile.rect.collidepoint(pygame.mouse.get_pos()):
