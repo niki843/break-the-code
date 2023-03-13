@@ -3,11 +3,11 @@ from pygame import Color
 import client
 import pygame
 
-from client.entity.join_game import JoinGame
-from client.entity.new_game import NewGame
-from client.entity.game_window import GameWindow
-from client.entity.settings import Settings
-from client.entity.tile import Tile
+from client.game_objects.join_game import JoinGame
+from client.game_objects.new_game import NewGame
+from client.game_objects.game_window import GameWindow
+from client.game_objects.settings import Settings
+from client.game_objects.tile import Tile
 
 
 class Menu(GameWindow):

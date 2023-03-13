@@ -1,8 +1,8 @@
 import pygame.image
 import client
 
-from client.entity.game_window import GameWindow
-from client.entity.text_slideshow_tile import TextSlideshowTile
+from client.game_objects.game_window import GameWindow
+from client.game_objects.text_slideshow_tile import TextSlideshowTile
 
 
 class Settings(GameWindow):
