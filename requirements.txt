@@ -1,4 +1,4 @@
 websockets==10.4
-pywsitest==0.3.8
+black==23.1.0
 aioconsole==0.5.1
 pygame==2.1.2

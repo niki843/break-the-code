@@ -1,6 +1,6 @@
 from pygame import Color
 
-from client import IMG_PATH, BETWEEN_TILE_AND_SCREEN_SPACING, BETWEEN_TILES_SPACING
+import client
 import pygame
 
 from client.entity.join_game import JoinGame
@@ -29,44 +29,72 @@ class Menu(GameWindow):
         self.build_quit_game()
 
     def build_join_game(self):
-        surface = pygame.image.load(f"{IMG_PATH}join_game.png").convert_alpha()
-        self.join_game_tile = Tile("join_game", surface, self.screen)
+        surface = pygame.image.load(f"{client.IMG_PATH}join_game.png").convert_alpha()
+        self.join_game_tile = Tile(
+            "join_game",
+            surface,
+            self.screen,
+            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN,
+            client.TILE_WIDTH_ADDITION,
+            client.TILE_HEIGHT_ADDITION,
+        )
 
         self.join_game_tile.rect.centerx = self.screen_rect.centerx
         self.join_game_tile.rect.centery = self.screen_rect.centery
         self.tiles_group.add(self.join_game_tile)
 
     def build_new_game(self):
-        surface = pygame.image.load(f"{IMG_PATH}new_game.png").convert_alpha()
-        self.new_game_tile = Tile("new_game", surface, self.screen)
+        surface = pygame.image.load(f"{client.IMG_PATH}new_game.png").convert_alpha()
+        self.new_game_tile = Tile(
+            "new_game",
+            surface,
+            self.screen,
+            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN,
+            client.TILE_WIDTH_ADDITION,
+            client.TILE_HEIGHT_ADDITION,
+        )
 
         self.new_game_tile.rect.centerx = self.screen_rect.centerx
         self.new_game_tile.rect.bottom = (
-            self.join_game_tile.rect.top - BETWEEN_TILES_SPACING
+            self.join_game_tile.rect.top - client.BETWEEN_TILES_SPACING
         )
         self.tiles_group.add(self.new_game_tile)
 
     def build_settings(self):
-        surface = pygame.image.load(f"{IMG_PATH}settings.png").convert_alpha()
-        self.settings_tile = Tile("settings", surface, self.screen)
+        surface = pygame.image.load(f"{client.IMG_PATH}settings.png").convert_alpha()
+        self.settings_tile = Tile(
+            "settings",
+            surface,
+            self.screen,
+            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN,
+            client.TILE_WIDTH_ADDITION,
+            client.TILE_HEIGHT_ADDITION,
+        )
 
         self.settings_tile.rect.centerx = self.screen_rect.centerx
         self.settings_tile.rect.top = (
-            self.join_game_tile.rect.bottom + BETWEEN_TILES_SPACING
+            self.join_game_tile.rect.bottom + client.BETWEEN_TILES_SPACING
         )
         self.tiles_group.add(self.settings_tile)
 
     def build_quit_game(self):
-        surface = pygame.image.load(f"{IMG_PATH}quit.png").convert_alpha()
-        self.quit_tile = Tile("quit_game", surface, self.screen)
+        surface = pygame.image.load(f"{client.IMG_PATH}quit.png").convert_alpha()
+        self.quit_tile = Tile(
+            "quit_game",
+            surface,
+            self.screen,
+            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN,
+            client.TILE_WIDTH_ADDITION,
+            client.TILE_HEIGHT_ADDITION,
+        )
 
         self.quit_tile.rect.right = (
-            self.screen_rect.right - BETWEEN_TILE_AND_SCREEN_SPACING
+            self.screen_rect.right - client.BETWEEN_TILE_AND_SCREEN_SPACING
         )
         self.quit_tile.rect.top = (
             self.screen_rect.bottom
             - self.quit_tile.image.get_height()
-            - BETWEEN_TILE_AND_SCREEN_SPACING
+            - client.BETWEEN_TILE_AND_SCREEN_SPACING
         )
         self.tiles_group.add(self.quit_tile)
 
