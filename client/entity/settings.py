@@ -3,7 +3,6 @@ import client
 
 from client.entity.game_window import GameWindow
 from client.entity.text_slideshow_tile import TextSlideshowTile
-from client.entity.tile import Tile
 
 
 class Settings(GameWindow):
@@ -63,8 +62,12 @@ class Settings(GameWindow):
             self.screen_size_left_arrow.image,
             self.screen_size_left_arrow.rect,
         )
-        self.screen.blit(self.screen_size_tile.current_text, self.screen_size_tile.current_text_rect)
+        self.screen.blit(self.screen_size_tile.current_text_surface, self.screen_size_tile.current_text_rect)
 
     def activate_tile(self, tile, event_handler):
-        if tile.name == "screen_size":
-            return None, False
+        if tile.name == "screen_size_right_arrow":
+            self.screen_size_tile.next_text()
+        if tile.name == "screen_size_left_arrow":
+            self.screen_size_tile.previous_text()
+
+        return None, False

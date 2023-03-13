@@ -17,7 +17,7 @@ class GameWindow:
         self.build()
 
     def activate_tile(self, tile, event_handler):
-        pass
+        return None, False
 
     def build(self):
         self.build_background()
