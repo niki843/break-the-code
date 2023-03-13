@@ -14,7 +14,9 @@ class ImageSlideshowTile(Tile):
     ----------
     name : str
         the name that will be used to reference the image tile
-    surface : str
+    surface : pygame.Surface
+        the surface that will be displayed as a tile and used to show text on top
+    screen : pygame.Surface
         the main surface on which the game is being displayed
     size_percent : str
         percent representation of what the size of the image compared to the surface would be
@@ -51,7 +53,6 @@ class ImageSlideshowTile(Tile):
         self.left_arrow = None
 
         self.load_arrows()
-
 
     def update(self, *args, **kwargs) -> None:
         self.right_arrow.rect.left = self.rect.right

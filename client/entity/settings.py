@@ -37,7 +37,7 @@ class Settings(GameWindow):
             client.TILE_WIDTH_ADDITION,
             client.TILE_HEIGHT_ADDITION,
             self.SCREEN_SIZE_CAPTIONS[1],
-            self.SCREEN_SIZE_CAPTIONS
+            self.SCREEN_SIZE_CAPTIONS,
         )
 
         self.screen_size_right_arrow = self.screen_size_tile.right_arrow
@@ -62,7 +62,10 @@ class Settings(GameWindow):
             self.screen_size_left_arrow.image,
             self.screen_size_left_arrow.rect,
         )
-        self.screen.blit(self.screen_size_tile.current_text_surface, self.screen_size_tile.current_text_rect)
+        self.screen.blit(
+            self.screen_size_tile.current_text_surface,
+            self.screen_size_tile.current_text_rect,
+        )
 
     def activate_tile(self, tile, event_handler):
         if tile.name == "screen_size_right_arrow":

@@ -15,7 +15,9 @@ class TextSlideshowTile(Tile):
     ----------
     name : str
         the name that will be used to reference the image tile
-    surface : str
+    surface : pygame.Surface
+        the surface that will be displayed as a tile and used to show text on top
+    screen : pygame.Surface
         the main surface on which the game is being displayed
     size_percent : str
         percent representation of what the size of the image compared to the surface would be
@@ -81,11 +83,16 @@ class TextSlideshowTile(Tile):
         self.current_text_rect.centery = self.rect.centery
 
     def load_font(self):
-        self.font = pygame.font.Font(f"{client.FONT_PATH}SilkRemington-SBold.ttf", int(self.image.get_width() * 0.1))
+        self.font = pygame.font.Font(
+            f"{client.FONT_PATH}SilkRemington-SBold.ttf",
+            int(self.image.get_width() * 0.1),
+        )
 
     def load_text(self):
         # Starting screen size will be the surfaces list mid element
-        self.current_text_surface = self.font.render(self.current_text, True, client.GAME_BASE_COLOR)
+        self.current_text_surface = self.font.render(
+            self.current_text, True, client.GAME_BASE_COLOR
+        )
         self.current_text_rect = self.current_text_surface.get_rect()
 
     def load_arrows(self):

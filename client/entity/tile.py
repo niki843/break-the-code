@@ -3,7 +3,35 @@ from pygame import sprite
 
 
 class Tile(sprite.Sprite):
-    def __init__(self, name, surface, screen, size_percent, tile_addition_width, tile_addition_height):
+    """
+    A class representing a tile image
+    ...
+
+    Attributes
+    ----------
+    name : str
+        the name that will be used to reference the image tile
+    surface : pygame.Surface
+        the surface that will be displayed as a tile and used to show text on top
+    screen : pygame.Surface
+        the main surface on which the game is being displayed
+    size_percent : str
+        percent representation of what the size of the image compared to the surface would be
+    tile_addition_width : int
+        used for additional pixels to the width of the image that's being used
+    tile_addition_height : int
+        used for additional pixels to the height of the image that's being used
+    """
+
+    def __init__(
+        self,
+        name,
+        surface,
+        screen,
+        size_percent,
+        tile_addition_width,
+        tile_addition_height,
+    ):
         pygame.sprite.Sprite.__init__(self)
 
         self.name = name
