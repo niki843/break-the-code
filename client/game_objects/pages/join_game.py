@@ -1,4 +1,4 @@
-from client.game_objects.game_window import GameWindow
+from client.game_objects.pages.game_window import GameWindow
 
 
 class JoinGame(GameWindow):

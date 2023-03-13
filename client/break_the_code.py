@@ -4,7 +4,7 @@ import pygame
 import os
 import asyncio
 from client import ws_client as client, IMG_PATH, ASYNC_SLEEP_TIME_ON_EXIT
-from client.game_objects.menu import Menu
+from client.game_objects.pages.menu import Menu
 from client.event_handler import EventHandler
 
 loop = asyncio.get_event_loop()
