@@ -4,15 +4,24 @@ import client
 from client.entity.tile import Tile
 
 
-class SlideshowTile(Tile):
-    def __init__(self, name, surface, screen, slide_surfaces: list):
+class ImageSlideshowTile(Tile):
+    def __init__(
+        self,
+        name,
+        surface,
+        screen,
+        size_percent,
+        tile_addition_width,
+        tile_addition_height,
+        slide_surfaces: list,
+    ):
         super().__init__(
             name,
             surface,
             screen,
-            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN,
-            client.TILE_WIDTH_ADDITION,
-            client.TILE_HEIGHT_ADDITION,
+            size_percent,
+            tile_addition_width,
+            tile_addition_height,
         )
 
         self.slides = slide_surfaces

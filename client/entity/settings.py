@@ -2,6 +2,7 @@ import pygame.image
 import client
 
 from client.entity.game_window import GameWindow
+from client.entity.text_slideshow_tile import TextSlideshowTile
 from client.entity.tile import Tile
 
 
@@ -28,48 +29,25 @@ class Settings(GameWindow):
         self.build_screen_size_tile()
 
     def build_screen_size_tile(self):
-        font = pygame.font.Font(f"{client.FONT_PATH}SilkRemington-SBold.ttf", 30)
-        # Starting screen size will be the surfaces list mid element
-        self.text = font.render(self.SCREEN_SIZE_CAPTIONS[int(len(self.SCREEN_SIZE_CAPTIONS) / 2)], True, (127, 169, 6))
-        self.text_rect = self.text.get_rect()
-
         surface = pygame.image.load(f"{client.IMG_PATH}blank.png").convert_alpha()
-        self.screen_size_tile = Tile(
-            "screen_size", surface, self.screen, client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN, client.TILE_WIDTH_ADDITION, client.TILE_HEIGHT_ADDITION
+        self.screen_size_tile = TextSlideshowTile(
+            "screen_size",
+            surface,
+            self.screen,
+            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN,
+            client.TILE_WIDTH_ADDITION,
+            client.TILE_HEIGHT_ADDITION,
+            self.SCREEN_SIZE_CAPTIONS[1],
+            self.SCREEN_SIZE_CAPTIONS
         )
 
-        right_arrow_surface = pygame.image.load(
-            f"{client.IMG_PATH}next.png"
-        ).convert_alpha()
-
-        self.screen_size_right_arrow = Tile(
-            "screen_size_right_arrow",
-            right_arrow_surface,
-            self.screen,
-            client.ARROW_WITH_PERCENTAGE_FROM_SCREEN,
-            0,
-            0,
-        )
-        self.screen_size_left_arrow = Tile(
-            "screen_size_left_arrow",
-            pygame.transform.flip(right_arrow_surface, True, True),
-            self.screen,
-            client.ARROW_WITH_PERCENTAGE_FROM_SCREEN,
-            0,
-            0,
-        )
+        self.screen_size_right_arrow = self.screen_size_tile.right_arrow
+        self.screen_size_left_arrow = self.screen_size_tile.left_arrow
 
         self.screen_size_tile.rect.centerx = self.screen_rect.centerx
         self.screen_size_tile.rect.centery = self.screen_rect.centery
 
-        self.text_rect.centerx = self.screen_size_tile.rect.centerx
-        self.text_rect.centery = self.screen_size_tile.rect.centery
-
-        self.screen_size_right_arrow.rect.left = self.screen_size_tile.rect.right
-        self.screen_size_right_arrow.rect.centery = self.screen_size_tile.rect.centery
-
-        self.screen_size_left_arrow.rect.right = self.screen_size_tile.rect.left
-        self.screen_size_left_arrow.rect.centery = self.screen_size_tile.rect.centery
+        self.screen_size_tile.update()
 
         self.tiles_group.add(self.screen_size_right_arrow)
         self.tiles_group.add(self.screen_size_left_arrow)
@@ -85,7 +63,7 @@ class Settings(GameWindow):
             self.screen_size_left_arrow.image,
             self.screen_size_left_arrow.rect,
         )
-        self.screen.blit(self.text, self.text_rect)
+        self.screen.blit(self.screen_size_tile.current_text, self.screen_size_tile.current_text_rect)
 
     def activate_tile(self, tile, event_handler):
         if tile.name == "screen_size":
