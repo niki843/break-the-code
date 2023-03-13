@@ -7,7 +7,7 @@ from client.game_objects.join_game import JoinGame
 from client.game_objects.new_game import NewGame
 from client.game_objects.game_window import GameWindow
 from client.game_objects.settings import Settings
-from client.game_objects.tile import Tile
+from client.game_objects.tiles.tile import Tile
 
 
 class Menu(GameWindow):

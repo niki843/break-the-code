@@ -1,7 +1,7 @@
 import pygame.image
 
 import client
-from client.game_objects.tile import Tile
+from client.game_objects.tiles.tile import Tile
 
 
 class TextSlideshowTile(Tile):
