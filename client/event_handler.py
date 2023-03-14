@@ -28,7 +28,7 @@ class EventHandler(Singleton):
             keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]
         ):
             self.screen = pygame.display.set_mode(
-                (0, 0), pygame.FULLSCREEN | pygame.NOFRAME
+                (0, 0), pygame.FULLSCREEN
             )
             self.current_window.change_screen(self.screen)
             self.current_window.build()

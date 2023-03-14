@@ -1,5 +1,6 @@
-import pygame.image
+import pygame
 import client
+from client.event_handler import EventHandler
 from client.game_objects.tiles.toggle_tile import ToggleTile
 
 from client.game_objects.pages.game_window import GameWindow
@@ -23,7 +24,7 @@ class Settings(GameWindow):
         self.screen_size_left_arrow = None
         self.music_toggle = None
 
-        self.music_state_on = True
+        self.music_state_on = pygame.mixer.music.get_busy()
         self.current_resolution = f"{self.screen.get_width()}x{self.screen.get_height()}"
         # TODO: implement username
         self.current_username = None
@@ -97,5 +98,9 @@ class Settings(GameWindow):
         if tile.name == "music_toggle_on" or tile.name == "music_toggle_off":
             self.music_toggle.next_value()
             self.music_state_on = not self.music_state_on
+
+            pygame.mixer.music.stop()
+            if self.music_state_on:
+                pygame.mixer.music.play()
 
         return None, False

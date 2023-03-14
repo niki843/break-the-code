@@ -3,7 +3,7 @@ import uuid
 import pygame
 import os
 import asyncio
-from client import ws_client as client, IMG_PATH, ASYNC_SLEEP_TIME_ON_EXIT
+from client import ws_client as client, IMG_PATH, ASYNC_SLEEP_TIME_ON_EXIT, MUSIC_PATH
 from client.game_objects.pages.menu import Menu
 from client.event_handler import EventHandler
 
@@ -56,11 +56,16 @@ def start_game():
 
     pygame.init()
     pygame.fastevent.init()
+    pygame.mixer.init()
+
+    pygame.mixer.music.load(f"{MUSIC_PATH}main_music.mp3")
+    pygame.mixer.music.set_volume(0.2)
+    pygame.mixer.music.play()
 
     # Enable resizable mode currently not working !!!!!
     # screen = pygame.display.set_mode((1280, 720), pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.RESIZABLE)
 
-    screen = pygame.display.set_mode((1366, 768), pygame.HWSURFACE | pygame.DOUBLEBUF)
+    screen = pygame.display.set_mode((1280, 720), pygame.HWSURFACE | pygame.DOUBLEBUF)
     pygame.display.set_caption("Break The Code")
 
     thumbnail = pygame.image.load(f"{IMG_PATH}crack-the-code-thumbnail.png")
