@@ -130,6 +130,10 @@ class TextSlideshowTile(Tile):
         ----------
         tile_place : int
             An int that represents how many times and in which direction to get the wanted value from the list of texts
+
+        Returns
+        ----------
+            Current resolution picked as string
         """
         next_index = self.slide_values.index(self.current_text) + tile_place
         if next_index >= len(self.slide_values):

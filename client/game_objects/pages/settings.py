@@ -24,7 +24,7 @@ class Settings(GameWindow):
         self.music_toggle = None
 
         self.music_state_on = True
-        self.current_resolution = self.SCREEN_SIZE_CAPTIONS[1]
+        self.current_resolution = f"{self.screen.get_width()}x{self.screen.get_height()}"
         # TODO: implement username
         self.current_username = None
 
