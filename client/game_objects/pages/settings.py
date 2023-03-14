@@ -1,6 +1,6 @@
 import pygame.image
 import client
-from client.game_objects.pages.ToggleTile import ToggleTile
+from client.game_objects.tiles.toggle_tile import ToggleTile
 
 from client.game_objects.pages.game_window import GameWindow
 from client.game_objects.tiles.text_slideshow_tile import TextSlideshowTile
