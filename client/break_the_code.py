@@ -39,17 +39,19 @@ def get_or_generate_player_id():
     with open("player_id.txt", "a+") as f:
         if os.stat("player_id.txt").st_size == 0:
             f.write(str(uuid.uuid4()))
+            f.write("\nUnknown")
 
     # Open the player_id file and read the uuid
-    f = open("player_id.txt", "r")
-    player_id = f.read()
-    return player_id
+    with open("player_id.txt", "r") as f:
+        player_details = f.read()
+
+    return player_details.split("\n")
 
 
 def start_game():
     # This will stay commented for testing and will be removed when
     # in actual release or specific testing of this feature
-    # player_id = get_or_generate_player_id()
+    player_id, username = get_or_generate_player_id()
     player_id = str(uuid.uuid4())
 
     pygame.init()

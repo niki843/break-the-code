@@ -6,28 +6,38 @@ class ToggleTile(Tile):
     def __init__(
             self,
             name,
-            surface,
+            current_surface,
             screen,
             size_percent,
             tile_addition_width,
             tile_addition_height,
-            slide_values: tuple,
+            next_surface,
     ):
         super().__init__(
             name,
-            surface,
+            current_surface,
             screen,
             size_percent,
             tile_addition_width,
             tile_addition_height,
         )
 
-        self.values = slide_values
+        self.next_surface = Tile("music_toggle_on", next_surface, screen, size_percent, tile_addition_width, tile_addition_height)
+
+        self.values = (self, self.next_surface)
 
     def next_value(self):
-        index = self.values.index(self.image)
+        self.next_surface.rect.centerx = self.rect.centerx
+        self.next_surface.rect.centery = self.rect.centery
 
-        if index > 1:
-            index = 0
+        temp_image = self.image
+        temp_rect = self.rect
 
-        self.image = self.values[index]
+        index = self.values.index(self) - 1
+        self.image = self.values[index].image
+
+        self.rect = self.next_surface.rect
+
+        self.next_surface.image = temp_image
+        self.next_surface.rect = temp_rect
+

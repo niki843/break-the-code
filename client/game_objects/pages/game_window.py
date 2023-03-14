@@ -14,8 +14,6 @@ class GameWindow:
         self.background_image = None
         self.background_rect = None
 
-        self.build()
-
     def activate_tile(self, tile, event_handler):
         return None, False
 

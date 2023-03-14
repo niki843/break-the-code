@@ -23,6 +23,11 @@ class Settings(GameWindow):
         self.screen_size_left_arrow = None
         self.music_toggle = None
 
+        self.music_state_on = True
+        self.current_resolution = self.SCREEN_SIZE_CAPTIONS[1]
+        # TODO: implement username
+        self.current_username = None
+
         self.build()
 
     def build(self):
@@ -39,15 +44,15 @@ class Settings(GameWindow):
             client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN,
             client.TILE_WIDTH_ADDITION,
             client.TILE_HEIGHT_ADDITION,
-            self.SCREEN_SIZE_CAPTIONS[1],
+            self.current_resolution,
             self.SCREEN_SIZE_CAPTIONS,
         )
 
         self.screen_size_right_arrow = self.screen_size_tile.right_arrow
         self.screen_size_left_arrow = self.screen_size_tile.left_arrow
 
-        self.screen_size_tile.rect.left = self.screen_rect.centerx + 25
-        self.screen_size_tile.rect.centery = self.screen_rect.centery
+        self.screen_size_tile.rect.centerx = self.screen_rect.centerx
+        self.screen_size_tile.rect.bottom = self.screen_rect.centery - 10
 
         self.screen_size_tile.update()
 
@@ -57,10 +62,12 @@ class Settings(GameWindow):
     def build_music_toggle(self):
         on_surface = pygame.image.load(f"{client.IMG_PATH}button_on.png")
         off_surface = pygame.image.load(f"{client.IMG_PATH}button.png")
-        self.music_toggle = ToggleTile("music_toggle", on_surface, self.screen, client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN, 0, 0, (on_surface, off_surface))
+        self.music_toggle = ToggleTile("music_toggle_on", on_surface, self.screen, client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN, 0, 0, off_surface)
 
-        self.music_toggle.rect.right = self.screen_rect.centerx - 25
-        self.music_toggle.rect.centery = self.screen_rect.centery
+        self.music_toggle.rect.centerx = self.screen_rect.centerx
+        self.music_toggle.rect.top = self.screen_rect.centery + 10
+
+        self.tiles_group.add(self.music_toggle)
 
     def blit(self):
         self.screen.blit(self.background_image, self.background_rect)
@@ -84,8 +91,11 @@ class Settings(GameWindow):
 
     def activate_tile(self, tile, event_handler):
         if tile.name == "screen_size_right_arrow":
-            self.screen_size_tile.next_text()
+            self.current_resolution = self.screen_size_tile.next_text()
         if tile.name == "screen_size_left_arrow":
-            self.screen_size_tile.previous_text()
+            self.current_resolution = self.screen_size_tile.previous_text()
+        if tile.name == "music_toggle_on" or tile.name == "music_toggle_off":
+            self.music_toggle.next_value()
+            self.music_state_on = not self.music_state_on
 
         return None, False

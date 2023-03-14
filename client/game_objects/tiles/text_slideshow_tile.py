@@ -118,10 +118,10 @@ class TextSlideshowTile(Tile):
         )
 
     def next_text(self):
-        self.change_tile(1)
+        return self.change_tile(1)
 
     def previous_text(self):
-        self.change_tile(-1)
+        return self.change_tile(-1)
 
     def change_tile(self, tile_place: int):
         """Changes the current_text that's being displayed in the image box
@@ -139,3 +139,5 @@ class TextSlideshowTile(Tile):
 
         self.load_text()
         self.update_text_position()
+
+        return self.slide_values[next_index]
