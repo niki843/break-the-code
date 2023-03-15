@@ -36,3 +36,6 @@ class GameWindow:
     def change_screen(self, screen):
         self.screen = screen
         self.screen_rect = self.screen.get_rect()
+
+    def delete(self):
+        pass

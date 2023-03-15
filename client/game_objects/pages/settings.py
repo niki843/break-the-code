@@ -1,6 +1,5 @@
 import pygame
 import client
-from client.event_handler import EventHandler
 from client.game_objects.tiles.toggle_tile import ToggleTile
 
 from client.game_objects.pages.game_window import GameWindow
@@ -25,7 +24,7 @@ class Settings(GameWindow):
         self.music_toggle = None
 
         self.music_state_on = pygame.mixer.music.get_busy()
-        self.current_resolution = f"{self.screen.get_width()}x{self.screen.get_height()}"
+        self.current_resolution = None
         # TODO: implement username
         self.current_username = None
 
@@ -38,6 +37,19 @@ class Settings(GameWindow):
 
     def build_screen_size_tile(self):
         surface = pygame.image.load(f"{client.IMG_PATH}blank.png").convert_alpha()
+        self.current_resolution = (
+            f"{self.screen.get_width()}x{self.screen.get_height()}"
+        )
+
+        max_desktop_res = pygame.display.get_desktop_sizes()[0]
+
+        # Check if the resolution is in the list of resolutions if not set to fullscreen
+        if (
+            max_desktop_res[0] == self.screen.get_width()
+            and max_desktop_res[1] == self.screen.get_height()
+        ):
+            self.current_resolution = "fullscreen"
+
         self.screen_size_tile = TextSlideshowTile(
             "screen_size",
             surface,
@@ -61,9 +73,25 @@ class Settings(GameWindow):
         self.tiles_group.add(self.screen_size_left_arrow)
 
     def build_music_toggle(self):
-        on_surface = pygame.image.load(f"{client.IMG_PATH}button_on.png")
-        off_surface = pygame.image.load(f"{client.IMG_PATH}button.png")
-        self.music_toggle = ToggleTile("music_toggle_on", on_surface, self.screen, client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN, 0, 0, off_surface)
+        on_surface = pygame.image.load(f"{client.IMG_PATH}button_on2.png")
+        off_surface = pygame.image.load(f"{client.IMG_PATH}button2.png")
+
+        # Use the appropriate image for the music when screen size is changed and the settings window is being re-build
+        current_surface = on_surface
+        next_surface = off_surface
+        if not self.music_state_on:
+            current_surface = off_surface
+            next_surface = on_surface
+
+        self.music_toggle = ToggleTile(
+            "music_toggle_on",
+            current_surface,
+            self.screen,
+            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN,
+            0,
+            0,
+            next_surface,
+        )
 
         self.music_toggle.rect.centerx = self.screen_rect.centerx
         self.music_toggle.rect.top = self.screen_rect.centery + 10
@@ -85,16 +113,15 @@ class Settings(GameWindow):
             self.screen_size_tile.current_text_surface,
             self.screen_size_tile.current_text_rect,
         )
-        self.screen.blit(
-            self.music_toggle.image,
-            self.music_toggle.rect
-        )
+        self.screen.blit(self.music_toggle.image, self.music_toggle.rect)
 
     def activate_tile(self, tile, event_handler):
         if tile.name == "screen_size_right_arrow":
             self.current_resolution = self.screen_size_tile.next_text()
+            self.change_screen_resolution_and_rebuild(self.current_resolution)
         if tile.name == "screen_size_left_arrow":
             self.current_resolution = self.screen_size_tile.previous_text()
+            self.change_screen_resolution_and_rebuild(self.current_resolution)
         if tile.name == "music_toggle_on" or tile.name == "music_toggle_off":
             self.music_toggle.next_value()
             self.music_state_on = not self.music_state_on
@@ -104,3 +131,38 @@ class Settings(GameWindow):
                 pygame.mixer.music.play()
 
         return None, False
+
+    def change_screen_resolution_and_rebuild(self, resolution: str):
+        if resolution == "fullscreen":
+            self.change_screen(pygame.display.set_mode((0, 0), pygame.FULLSCREEN))
+        else:
+            resolution_params = [int(res) for res in resolution.split("x")]
+            self.change_screen(
+                pygame.display.set_mode(
+                    (resolution_params[0], resolution_params[1]),
+                    pygame.HWSURFACE | pygame.DOUBLEBUF,
+                )
+            )
+
+        self.delete()
+        self.build()
+
+    def delete(self):
+        # Apparently pygame doesn't have an option to actually delete visual objects
+        # instead we should just make them transparent
+        self.background_image.fill(pygame.Color(0, 0, 0))
+        self.screen_size_tile.image.fill(pygame.Color(0, 0, 0))
+        self.screen_size_right_arrow.image.fill(pygame.Color(0, 0, 0))
+        self.screen_size_left_arrow.image.fill(pygame.Color(0, 0, 0))
+        self.screen_size_tile.current_text_surface.fill(pygame.Color(0, 0, 0))
+        self.music_toggle.image.fill(pygame.Color(0, 0, 0))
+
+        self.blit()
+
+        del self.background_image
+        del self.screen_size_right_arrow
+        del self.screen_size_left_arrow
+        del self.screen_size_tile.current_text_surface
+        del self.music_toggle
+
+        self.tiles_group.empty()

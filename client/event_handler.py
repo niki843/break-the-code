@@ -31,6 +31,7 @@ class EventHandler(Singleton):
                 (0, 0), pygame.FULLSCREEN
             )
             self.current_window.change_screen(self.screen)
+            self.current_window.delete()
             self.current_window.build()
             return None, False
         elif event.type == pygame.KEYUP and event.key == pygame.K_n:
