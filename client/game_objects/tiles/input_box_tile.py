@@ -42,3 +42,7 @@ class InputBoxTile(ToggleTile, InputBox):
 
     def draw(self):
         self.next_value()
+
+    def center(self):
+        self.text_rect.centerx = self.rect.centerx
+        self.text_rect.centery = self.rect.centery

@@ -28,7 +28,8 @@ class Settings(GameWindow):
         self.music_state_on = pygame.mixer.music.get_busy()
         self.current_resolution = None
         # TODO: implement username
-        self.current_username = None
+        self.current_username = "test"
+        self.temp_username = None
 
         self.build()
 
@@ -111,7 +112,7 @@ class Settings(GameWindow):
             client.TILE_WIDTH_ADDITION,
             client.TILE_HEIGHT_ADDITION,
             next_surface,
-            "test",
+            self.temp_username if self.temp_username else self.current_username,
             50,
         )
 
@@ -173,6 +174,8 @@ class Settings(GameWindow):
                     pygame.HWSURFACE | pygame.DOUBLEBUF,
                 )
             )
+
+        self.temp_username = self.name_input_box.text
 
         self.delete()
         self.build()

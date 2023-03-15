@@ -94,6 +94,7 @@ class EventHandler(Singleton):
                         text_surface.mark_clicked()
                         return self.handle_mouse_click()
 
+            text_surface.center()
             self.current_window.blit()
 
     def change_window(self, new_window):
