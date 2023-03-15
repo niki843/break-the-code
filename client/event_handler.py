@@ -74,6 +74,28 @@ class EventHandler(Singleton):
         else:
             return None, False
 
+    # An interesting implementation here it turns out that in order to write and not affect anything else
+    # we need to enter another infinite while to wait for text input and exit it on click
+    def wait_text_input(self, text_surface):
+        writing = True
+        while writing:
+            events = pygame.event.get()
+            pygame.display.flip()
+            for event in events:
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        text_surface.new_line()
+                    elif event.key == pygame.K_BACKSPACE:
+                        text_surface.delete()
+                    else:
+                        text_surface.write(event.unicode)
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if event.button == 1:
+                        text_surface.mark_clicked()
+                        return self.handle_mouse_click()
+
+            self.current_window.blit()
+
     def change_window(self, new_window):
         self.current_window = new_window
 

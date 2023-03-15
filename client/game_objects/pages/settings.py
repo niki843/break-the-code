@@ -1,5 +1,6 @@
 import pygame
 import client
+from client.game_objects.tiles.input_box_tile import InputBoxTile
 from client.game_objects.tiles.toggle_tile import ToggleTile
 
 from client.game_objects.pages.game_window import GameWindow
@@ -22,6 +23,7 @@ class Settings(GameWindow):
         self.screen_size_right_arrow = None
         self.screen_size_left_arrow = None
         self.music_toggle = None
+        self.name_input_box = None
 
         self.music_state_on = pygame.mixer.music.get_busy()
         self.current_resolution = None
@@ -34,6 +36,7 @@ class Settings(GameWindow):
         self.build_background()
         self.build_screen_size_tile()
         self.build_music_toggle()
+        self.build_username_text_box()
 
     def build_screen_size_tile(self):
         surface = pygame.image.load(f"{client.IMG_PATH}blank.png").convert_alpha()
@@ -65,7 +68,7 @@ class Settings(GameWindow):
         self.screen_size_left_arrow = self.screen_size_tile.left_arrow
 
         self.screen_size_tile.rect.centerx = self.screen_rect.centerx
-        self.screen_size_tile.rect.bottom = self.screen_rect.centery - 10
+        self.screen_size_tile.rect.bottom = self.screen_rect.centery - 15
 
         self.screen_size_tile.update()
 
@@ -77,14 +80,12 @@ class Settings(GameWindow):
         off_surface = pygame.image.load(f"{client.IMG_PATH}button2.png")
 
         # Use the appropriate image for the music when screen size is changed and the settings window is being re-build
-        current_surface = on_surface
-        next_surface = off_surface
-        if not self.music_state_on:
-            current_surface = off_surface
-            next_surface = on_surface
+        current_surface = on_surface if self.music_state_on else off_surface
+        next_surface = off_surface if self.music_state_on else on_surface
 
         self.music_toggle = ToggleTile(
-            "music_toggle_on",
+            "music_toggle_on" if self.music_state_on else "music_toggle_off",
+            "music_toggle_off" if self.music_state_on else "music_toggle_on",
             current_surface,
             self.screen,
             client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN,
@@ -94,9 +95,33 @@ class Settings(GameWindow):
         )
 
         self.music_toggle.rect.centerx = self.screen_rect.centerx
-        self.music_toggle.rect.top = self.screen_rect.centery + 10
+        self.music_toggle.rect.top = self.screen_rect.centery + 15
 
         self.tiles_group.add(self.music_toggle)
+
+    def build_username_text_box(self):
+        surface = pygame.image.load(f"{client.IMG_PATH}blank.png").convert_alpha()
+        next_surface = pygame.image.load(f"{client.IMG_PATH}blank_highlight.png").convert_alpha()
+        self.name_input_box = InputBoxTile(
+            "name_input",
+            "name_input",
+            surface,
+            self.screen,
+            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN,
+            client.TILE_WIDTH_ADDITION,
+            client.TILE_HEIGHT_ADDITION,
+            next_surface,
+            "test",
+            50,
+        )
+
+        self.name_input_box.rect.centerx = self.screen_rect.centerx
+        self.name_input_box.rect.top = self.music_toggle.rect.bottom + 15
+
+        self.name_input_box.text_rect.centerx = self.name_input_box.rect.centerx
+        self.name_input_box.text_rect.centery = self.name_input_box.rect.centery
+
+        self.tiles_group.add(self.name_input_box)
 
     def blit(self):
         self.screen.blit(self.background_image, self.background_rect)
@@ -114,6 +139,8 @@ class Settings(GameWindow):
             self.screen_size_tile.current_text_rect,
         )
         self.screen.blit(self.music_toggle.image, self.music_toggle.rect)
+        self.screen.blit(self.name_input_box.image,  self.name_input_box.rect)
+        self.screen.blit(self.name_input_box.text_surface,  self.name_input_box.text_rect)
 
     def activate_tile(self, tile, event_handler):
         if tile.name == "screen_size_right_arrow":
@@ -129,6 +156,9 @@ class Settings(GameWindow):
             pygame.mixer.music.stop()
             if self.music_state_on:
                 pygame.mixer.music.play()
+        if tile.name == "name_input":
+            self.name_input_box.mark_clicked()
+            event_handler.wait_text_input(self.name_input_box)
 
         return None, False
 

@@ -6,6 +6,7 @@ class ToggleTile(Tile):
     def __init__(
             self,
             name,
+            next_name,
             current_surface,
             screen,
             size_percent,
@@ -22,7 +23,7 @@ class ToggleTile(Tile):
             tile_addition_height,
         )
 
-        self.next_surface = Tile("music_toggle_on", next_surface, screen, size_percent, tile_addition_width, tile_addition_height)
+        self.next_surface = Tile(next_name, next_surface, screen, size_percent, tile_addition_width, tile_addition_height)
 
         self.values = (self, self.next_surface)
 
@@ -32,12 +33,15 @@ class ToggleTile(Tile):
 
         temp_image = self.image
         temp_rect = self.rect
+        temp_name = self.name
 
         index = self.values.index(self) - 1
         self.image = self.values[index].image
+        self.name = self.next_surface.name
 
         self.rect = self.next_surface.rect
 
         self.next_surface.image = temp_image
         self.next_surface.rect = temp_rect
+        self.next_surface.name = temp_name
 

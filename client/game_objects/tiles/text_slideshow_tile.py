@@ -2,6 +2,7 @@ import pygame.image
 
 import client
 from client.game_objects.tiles.tile import Tile
+from client.utils import common
 
 
 class TextSlideshowTile(Tile):
@@ -60,8 +61,12 @@ class TextSlideshowTile(Tile):
         self.right_arrow = None
         self.left_arrow = None
 
-        self.font = None
-        self.load_font()
+        self.font = common.load_font(
+            self.image.get_width()
+            * common.get_percentage_multiplier_from_percentage(
+                client.TEXT_SIZE_PERCENTAGE_FROM_BOX
+            )
+        )
 
         self.load_text()
 
@@ -81,12 +86,6 @@ class TextSlideshowTile(Tile):
     def update_text_position(self):
         self.current_text_rect.centerx = self.rect.centerx
         self.current_text_rect.centery = self.rect.centery
-
-    def load_font(self):
-        self.font = pygame.font.Font(
-            f"{client.FONT_PATH}SilkRemington-SBold.ttf",
-            int(self.image.get_width() * 0.1),
-        )
 
     def load_text(self):
         # Starting screen size will be the surfaces list mid element
