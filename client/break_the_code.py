@@ -60,7 +60,7 @@ def start_game():
 
     pygame.mixer.music.load(f"{MUSIC_PATH}main_music.mp3")
     pygame.mixer.music.set_volume(0.2)
-    pygame.mixer.music.play()
+    pygame.mixer.music.play(-1)
 
     # Enable resizable mode currently not working !!!!!
     # screen = pygame.display.set_mode((1280, 720), pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.RESIZABLE)

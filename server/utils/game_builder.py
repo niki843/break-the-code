@@ -1,5 +1,5 @@
 import random
-from server import constants
+import server
 from copy import deepcopy
 from types import SimpleNamespace
 
@@ -80,7 +80,7 @@ class GameBuilder:
     @staticmethod
     def create_number_cards():
         number_cards = []
-        for index in range(1, constants.NUMBER_CARDS_COUNT + 1):
+        for index in range(1, server.NUMBER_CARDS_COUNT + 1):
             number_cards.append(SimpleNamespace())
         return number_cards
 
@@ -108,9 +108,9 @@ class GameBuilder:
     @staticmethod
     def hand_out_number_cards_to_players(players, cards):
         number_cards_amount = (
-            constants.NUMBER_CARDS_PER_PLAYER_FOUR_PLAYERS
+            server.NUMBER_CARDS_PER_PLAYER_FOUR_PLAYERS
             if len(players) == 4
-            else constants.NUMBER_CARDS_PER_PLAYER_TWO_OR_THREE_PLAYERS
+            else server.NUMBER_CARDS_PER_PLAYER_TWO_OR_THREE_PLAYERS
         )
         for player in players:
             current_player_numbers = []
