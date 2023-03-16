@@ -1,6 +1,7 @@
 import pygame
 import client
 from client.game_objects.tiles.input_box_tile import InputBoxTile
+from client.game_objects.tiles.slider import Slider
 from client.game_objects.tiles.toggle_tile import ToggleTile
 
 from client.game_objects.pages.game_window import GameWindow
@@ -24,6 +25,7 @@ class Settings(GameWindow):
         self.screen_size_left_arrow = None
         self.music_toggle = None
         self.name_input_box = None
+        self.slider = None
 
         self.music_state_on = pygame.mixer.music.get_busy()
         self.current_resolution = None
@@ -38,6 +40,7 @@ class Settings(GameWindow):
         self.build_screen_size_tile()
         self.build_music_toggle()
         self.build_username_text_box()
+        self.build_slider()
 
     def build_screen_size_tile(self):
         surface = pygame.image.load(f"{client.IMG_PATH}blank.png").convert_alpha()
@@ -124,6 +127,18 @@ class Settings(GameWindow):
 
         self.tiles_group.add(self.name_input_box)
 
+    def build_slider(self):
+        slider_surface = pygame.image.load(f"{client.IMG_PATH}slider.png")
+        slider_handle = pygame.image.load(f"{client.IMG_PATH}slider_handle.png")
+        self.slider = Slider("slider", slider_surface, self.screen, 80, 0, 0, "slider_handle", slider_handle, 5)
+
+        self.slider.rect.centerx = self.screen_rect.centerx
+        self.slider.rect.centery = self.screen_rect.centery
+        self.slider.slider_handle.rect.centery = self.screen_rect.centery
+        self.slider.slider_handle.rect.centerx = self.screen_rect.centerx
+
+        self.tiles_group.add(self.slider.slider_handle)
+
     def blit(self):
         self.screen.blit(self.background_image, self.background_rect)
         self.screen.blit(self.screen_size_tile.image, self.screen_size_tile.rect)
@@ -142,6 +157,8 @@ class Settings(GameWindow):
         self.screen.blit(self.music_toggle.image, self.music_toggle.rect)
         self.screen.blit(self.name_input_box.image,  self.name_input_box.rect)
         self.screen.blit(self.name_input_box.text_surface,  self.name_input_box.text_rect)
+        self.screen.blit(self.slider.image, self.slider.rect)
+        self.screen.blit(self.slider.slider_handle.image, self.slider.slider_handle.rect)
 
     def activate_tile(self, tile, event_handler):
         if tile.name == "screen_size_right_arrow":
@@ -160,6 +177,8 @@ class Settings(GameWindow):
         if tile.name == "name_input":
             self.name_input_box.mark_clicked()
             return event_handler.wait_text_input(self.name_input_box)
+        if tile.name == "slider_handle":
+            event_handler.handle_slider_clicked(self.slider)
 
         return None, False
 

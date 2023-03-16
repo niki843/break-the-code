@@ -17,7 +17,7 @@ class EventHandler(Singleton):
         keys = pygame.key.get_pressed()
         if event.type == pygame.QUIT:
             return '{"type": "close_connection"}', True
-        if event.type == pygame.MOUSEBUTTONUP:
+        if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 return self.handle_mouse_click()
         elif event.type == client.EVENT_TYPE:
@@ -93,7 +93,7 @@ class EventHandler(Singleton):
                         text_surface.delete()
                     else:
                         text_surface.write(event.unicode)
-                elif event.type == pygame.MOUSEBUTTONUP:
+                elif event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         text_surface.mark_clicked()
                         return self.handle_mouse_click()
@@ -110,6 +110,18 @@ class EventHandler(Singleton):
             common.run_once(LOOP)
 
         return None, False
+
+    def handle_slider_clicked(self, slider):
+        clicked = True
+        while clicked:
+            events = pygame.event.get()
+            pygame.display.flip()
+            for event in events:
+                if event.type == pygame.MOUSEBUTTONUP:
+                    clicked = False
+                if event.type == pygame.MOUSEMOTION:
+                    slider.move_slider(event.pos[0])
+            self.current_window.blit()
 
     def change_window(self, new_window):
         self.current_window = new_window

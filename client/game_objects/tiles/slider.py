@@ -1,4 +1,5 @@
 from client.game_objects.tiles.tile import Tile
+from client.utils import common
 
 
 class Slider(Tile):
@@ -28,17 +29,17 @@ class Slider(Tile):
 
         self.slider_percentage = 0
 
-    def set_slider_percentage(self):
-        self.slider_percentage = int(
+    def move_slider(self, pos_x):
+        if pos_x < self.rect.left or pos_x > self.rect.right:
+            return
+
+        self.slider_percentage = round(int(
             (
-                (self.slider_handle.rect.centerx - self.rect.left)
+                (pos_x - self.rect.left)
                 / self.image.get_width()
             )
             * 100
-        )
+        ), -1)
+        self.slider_handle.rect.centerx = self.rect.left + (self.image.get_width() * common.get_percentage_multiplier_from_percentage(self.slider_percentage))
 
-    def track_clicked_handle(self):
-        pass
-
-    def move_slider(self):
-        pass
+        print(self.slider_percentage)
