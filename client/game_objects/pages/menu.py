@@ -4,7 +4,7 @@ import client
 import pygame
 
 from client.game_objects.pages.join_game import JoinGame
-from client.game_objects.pages.new_game import NewGame
+from client.game_objects.pages.game import Game
 from client.game_objects.pages.game_window import GameWindow
 from client.game_objects.tiles.tile import Tile
 
@@ -126,7 +126,7 @@ class Menu(GameWindow):
 
     def activate_tile(self, tile, event_handler):
         if tile.name == "new_game":
-            event_handler.change_window(NewGame(self.screen))
+            event_handler.change_window(Game(self.screen))
         elif tile.name == "join_game":
             event_handler.change_window(JoinGame(self.screen))
         elif tile.name == "settings":
