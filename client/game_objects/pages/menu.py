@@ -135,5 +135,4 @@ class Menu(GameWindow):
             print("Closing the game")
             return '{"type": "close_connection"}', True
 
-        self.delete()
         return None, False
