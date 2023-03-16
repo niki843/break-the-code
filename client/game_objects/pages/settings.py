@@ -2,6 +2,7 @@ import pygame
 import client
 from client.game_objects.tiles.input_box_tile import InputBoxTile
 from client.game_objects.tiles.slider import Slider
+from client.game_objects.tiles.tile import Tile
 from client.game_objects.tiles.toggle_tile import ToggleTile
 
 from client.game_objects.pages.game_window import GameWindow
@@ -26,6 +27,7 @@ class Settings(GameWindow):
         self.music_toggle = None
         self.name_input_box = None
         self.slider = None
+        self.back_tile = None
 
         self.music_state_on = pygame.mixer.music.get_busy()
         self.current_resolution = None
@@ -41,6 +43,7 @@ class Settings(GameWindow):
         self.build_music_toggle()
         self.build_username_text_box()
         self.build_slider()
+        self.build_back_tile()
 
     def build_screen_size_tile(self):
         surface = pygame.image.load(f"{client.IMG_PATH}blank.png").convert_alpha()
@@ -61,7 +64,7 @@ class Settings(GameWindow):
             "screen_size",
             surface,
             self.screen,
-            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN,
+            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_MEDIUM,
             client.TILE_WIDTH_ADDITION,
             client.TILE_HEIGHT_ADDITION,
             self.current_resolution,
@@ -92,7 +95,7 @@ class Settings(GameWindow):
             "music_toggle_off" if self.music_state_on else "music_toggle_on",
             current_surface,
             self.screen,
-            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN,
+            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_MEDIUM,
             0,
             0,
             next_surface,
@@ -111,7 +114,7 @@ class Settings(GameWindow):
             "name_input",
             surface,
             self.screen,
-            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN,
+            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_MEDIUM,
             client.TILE_WIDTH_ADDITION,
             client.TILE_HEIGHT_ADDITION,
             next_surface,
@@ -139,6 +142,15 @@ class Settings(GameWindow):
 
         self.tiles_group.add(self.slider.slider_handle)
 
+    def build_back_tile(self):
+        back_surface = pygame.image.load(f"{client.IMG_PATH}back.png")
+        self.back_tile = Tile("back", back_surface, self.screen, client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL, 0, 0)
+
+        self.back_tile.rect.left = self.screen_rect.left + 20
+        self.back_tile.rect.top = self.screen_rect.top + 20
+
+        self.tiles_group.add(self.back_tile)
+
     def blit(self):
         self.screen.blit(self.background_image, self.background_rect)
         self.screen.blit(self.screen_size_tile.image, self.screen_size_tile.rect)
@@ -159,6 +171,7 @@ class Settings(GameWindow):
         self.screen.blit(self.name_input_box.text_surface,  self.name_input_box.text_rect)
         self.screen.blit(self.slider.image, self.slider.rect)
         self.screen.blit(self.slider.slider_handle.image, self.slider.slider_handle.rect)
+        self.screen.blit(self.back_tile.image, self.back_tile.rect)
 
     def activate_tile(self, tile, event_handler):
         if tile.name == "screen_size_right_arrow":
@@ -179,6 +192,8 @@ class Settings(GameWindow):
             return event_handler.wait_text_input(self.name_input_box)
         if tile.name == "slider_handle":
             event_handler.handle_slider_clicked(self.slider)
+        if tile.name == "back":
+            event_handler.change_window(event_handler.menu)
 
         return None, False
 

@@ -6,7 +6,6 @@ import pygame
 from client.game_objects.pages.join_game import JoinGame
 from client.game_objects.pages.new_game import NewGame
 from client.game_objects.pages.game_window import GameWindow
-from client.game_objects.pages.settings import Settings
 from client.game_objects.tiles.tile import Tile
 
 
@@ -34,7 +33,7 @@ class Menu(GameWindow):
             "join_game",
             surface,
             self.screen,
-            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN,
+            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_MEDIUM,
             client.TILE_WIDTH_ADDITION,
             client.TILE_HEIGHT_ADDITION,
         )
@@ -49,7 +48,7 @@ class Menu(GameWindow):
             "new_game",
             surface,
             self.screen,
-            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN,
+            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_MEDIUM,
             client.TILE_WIDTH_ADDITION,
             client.TILE_HEIGHT_ADDITION,
         )
@@ -66,7 +65,7 @@ class Menu(GameWindow):
             "settings",
             surface,
             self.screen,
-            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN,
+            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_MEDIUM,
             client.TILE_WIDTH_ADDITION,
             client.TILE_HEIGHT_ADDITION,
         )
@@ -83,7 +82,7 @@ class Menu(GameWindow):
             "quit_game",
             surface,
             self.screen,
-            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN,
+            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_MEDIUM,
             client.TILE_WIDTH_ADDITION,
             client.TILE_HEIGHT_ADDITION,
         )
@@ -131,7 +130,7 @@ class Menu(GameWindow):
         elif tile.name == "join_game":
             event_handler.change_window(JoinGame(self.screen))
         elif tile.name == "settings":
-            event_handler.change_window(Settings(self.screen))
+            event_handler.change_window(event_handler.settings)
         elif tile.name == "quit_game":
             print("Closing the game")
             return '{"type": "close_connection"}', True

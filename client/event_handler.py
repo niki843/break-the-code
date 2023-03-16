@@ -2,6 +2,8 @@ import pygame
 import json
 
 from client import ws_client as client, LOOP
+from client.game_objects.pages.menu import Menu
+from client.game_objects.pages.settings import Settings
 from client.utils import common
 from client.utils.singelton import Singleton
 
@@ -12,6 +14,9 @@ class EventHandler(Singleton):
         self.current_window = current_window
 
         self.player_id = player_id
+
+        self.menu = Menu(self.screen)
+        self.settings = Settings(self.screen)
 
     def handle_event(self, event):
         keys = pygame.key.get_pressed()
