@@ -3,11 +3,10 @@ import uuid
 import pygame
 import os
 import asyncio
-from client import ws_client as client, IMG_PATH, ASYNC_SLEEP_TIME_ON_EXIT, MUSIC_PATH
+from client import ws_client as client, IMG_PATH, ASYNC_SLEEP_TIME_ON_EXIT, MUSIC_PATH, LOOP
 from client.game_objects.pages.menu import Menu
 from client.event_handler import EventHandler
-
-loop = asyncio.get_event_loop()
+from client.utils import common
 
 ws_client = client.WebsocketClient()
 
@@ -23,14 +22,8 @@ async def send_message(message):
 
     print("Message sent")
 
-
-def run_once():
-    loop.call_soon(loop.stop)
-    loop.run_forever()
-
-
 # Connect to server
-loop.create_task(connect())
+LOOP.create_task(connect())
 
 
 def get_or_generate_player_id():
@@ -88,20 +81,20 @@ def start_game():
                 running = False
 
             if message:
-                loop.create_task(send_message(message))
+                LOOP.create_task(send_message(message))
 
         # tell event loop to run once
         # if there are no i/o events, this might return right away
         # if there are events or tasks that don't need to wait for i/o, then
         # run ONE task until the next "await" statement
-        run_once()
+        common.run_once(LOOP)
 
     # Sleeping for half a second to wait for websocket connection termination
-    loop.run_until_complete(asyncio.sleep(ASYNC_SLEEP_TIME_ON_EXIT))
+    LOOP.run_until_complete(asyncio.sleep(ASYNC_SLEEP_TIME_ON_EXIT))
 
     # Shutdown any async processes and close the event loop
-    loop.run_until_complete(loop.shutdown_asyncgens())
-    loop.close()
+    LOOP.run_until_complete(LOOP.shutdown_asyncgens())
+    LOOP.close()
     print("Thank you for playing!")
 
 

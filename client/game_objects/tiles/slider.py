@@ -36,3 +36,9 @@ class Slider(Tile):
             )
             * 100
         )
+
+    def track_clicked_handle(self):
+        pass
+
+    def move_slider(self):
+        pass

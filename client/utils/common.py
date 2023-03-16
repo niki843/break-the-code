@@ -12,3 +12,8 @@ def load_font(width):
         f"{client.FONT_PATH}SilkRemington-SBold.ttf",
         int(width),
     )
+
+
+def run_once(loop):
+    loop.call_soon(loop.stop)
+    loop.run_forever()

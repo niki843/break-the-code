@@ -159,7 +159,7 @@ class Settings(GameWindow):
                 pygame.mixer.music.play(-1)
         if tile.name == "name_input":
             self.name_input_box.mark_clicked()
-            event_handler.wait_text_input(self.name_input_box)
+            return event_handler.wait_text_input(self.name_input_box)
 
         return None, False
 

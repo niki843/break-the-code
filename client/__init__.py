@@ -1,4 +1,5 @@
 import os
+import asyncio
 
 IMG_PATH = f".{os.path.sep}resources{os.path.sep}images{os.path.sep}"
 FONT_PATH = f".{os.path.sep}resources{os.path.sep}fonts{os.path.sep}"
@@ -19,3 +20,5 @@ ASYNC_SLEEP_TIME_ON_EXIT = 0.5
 
 GAME_BASE_COLOR = (127, 169, 6)
 NEUTRAL_COLOR = (0, 0, 0)
+
+LOOP = asyncio.get_event_loop()

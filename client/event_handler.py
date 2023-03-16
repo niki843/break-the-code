@@ -1,7 +1,8 @@
 import pygame
 import json
 
-from client import ws_client as client
+from client import ws_client as client, LOOP
+from client.utils import common
 from client.utils.singelton import Singleton
 
 
@@ -19,21 +20,14 @@ class EventHandler(Singleton):
         if event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
                 return self.handle_mouse_click()
-            return None, False
         elif event.type == client.EVENT_TYPE:
             # TODO Implement when a server event happens
+            self.handle_server_message(event.message)
             print(event.message)
-            return None, False
         elif (keys[pygame.K_LALT] or keys[pygame.K_RALT]) and (
             keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]
         ):
-            self.screen = pygame.display.set_mode(
-                (0, 0), pygame.FULLSCREEN
-            )
-            self.current_window.change_screen(self.screen)
-            self.current_window.delete()
-            self.current_window.build()
-            return None, False
+            self.open_full_screen()
         elif event.type == pygame.KEYUP and event.key == pygame.K_n:
             # TODO Remove this and all bellow when the game is complete
             return (
@@ -71,31 +65,51 @@ class EventHandler(Singleton):
                 f'{{"type": "guess_numbers", "player_guess": {json.dumps(cards)}}}',
                 False,
             )
-        else:
-            return None, False
+        return None, False
 
-    # An interesting implementation here it turns out that in order to write and not affect anything else
-    # we need to enter another infinite while to wait for text input and exit it on click
+    # 15/03/2023 NT: An interesting implementation here it turns out that in order to write and not affect anything else
+    # we need to enter another infinite while to wait for text input and exit it on click.
+    # Another interesting thing here, this causes a type of circular recursion
+    # between handle_mouse_click, activate_tile, and wait_text_input which is kind of necessary to be able to
+    # click on another tile while writing.
+    # 16/03/2023 NT: We need to copy the main game code for async tasks run and display rendering and so on
+    # in order to be able to execute other events while still waiting for user input in text box. This will allow us
+    # to have a different button binding while not in writing mode, where in writing mode it won't be possible.
     def wait_text_input(self, text_surface):
         writing = True
         while writing:
             events = pygame.event.get()
             pygame.display.flip()
             for event in events:
-                if event.type == pygame.KEYDOWN:
+                keys = pygame.key.get_pressed()
+                if event.type == client.EVENT_TYPE:
+                    # TODO Implement when a server event happens
+                    self.handle_server_message(event.message)
+                    print(event.message)
+                elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         text_surface.new_line()
                     elif event.key == pygame.K_BACKSPACE:
                         text_surface.delete()
                     else:
                         text_surface.write(event.unicode)
-                if event.type == pygame.MOUSEBUTTONUP:
+                elif event.type == pygame.MOUSEBUTTONUP:
                     if event.button == 1:
                         text_surface.mark_clicked()
                         return self.handle_mouse_click()
+                elif event.type == pygame.QUIT:
+                    return '{"type": "close_connection"}', True
+                elif (keys[pygame.K_LALT] or keys[pygame.K_RALT]) and (
+                        keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]
+                ):
+                    self.open_full_screen()
 
             text_surface.center()
             self.current_window.blit()
+
+            common.run_once(LOOP)
+
+        return None, False
 
     def change_window(self, new_window):
         self.current_window = new_window
@@ -108,4 +122,16 @@ class EventHandler(Singleton):
                 print(tile.name)
                 return self.current_window.activate_tile(tile, self)
         # Unclickable tile pressed
+        return None, False
+
+    def handle_server_message(self, message):
+        pass
+
+    def open_full_screen(self):
+        self.screen = pygame.display.set_mode(
+            (0, 0), pygame.FULLSCREEN
+        )
+        self.current_window.change_screen(self.screen)
+        self.current_window.delete()
+        self.current_window.build()
         return None, False
