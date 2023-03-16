@@ -5,7 +5,7 @@ from client.utils import common
 
 
 class InputBox:
-    def __init__(self, screen, initial_text="", text_size=20):
+    def __init__(self, screen, initial_text="", text_size=20, max_char=20):
         self.text = initial_text
         self.font = common.load_font(text_size)
         self.color = client.GAME_BASE_COLOR
@@ -13,6 +13,7 @@ class InputBox:
         self.text_surface = self.font.render(initial_text, True, client.GAME_BASE_COLOR)
         self.text_rect = self.text_surface.get_rect()
         self.screen = screen
+        self.max_char = max_char
 
     def mark_clicked(self):
         self.active = not self.active
@@ -22,7 +23,7 @@ class InputBox:
             self.highlight(self.screen)
 
     def write(self, text):
-        if self.active:
+        if self.active and len(self.text) < self.max_char:
             self.text += text
             self.text_surface = self.font.render(self.text, True, self.color)
             self.text_rect = self.text_surface.get_rect()

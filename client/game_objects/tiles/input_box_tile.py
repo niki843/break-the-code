@@ -1,6 +1,7 @@
 import client
 from client.game_objects.tiles.input_box import InputBox
 from client.game_objects.tiles.toggle_tile import ToggleTile
+from client.utils import common
 
 
 class InputBoxTile(ToggleTile, InputBox):
@@ -15,7 +16,8 @@ class InputBoxTile(ToggleTile, InputBox):
         tile_addition_height,
         next_surface,
         initial_text="",
-        text_size=20,
+        text_size_percentage=20,
+        max_char=20,
     ):
         ToggleTile.__init__(
             self,
@@ -32,7 +34,8 @@ class InputBoxTile(ToggleTile, InputBox):
             self,
             screen,
             initial_text,
-            text_size,
+            int(self.image.get_height() * common.get_percentage_multiplier_from_percentage(text_size_percentage)),
+            max_char,
         )
 
     def mark_clicked(self):
