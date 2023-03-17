@@ -184,5 +184,6 @@ class EventHandler(Singleton):
             (1280, 720), pygame.HWSURFACE
         )
         self.change_screen(self.screen)
+        self.settings.resolution_slider.handle_position = self.settings.SCREEN_SIZE_CAPTIONS.index("1280x720")
         client_init.IS_FULLSCREEN_ENABLED = False
         return None, False
