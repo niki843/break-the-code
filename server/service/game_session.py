@@ -3,7 +3,7 @@ import json
 import websockets
 import copy
 
-from server.constants import CARDS_REQUIRING_USER_INPUT_MAP
+from server import CARDS_REQUIRING_USER_INPUT_MAP
 from server.entity.player import Player
 from server.exceptions.incorrect_card_number_input import IncorrectCardNumberInput
 from server.exceptions.invalid_id import InvalidPlayerId

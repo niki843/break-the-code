@@ -3,11 +3,10 @@ import uuid
 import pygame
 import os
 import asyncio
-from client import ws_client as client, IMG_PATH, ASYNC_SLEEP_TIME_ON_EXIT
-from client.entity.menu import Menu
+from client import ws_client as client, IMG_PATH, ASYNC_SLEEP_TIME_ON_EXIT, MUSIC_PATH, LOOP
+from client.game_objects.pages.menu import Menu
 from client.event_handler import EventHandler
-
-loop = asyncio.get_event_loop()
+from client.utils import common
 
 ws_client = client.WebsocketClient()
 
@@ -23,14 +22,8 @@ async def send_message(message):
 
     print("Message sent")
 
-
-def run_once():
-    loop.call_soon(loop.stop)
-    loop.run_forever()
-
-
 # Connect to server
-loop.create_task(connect())
+LOOP.create_task(connect())
 
 
 def get_or_generate_player_id():
@@ -39,21 +32,28 @@ def get_or_generate_player_id():
     with open("player_id.txt", "a+") as f:
         if os.stat("player_id.txt").st_size == 0:
             f.write(str(uuid.uuid4()))
+            f.write("\nUnknown")
 
     # Open the player_id file and read the uuid
-    f = open("player_id.txt", "r")
-    player_id = f.read()
-    return player_id
+    with open("player_id.txt", "r") as f:
+        player_details = f.read()
+
+    return player_details.split("\n")
 
 
 def start_game():
     # This will stay commented for testing and will be removed when
     # in actual release or specific testing of this feature
-    # player_id = get_or_generate_player_id()
+    player_id, username = get_or_generate_player_id()
     player_id = str(uuid.uuid4())
 
     pygame.init()
     pygame.fastevent.init()
+    pygame.mixer.init()
+
+    pygame.mixer.music.load(f"{MUSIC_PATH}main_music.mp3")
+    pygame.mixer.music.set_volume(0.2)
+    pygame.mixer.music.play(-1)
 
     # Enable resizable mode currently not working !!!!!
     # screen = pygame.display.set_mode((1280, 720), pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.RESIZABLE)
@@ -64,9 +64,7 @@ def start_game():
     thumbnail = pygame.image.load(f"{IMG_PATH}crack-the-code-thumbnail.png")
     pygame.display.set_icon(thumbnail)
 
-    menu = Menu(screen)
-
-    event_handler = EventHandler(player_id, current_window=menu, screen=screen)
+    event_handler = EventHandler(player_id, screen=screen)
 
     running = True
     while running:
@@ -81,20 +79,20 @@ def start_game():
                 running = False
 
             if message:
-                loop.create_task(send_message(message))
+                LOOP.create_task(send_message(message))
 
         # tell event loop to run once
         # if there are no i/o events, this might return right away
         # if there are events or tasks that don't need to wait for i/o, then
         # run ONE task until the next "await" statement
-        run_once()
+        common.run_once(LOOP)
 
     # Sleeping for half a second to wait for websocket connection termination
-    loop.run_until_complete(asyncio.sleep(ASYNC_SLEEP_TIME_ON_EXIT))
+    LOOP.run_until_complete(asyncio.sleep(ASYNC_SLEEP_TIME_ON_EXIT))
 
     # Shutdown any async processes and close the event loop
-    loop.run_until_complete(loop.shutdown_asyncgens())
-    loop.close()
+    LOOP.run_until_complete(LOOP.shutdown_asyncgens())
+    LOOP.close()
     print("Thank you for playing!")
 
 

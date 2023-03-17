@@ -2,6 +2,7 @@ import json
 import os
 import re
 import pathlib
+from pathlib import Path
 
 from server.entity.condition_card import ConditionCard
 from server.cards.card_conditions import CARD_ID_TO_CONDITION_MAP
@@ -15,17 +16,12 @@ class CardReader(Singleton):
 
     def __read_cards(self):
         current_path = f"{pathlib.Path(__file__).parent.resolve()}{os.path.sep}"
-        card_names = [
-            f
-            for f in os.listdir(current_path)
-            if re.match(r"[0-9]+.*.json", f)
-        ]
         cards = []
-
-        for card in card_names:
-            f = open(current_path + card)
-            x = json.load(f, object_hook=lambda d: ConditionCard(**d))
-            cards.append(x)
+        for f in os.listdir(current_path):
+            if re.match(r"[0-9]+.*.json", f):
+                with open(current_path + f) as curr_file:
+                    x = json.load(curr_file, object_hook=lambda d: ConditionCard(**d))
+                    cards.append(x)
 
         return cards
 

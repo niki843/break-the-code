@@ -1,7 +1,4 @@
-from server.constants import (
-    CARD_INDEX_TO_LETTER_MAP,
-    MISSING_PROPERTY_DEFAULT,
-)
+import server
 from server.exceptions.player_cards_missing import PlayerCardsMissingException
 from server.utils.enums import Colors
 
@@ -159,9 +156,9 @@ def twenty_first_card(player, number):
 def get_card_index_list_from_property(player, attr, value):
     player_card_index = []
     for index, card in enumerate(player.get_cards()):
-        card_property = getattr(card, attr, MISSING_PROPERTY_DEFAULT)
+        card_property = getattr(card, attr, server.MISSING_PROPERTY_DEFAULT)
         if card_property == value:
-            player_card_index.append(CARD_INDEX_TO_LETTER_MAP.get(index))
+            player_card_index.append(server.CARD_INDEX_TO_LETTER_MAP.get(index))
 
     if player_card_index:
         print(
@@ -179,7 +176,7 @@ def get_consecutive_cards(player, attr):
     last_attr = None
 
     for index, card in enumerate(player.get_cards()):
-        card_attr = getattr(card, attr, MISSING_PROPERTY_DEFAULT)
+        card_attr = getattr(card, attr, server.MISSING_PROPERTY_DEFAULT)
         if last_attr is None:
             last_attr = card_attr
 
@@ -188,18 +185,18 @@ def get_consecutive_cards(player, attr):
             check_value = card.number - 1
 
         if not current_match_card_numbers or last_attr == check_value:
-            current_match_card_numbers.append(CARD_INDEX_TO_LETTER_MAP.get(index))
+            current_match_card_numbers.append(server.CARD_INDEX_TO_LETTER_MAP.get(index))
             last_attr = card_attr
             continue
 
         last_attr = card_attr
 
         if len(current_match_card_numbers) == 1:
-            current_match_card_numbers = [CARD_INDEX_TO_LETTER_MAP.get(index)]
+            current_match_card_numbers = [server.CARD_INDEX_TO_LETTER_MAP.get(index)]
             continue
 
         player_match_card_indexes.append(tuple(current_match_card_numbers))
-        current_match_card_numbers = [CARD_INDEX_TO_LETTER_MAP.get(index)]
+        current_match_card_numbers = [server.CARD_INDEX_TO_LETTER_MAP.get(index)]
 
     if len(current_match_card_numbers) >= 2:
         player_match_card_indexes.append(tuple(current_match_card_numbers))
