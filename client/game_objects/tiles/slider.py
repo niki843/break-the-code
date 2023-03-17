@@ -77,7 +77,7 @@ class Slider(Tile):
             self.points_of_interest,
             round(
                 int(((pos_x - self.rect.left) / self.image.get_width()) * 100)
-                - (self.slider_handle.image.get_width() / 2),
+                - (self.slider_handle.image.get_width() / 3),
                 -1,
             ),
         )

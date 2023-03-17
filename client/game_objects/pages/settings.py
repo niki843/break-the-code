@@ -1,6 +1,7 @@
 import pygame
 import client
 from client.game_objects import custom_exceptions
+from client.game_objects.tiles.input_box_tile import InputBoxTile
 from client.game_objects.tiles.slider import Slider
 from client.game_objects.tiles.tile import Tile
 
@@ -32,6 +33,7 @@ class Settings(GameWindow):
         self.current_volume = int(pygame.mixer.music.get_volume() * 100)
 
         self.username_label = None
+        self.username_input_box = None
 
         self.back_tile = None
 
@@ -56,6 +58,7 @@ class Settings(GameWindow):
         self.build_music_slider()
 
         self.build_username_label()
+        self.build_username_text_box()
 
         self.build_back_tile()
 
@@ -72,6 +75,7 @@ class Settings(GameWindow):
         self.set_music_slider_tile_size()
 
         self.set_username_label_size()
+        self.set_username_text_box_size()
 
         self.set_back_tile()
 
@@ -259,37 +263,37 @@ class Settings(GameWindow):
         )
         self.username_label.rect.left = self.music_slider.rect.left
 
-    # def build_username_text_box(self):
-    #     surface = pygame.image.load(f"{client.IMG_PATH}blank.png").convert_alpha()
-    #     next_surface = pygame.image.load(
-    #         f"{client.IMG_PATH}blank_highlight.png"
-    #     ).convert_alpha()
-    #     self.name_input_box = InputBoxTile(
-    #         "name_input",
-    #         "name_input",
-    #         surface,
-    #         self.event_handler.screen,
-    #         client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_MEDIUM,
-    #         client.TILE_WIDTH_ADDITION,
-    #         client.TILE_HEIGHT_ADDITION,
-    #         next_surface,
-    #         self.temp_username if self.temp_username else self.current_username,
-    #         text_size_percentage_from_screen_height=10,
-    #     )
-    #
-    #     self.set_username_text_box_size()
-    #     self.tiles_group.add(self.name_input_box)
-    #
-    # def set_username_text_box_size(self):
-    #     if not self.name_input_box:
-    #         return
-    #
-    #     self.name_input_box.resize()
-    #     self.name_input_box.rect.centerx = self.event_handler.screen_rect.centerx
-    #     self.name_input_box.rect.top = self.music_toggle.rect.bottom + 15
-    #
-    #     self.name_input_box.text_rect.centerx = self.name_input_box.rect.centerx
-    #     self.name_input_box.text_rect.centery = self.name_input_box.rect.centery
+    def build_username_text_box(self):
+        surface = pygame.image.load(f"{client.IMG_PATH}non_selected_nickname.png").convert_alpha()
+        next_surface = pygame.image.load(f"{client.IMG_PATH}non_selected_nickname.png").convert_alpha()
+
+        self.username_input_box = InputBoxTile(
+            "name_input",
+            "name_input",
+            surface,
+            self.event_handler.screen,
+            50,
+            client.TILE_WIDTH_ADDITION,
+            client.TILE_HEIGHT_ADDITION,
+            next_surface,
+            self.temp_username if self.temp_username else self.current_username,
+            text_size_percentage_from_screen_height=5,
+        )
+
+        self.set_username_text_box_size()
+        self.tiles_group.add(self.username_input_box)
+
+    def set_username_text_box_size(self):
+        if not self.username_input_box:
+            return
+
+        self.username_input_box.resize()
+        self.username_input_box.rect.top = self.username_label.rect.bottom + (
+            self.event_handler.screen_rect.bottom * 0.02
+        )
+        self.username_input_box.rect.left = self.username_label.rect.left
+
+        self.username_input_box.center()
 
     def build_back_tile(self):
         back_surface = pygame.image.load(f"{client.IMG_PATH}back.png")
@@ -342,6 +346,8 @@ class Settings(GameWindow):
         self.event_handler.screen.blit(self.music_slider.slider_handle.image, self.music_slider.slider_handle.rect)
 
         self.event_handler.screen.blit(self.username_label.image, self.username_label.rect)
+        self.event_handler.screen.blit(self.username_input_box.image, self.username_input_box.rect)
+        self.event_handler.screen.blit(self.username_input_box.text_surface, self.username_input_box.text_rect)
 
         self.event_handler.screen.blit(self.back_tile.image, self.back_tile.rect)
 
@@ -374,9 +380,9 @@ class Settings(GameWindow):
                 pygame.mixer.music.stop()
         if tile.name == "back":
             self.event_handler.change_window(self.event_handler.menu)
-        # if tile.name == "name_input":
-        #     self.name_input_box.mark_clicked()
-        #     return self.event_handler.wait_text_input(self.name_input_box)
+        if tile.name == "name_input":
+            self.username_input_box.mark_clicked()
+            return self.event_handler.wait_text_input(self.username_input_box)
         return None, False
 
     def change_screen_resolution_and_rebuild(self, resolution: str):
