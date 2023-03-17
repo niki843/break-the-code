@@ -141,6 +141,17 @@ class EventHandler(Singleton):
                     slider.move_slider(event.pos[0])
             self.current_window.blit()
 
+    def handle_save_button(self, button):
+        mouse_clicked = True
+        while mouse_clicked:
+            events = pygame.event.get()
+            pygame.display.flip()
+            for event in events:
+                if event.type == pygame.MOUSEBUTTONUP:
+                    button.next_value()
+                    mouse_clicked = False
+            self.current_window.blit()
+
     def change_window(self, new_window):
         self.current_window = new_window
 

@@ -6,6 +6,7 @@ from client.game_objects.tiles.slider import Slider
 from client.game_objects.tiles.tile import Tile
 
 from client.game_objects.pages.game_window import GameWindow
+from client.game_objects.tiles.toggle_tile import ToggleTile
 
 
 class Settings(GameWindow):
@@ -34,14 +35,15 @@ class Settings(GameWindow):
 
         self.username_label = None
         self.username_input_box = None
+        # TODO: implement username
+        self.current_username = "test"
+        self.temp_username = None
+
+        self.apply_button = None
 
         self.back_tile = None
 
         self.current_resolution = None
-
-        # TODO: implement username
-        self.current_username = "test"
-        self.temp_username = None
 
         self.build()
 
@@ -60,6 +62,8 @@ class Settings(GameWindow):
         self.build_username_label()
         self.build_username_text_box()
 
+        self.build_apply_button()
+
         self.build_back_tile()
 
     def resize(self):
@@ -76,6 +80,8 @@ class Settings(GameWindow):
 
         self.set_username_label_size()
         self.set_username_text_box_size()
+
+        self.set_apply_button_size()
 
         self.set_back_tile()
 
@@ -246,7 +252,9 @@ class Settings(GameWindow):
         self.music_slider.set_slider_handle_position()
 
     def build_username_label(self):
-        surface = pygame.image.load(f"{client.IMG_PATH}change_nickname_description.png").convert_alpha()
+        surface = pygame.image.load(
+            f"{client.IMG_PATH}change_nickname_description.png"
+        ).convert_alpha()
 
         self.username_label = Tile(
             "username_label", surface, self.event_handler.screen, 46, 0, 0
@@ -264,8 +272,12 @@ class Settings(GameWindow):
         self.username_label.rect.left = self.music_slider.rect.left
 
     def build_username_text_box(self):
-        surface = pygame.image.load(f"{client.IMG_PATH}non_selected_nickname.png").convert_alpha()
-        next_surface = pygame.image.load(f"{client.IMG_PATH}non_selected_nickname.png").convert_alpha()
+        surface = pygame.image.load(
+            f"{client.IMG_PATH}non_selected_nickname.png"
+        ).convert_alpha()
+        next_surface = pygame.image.load(
+            f"{client.IMG_PATH}non_selected_nickname.png"
+        ).convert_alpha()
 
         self.username_input_box = InputBoxTile(
             "name_input",
@@ -294,6 +306,33 @@ class Settings(GameWindow):
         self.username_input_box.rect.left = self.username_label.rect.left
 
         self.username_input_box.center()
+
+    def build_apply_button(self):
+        surface = pygame.image.load(f"{client.IMG_PATH}apply.png").convert_alpha()
+        next_surface = pygame.image.load(f"{client.IMG_PATH}add.png").convert_alpha()
+
+        self.apply_button = ToggleTile(
+            "apply_button_on",
+            "apply_button_off",
+            surface,
+            self.event_handler.screen,
+            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
+            0,
+            0,
+            next_surface,
+        )
+
+        self.set_apply_button_size()
+        self.tiles_group.add(self.apply_button)
+
+    def set_apply_button_size(self):
+        if not self.apply_button:
+            return
+
+        self.apply_button.rect.centery = self.username_input_box.rect.centery
+        self.apply_button.rect.left = self.username_input_box.rect.right + (
+            self.event_handler.screen.get_width() * 0.02
+        )
 
     def build_back_tile(self):
         back_surface = pygame.image.load(f"{client.IMG_PATH}back.png")
@@ -333,21 +372,36 @@ class Settings(GameWindow):
         self.event_handler.screen.blit(
             self.resolution_label_tile.image, self.resolution_label_tile.rect
         )
-        self.event_handler.screen.blit(self.resolution_slider.image, self.resolution_slider.rect)
+        self.event_handler.screen.blit(
+            self.resolution_slider.image, self.resolution_slider.rect
+        )
 
         self.event_handler.screen.blit(
             self.music_label_tile.image, self.music_label_tile.rect
         )
         self.event_handler.screen.blit(
-            self.resolution_slider.slider_handle.image, self.resolution_slider.slider_handle.rect
+            self.resolution_slider.slider_handle.image,
+            self.resolution_slider.slider_handle.rect,
         )
 
         self.event_handler.screen.blit(self.music_slider.image, self.music_slider.rect)
-        self.event_handler.screen.blit(self.music_slider.slider_handle.image, self.music_slider.slider_handle.rect)
+        self.event_handler.screen.blit(
+            self.music_slider.slider_handle.image, self.music_slider.slider_handle.rect
+        )
 
-        self.event_handler.screen.blit(self.username_label.image, self.username_label.rect)
-        self.event_handler.screen.blit(self.username_input_box.image, self.username_input_box.rect)
-        self.event_handler.screen.blit(self.username_input_box.text_surface, self.username_input_box.text_rect)
+        self.event_handler.screen.blit(
+            self.username_label.image, self.username_label.rect
+        )
+        self.event_handler.screen.blit(
+            self.username_input_box.image, self.username_input_box.rect
+        )
+        self.event_handler.screen.blit(
+            self.username_input_box.text_surface, self.username_input_box.text_rect
+        )
+
+        self.event_handler.screen.blit(
+            self.apply_button.image, self.apply_button.rect
+        )
 
         self.event_handler.screen.blit(self.back_tile.image, self.back_tile.rect)
 
@@ -356,7 +410,9 @@ class Settings(GameWindow):
             self.event_handler.handle_slider_clicked(self.resolution_slider)
 
             try:
-                self.current_resolution = self.SCREEN_SIZE_CAPTIONS[self.resolution_slider.get_index()]
+                self.current_resolution = self.SCREEN_SIZE_CAPTIONS[
+                    self.resolution_slider.get_index()
+                ]
             except IndexError:
                 raise custom_exceptions.ScreenResolutionIndexError()
 
@@ -378,8 +434,13 @@ class Settings(GameWindow):
             if self.current_volume <= 0:
                 self.music_state_on = False
                 pygame.mixer.music.stop()
+        if tile.name == "apply_button_on" or tile.name == "apply_button_off":
+            self.apply_button.next_value()
+            self.event_handler.handle_save_button(self.apply_button)
+            self.current_username = self.temp_username
         if tile.name == "back":
             self.event_handler.change_window(self.event_handler.menu)
+            self.temp_username = self.current_username if self.current_username else "test"
         if tile.name == "name_input":
             self.username_input_box.mark_clicked()
             return self.event_handler.wait_text_input(self.username_input_box)
