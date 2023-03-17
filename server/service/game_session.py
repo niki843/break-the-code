@@ -5,11 +5,11 @@ import copy
 
 from server import CARDS_REQUIRING_USER_INPUT_MAP
 from server.entity.player import Player
-from server.exceptions.incorrect_card_number_input import IncorrectCardNumberInput
-from server.exceptions.invalid_id import InvalidPlayerId
-from server.exceptions.not_your_turn import NotYourTurn
-from server.exceptions.session_full import SessionFull
-from server.exceptions.session_in_progress import SessionInProgress
+from server.custom_exceptions.incorrect_card_number_input import IncorrectCardNumberInput
+from server.custom_exceptions.invalid_id import InvalidPlayerId
+from server.custom_exceptions.not_your_turn import NotYourTurn
+from server.custom_exceptions.session_full import SessionFull
+from server.custom_exceptions.session_in_progress import SessionInProgress
 from server.utils.game_builder import GameBuilder
 from server.utils.enums import GameState, EndGame, PlayerStatus
 from server.utils.validate import is_valid_uuid

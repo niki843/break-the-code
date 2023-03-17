@@ -4,9 +4,9 @@ from copy import deepcopy
 from types import SimpleNamespace
 
 from server.cards.card_reader import CardReader
-from server.exceptions.incorrect_amount_of_cards_in_guess import IncorrectAmountOfCardsInGuess
-from server.exceptions.incorrect_card import IncorrectCardPlayed
-from server.exceptions.incorrect_number_card_value import IncorrectNumberCardValue
+from server.custom_exceptions.incorrect_amount_of_cards_in_guess import IncorrectAmountOfCardsInGuess
+from server.custom_exceptions.incorrect_card import IncorrectCardPlayed
+from server.custom_exceptions.incorrect_number_card_value import IncorrectNumberCardValue
 from server.utils.enums import Colors, GameTypes, EndGame
 
 
