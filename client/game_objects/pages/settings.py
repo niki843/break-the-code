@@ -63,11 +63,11 @@ class Settings(GameWindow):
         self.set_back_tile()
 
     def build_background(self):
-        surface = pygame.image.load(
-            f"{client.IMG_PATH}clear_bgr.png"
-        ).convert_alpha()
+        surface = pygame.image.load(f"{client.IMG_PATH}clear_bgr.png").convert_alpha()
 
-        self.background_image = Tile("background", surface, self.event_handler.screen, 100, 0, 0)
+        self.background_image = Tile(
+            "background", surface, self.event_handler.screen, 100, 0, 0
+        )
         self.set_background_size()
 
     def build_tiles_background(self):
@@ -135,16 +135,17 @@ class Settings(GameWindow):
             f"{client.IMG_PATH}slider_handle.png"
         ).convert_alpha()
         self.slider = Slider(
-            "slider",
-            slider_surface,
-            self.event_handler.screen,
-            60,
-            0,
-            0,
-            "slider_handle",
-            slider_handle,
-            2,
-            8,
+            name="slider",
+            surface=slider_surface,
+            screen=self.event_handler.screen,
+            size_percent=60,
+            tile_addition_width=0,
+            tile_addition_height=0,
+            handle_name="slider_handle",
+            handle_surface=slider_handle,
+            handle_size_percent=2,
+            delimiters_count=7,
+            handle_position=2,
         )
         self.set_slider_tile_size()
         self.tiles_group.add(self.slider.slider_handle)
@@ -158,8 +159,7 @@ class Settings(GameWindow):
             self.event_handler.screen_rect.bottom * 0.11
         )
         self.slider.rect.left = self.resolution_label_tile.rect.left
-        self.slider.slider_handle.rect.centerx = self.slider.rect.centerx
-        self.slider.slider_handle.rect.centery = self.slider.rect.centery
+        self.slider.set_slider_handle_position()
 
     def build_screen_size_tile(self):
         surface = pygame.image.load(f"{client.IMG_PATH}blank.png").convert_alpha()
@@ -292,7 +292,9 @@ class Settings(GameWindow):
         self.back_tile.rect.top = self.event_handler.screen_rect.top + 20
 
     def blit(self):
-        self.event_handler.screen.blit(self.background_image.image, self.background_image.rect)
+        self.event_handler.screen.blit(
+            self.background_image.image, self.background_image.rect
+        )
         self.event_handler.screen.blit(
             self.tiles_background.image, self.tiles_background.rect
         )
