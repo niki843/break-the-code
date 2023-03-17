@@ -1,4 +1,4 @@
-class ScreenResolutionSliderException(Exception):
+class ScreenResolutionIndexError(IndexError):
     def __init__(
         self,
         message="The slider that you're using has more values than the supported resolutions",
