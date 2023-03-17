@@ -45,3 +45,7 @@ class ToggleTile(Tile):
         self.next_surface.rect = temp_rect
         self.next_surface.name = temp_name
 
+    def resize(self):
+        super().resize()
+        if hasattr(self, "next_surface"):
+            self.next_surface.resize()

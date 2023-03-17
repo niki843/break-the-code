@@ -8,16 +8,16 @@ import uuid
 
 from websockets.exceptions import ConnectionClosed
 
-from server.exceptions.incorrect_amount_of_cards_in_guess import (
+from server.custom_exceptions.incorrect_amount_of_cards_in_guess import (
     IncorrectAmountOfCardsInGuess,
 )
-from server.exceptions.incorrect_card import IncorrectCardPlayed
-from server.exceptions.incorrect_card_number_input import IncorrectCardNumberInput
-from server.exceptions.incorrect_number_card_value import IncorrectNumberCardValue
-from server.exceptions.not_your_turn import NotYourTurn
+from server.custom_exceptions.incorrect_card import IncorrectCardPlayed
+from server.custom_exceptions.incorrect_card_number_input import IncorrectCardNumberInput
+from server.custom_exceptions.incorrect_number_card_value import IncorrectNumberCardValue
+from server.custom_exceptions.not_your_turn import NotYourTurn
 from server.service.game_session import GameSession
-from server.exceptions.invalid_id import InvalidPlayerId
-from server.exceptions.session_full import SessionFull
+from server.custom_exceptions.invalid_id import InvalidPlayerId
+from server.custom_exceptions.session_full import SessionFull
 
 from server.utils.enums import GameState, PlayerStatus
 

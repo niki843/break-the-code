@@ -155,8 +155,7 @@ class EventHandler(Singleton):
         self.screen_rect = self.screen.get_rect()
 
         for window in self.game_windows:
-            window.delete()
-            window.build()
+            window.resize()
 
     def handle_mouse_click(self):
         print("Mouse is clicked")
@@ -176,6 +175,7 @@ class EventHandler(Singleton):
             (0, 0), pygame.FULLSCREEN
         )
         self.change_screen(self.screen)
+        self.settings.resolution_slider.handle_position = self.settings.SCREEN_SIZE_CAPTIONS.index("fullscreen")
         client_init.IS_FULLSCREEN_ENABLED = True
         return None, False
 

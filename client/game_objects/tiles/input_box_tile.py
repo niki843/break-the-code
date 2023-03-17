@@ -1,7 +1,6 @@
 import client
 from client.game_objects.tiles.input_box import InputBox
 from client.game_objects.tiles.toggle_tile import ToggleTile
-from client.utils import common
 
 
 class InputBoxTile(ToggleTile, InputBox):
@@ -16,7 +15,7 @@ class InputBoxTile(ToggleTile, InputBox):
         tile_addition_height,
         next_surface,
         initial_text="",
-        text_size_percentage=20,
+        text_size_percentage_from_screen_height=20,
         max_char=20,
     ):
         ToggleTile.__init__(
@@ -34,7 +33,7 @@ class InputBoxTile(ToggleTile, InputBox):
             self,
             screen,
             initial_text,
-            int(self.image.get_height() * common.get_percentage_multiplier_from_percentage(text_size_percentage)),
+            text_size_percentage_from_screen_height,
             max_char,
         )
 
@@ -49,3 +48,8 @@ class InputBoxTile(ToggleTile, InputBox):
     def center(self):
         self.text_rect.centerx = self.rect.centerx
         self.text_rect.centery = self.rect.centery
+
+    def resize(self):
+        super().resize()
+        if hasattr(self, "text_rect"):
+            self.resize_text()

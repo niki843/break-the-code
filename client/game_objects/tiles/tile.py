@@ -38,24 +38,33 @@ class Tile(sprite.Sprite):
 
         self.name = name
 
+        self.original_image = surface
         self.image = surface
 
         self.screen = screen
+        self.size_percent = size_percent
+        self.tile_addition_width = tile_addition_width
+        self.tile_addition_height = tile_addition_height
+
+        self.standard_tile_width = None
+        self.standard_tile_height = None
+
+        self.resize()
+
+    def resize(self):
         width, height = self.screen.get_size()
-        self.standard_tile_width = width * common.get_percentage_multiplier_from_percentage(size_percent)
+        self.standard_tile_width = width * common.get_percentage_multiplier_from_percentage(self.size_percent)
 
         self.standard_tile_height = (
-            self.standard_tile_width * self.image.get_height() / self.image.get_width()
+            self.standard_tile_width * self.original_image.get_height() / self.original_image.get_width()
         )
 
         self.image = pygame.transform.scale(
-            self.image,
+            self.original_image,
             (
-                int(self.standard_tile_width) + tile_addition_width,
-                int(self.standard_tile_height) + tile_addition_height,
+                int(self.standard_tile_width) + self.tile_addition_width,
+                int(self.standard_tile_height) + self.tile_addition_height,
             ),
         )
 
         self.rect = self.image.get_rect()
-
-        self.screen.blit(self.image, self.rect)
