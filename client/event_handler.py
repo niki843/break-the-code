@@ -2,6 +2,7 @@ import time
 
 import pygame
 import json
+import client as client_init
 
 from client import ws_client as client, LOOP
 from client.game_objects.pages.join_game import JoinGame
@@ -32,8 +33,6 @@ class EventHandler(Singleton):
         self.game_windows.append(self.join_game)
 
     def handle_event(self, event):
-        info_object = pygame.display.Info()
-        current_w = info_object.current_w
         keys = pygame.key.get_pressed()
         if event.type == pygame.QUIT:
             return '{"type": "close_connection"}', True
@@ -47,20 +46,11 @@ class EventHandler(Singleton):
         elif (keys[pygame.K_LALT] or keys[pygame.K_RALT]) and (
             keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]
         ):
-            self.open_full_screen()
-            if current_w == 1280:
-                self.screen = pygame.display.set_mode(
-                    (0, 0), pygame.FULLSCREEN | pygame.DOUBLEBUF
-                )
-                self.current_window.change_screen(self.screen)
-                self.current_window.build()
+            if client_init.IS_FULLSCREEN_ENABLED == False:
+                self.open_full_screen()
                 return None, False
-            if current_w == 1920:
-                self.screen = pygame.display.set_mode(
-                    (1280, 720), pygame.HWSURFACE | pygame.DOUBLEBUF
-                )
-                self.current_window.change_screen(self.screen)
-                self.current_window.build()
+            if client_init.IS_FULLSCREEN_ENABLED == True:
+                self.open_windowed_screen()
                 return None, False
         elif event.type == pygame.KEYUP and event.key == pygame.K_n:
             # TODO Remove this and all bellow when the game is complete
@@ -186,4 +176,13 @@ class EventHandler(Singleton):
             (0, 0), pygame.FULLSCREEN
         )
         self.change_screen(self.screen)
+        client_init.IS_FULLSCREEN_ENABLED = True
+        return None, False
+
+    def open_windowed_screen(self):
+        self.screen = pygame.display.set_mode(
+            (1280, 720), pygame.HWSURFACE
+        )
+        self.change_screen(self.screen)
+        client_init.IS_FULLSCREEN_ENABLED = False
         return None, False
