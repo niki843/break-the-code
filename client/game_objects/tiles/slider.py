@@ -73,20 +73,20 @@ class Slider(Tile):
         if pos_x < self.rect.left or pos_x > self.rect.right:
             return
 
-        self.slider_percentage = self.actual_percentage[
-            bisect(
-                self.points_of_interest,
-                round(
-                    int(((pos_x - self.rect.left) / self.image.get_width()) * 100), -1
-                ),
-            )
-        ]
+        self.handle_position = bisect(
+            self.points_of_interest,
+            round(
+                int(((pos_x - self.rect.left) / self.image.get_width()) * 100)
+                - (self.slider_handle.image.get_width() / 2),
+                -1,
+            ),
+        )
+
+        self.slider_percentage = self.actual_percentage[self.handle_position]
         self.slider_handle.rect.centerx = self.rect.left + (
             self.image.get_width()
             * common.get_percentage_multiplier_from_percentage(self.slider_percentage)
         )
-
-        print(self.slider_percentage)
 
     def setup_points_of_interest_and_percents(self, delimiters_count):
         # -1 to compensate for the 0 value that will be first
@@ -114,3 +114,7 @@ class Slider(Tile):
         super().resize()
         if hasattr(self, "slider_handle"):
             self.slider_handle.resize()
+
+    def get_index(self):
+        """Returns the index of the percentage that the tile is currently on"""
+        return self.handle_position

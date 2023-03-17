@@ -1,5 +1,6 @@
 import pygame
 import client
+from client.game_objects import custom_exceptions
 from client.game_objects.tiles.input_box_tile import InputBoxTile
 from client.game_objects.tiles.slider import Slider
 from client.game_objects.tiles.tile import Tile
@@ -26,7 +27,7 @@ class Settings(GameWindow):
         self.screen_size_left_arrow = None
         self.music_toggle = None
         self.name_input_box = None
-        self.slider = None
+        self.slider_resolution = None
         self.back_tile = None
         self.tiles_background = None
         self.settings_label_tile = None
@@ -45,10 +46,9 @@ class Settings(GameWindow):
         self.build_tiles_background()
         self.build_settings_label()
         self.build_resolution_label()
-        self.build_screen_size_tile()
         self.build_music_toggle()
         self.build_username_text_box()
-        self.build_slider()
+        self.build_resolution_slider()
         self.build_back_tile()
 
     def resize(self):
@@ -56,10 +56,9 @@ class Settings(GameWindow):
         self.set_tiles_background_size()
         self.set_settings_label_size()
         self.set_resolution_label_size()
-        self.set_build_screen_size_tile_size()
         self.set_music_toggle_size()
         self.set_username_text_box_size()
-        self.set_slider_tile_size()
+        self.set_resolution_slider_tile_size()
         self.set_back_tile()
 
     def build_background(self):
@@ -127,14 +126,24 @@ class Settings(GameWindow):
             self.event_handler.screen_rect.right * 0.16
         )
 
-    def build_slider(self):
+    def build_resolution_slider(self):
+        self.current_resolution = f"{self.event_handler.screen.get_width()}x{self.event_handler.screen.get_height()}"
         slider_surface = pygame.image.load(
             f"{client.IMG_PATH}slider_res_bar.png"
         ).convert_alpha()
         slider_handle = pygame.image.load(
             f"{client.IMG_PATH}slider_handle.png"
         ).convert_alpha()
-        self.slider = Slider(
+
+        max_desktop_res = pygame.display.get_desktop_sizes()[0]
+        # Check if the resolution is in the list of resolutions if not set to fullscreen
+        if (
+            max_desktop_res[0] == self.event_handler.screen.get_width()
+            and max_desktop_res[1] == self.event_handler.screen.get_height()
+        ):
+            self.current_resolution = "fullscreen"
+
+        self.slider_resolution = Slider(
             name="slider",
             surface=slider_surface,
             screen=self.event_handler.screen,
@@ -144,63 +153,22 @@ class Settings(GameWindow):
             handle_name="slider_handle",
             handle_surface=slider_handle,
             handle_size_percent=2,
-            delimiters_count=7,
-            handle_position=2,
+            delimiters_count=6,
+            handle_position=self.SCREEN_SIZE_CAPTIONS.index(self.current_resolution),
         )
-        self.set_slider_tile_size()
-        self.tiles_group.add(self.slider.slider_handle)
+        self.set_resolution_slider_tile_size()
+        self.tiles_group.add(self.slider_resolution.slider_handle)
 
-    def set_slider_tile_size(self):
-        if not self.slider:
+    def set_resolution_slider_tile_size(self):
+        if not self.slider_resolution:
             return
 
-        self.slider.resize()
-        self.slider.rect.top = self.resolution_label_tile.rect.top + (
+        self.slider_resolution.resize()
+        self.slider_resolution.rect.top = self.resolution_label_tile.rect.top + (
             self.event_handler.screen_rect.bottom * 0.11
         )
-        self.slider.rect.left = self.resolution_label_tile.rect.left
-        self.slider.set_slider_handle_position()
-
-    def build_screen_size_tile(self):
-        surface = pygame.image.load(f"{client.IMG_PATH}blank.png").convert_alpha()
-        self.current_resolution = f"{self.event_handler.screen.get_width()}x{self.event_handler.screen.get_height()}"
-
-        max_desktop_res = pygame.display.get_desktop_sizes()[0]
-
-        # Check if the resolution is in the list of resolutions if not set to fullscreen
-        if (
-            max_desktop_res[0] == self.event_handler.screen.get_width()
-            and max_desktop_res[1] == self.event_handler.screen.get_height()
-        ):
-            self.current_resolution = "fullscreen"
-
-        self.screen_size_tile = TextSlideshowTile(
-            "screen_size",
-            surface,
-            self.event_handler.screen,
-            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_MEDIUM,
-            client.TILE_WIDTH_ADDITION,
-            client.TILE_HEIGHT_ADDITION,
-            self.current_resolution,
-            self.SCREEN_SIZE_CAPTIONS,
-        )
-
-        self.set_build_screen_size_tile_size()
-        self.tiles_group.add(self.screen_size_right_arrow)
-        self.tiles_group.add(self.screen_size_left_arrow)
-
-    def set_build_screen_size_tile_size(self):
-        if not self.screen_size_tile:
-            return
-
-        self.screen_size_tile.resize()
-        self.screen_size_right_arrow = self.screen_size_tile.right_arrow
-        self.screen_size_left_arrow = self.screen_size_tile.left_arrow
-
-        self.screen_size_tile.rect.centerx = self.event_handler.screen_rect.centerx
-        self.screen_size_tile.rect.bottom = self.event_handler.screen_rect.centery - 15
-
-        self.screen_size_tile.update()
+        self.slider_resolution.rect.left = self.resolution_label_tile.rect.left
+        self.slider_resolution.set_slider_handle_position()
 
     def build_screen_resolution_slide(self):
         pass
@@ -304,21 +272,6 @@ class Settings(GameWindow):
         self.event_handler.screen.blit(
             self.resolution_label_tile.image, self.resolution_label_tile.rect
         )
-        self.event_handler.screen.blit(
-            self.screen_size_tile.image, self.screen_size_tile.rect
-        )
-        self.event_handler.screen.blit(
-            self.screen_size_right_arrow.image,
-            self.screen_size_right_arrow.rect,
-        )
-        self.event_handler.screen.blit(
-            self.screen_size_left_arrow.image,
-            self.screen_size_left_arrow.rect,
-        )
-        self.event_handler.screen.blit(
-            self.screen_size_tile.current_text_surface,
-            self.screen_size_tile.current_text_rect,
-        )
         self.event_handler.screen.blit(self.music_toggle.image, self.music_toggle.rect)
         self.event_handler.screen.blit(
             self.name_input_box.image, self.name_input_box.rect
@@ -326,19 +279,13 @@ class Settings(GameWindow):
         self.event_handler.screen.blit(
             self.name_input_box.text_surface, self.name_input_box.text_rect
         )
-        self.event_handler.screen.blit(self.slider.image, self.slider.rect)
+        self.event_handler.screen.blit(self.slider_resolution.image, self.slider_resolution.rect)
         self.event_handler.screen.blit(
-            self.slider.slider_handle.image, self.slider.slider_handle.rect
+            self.slider_resolution.slider_handle.image, self.slider_resolution.slider_handle.rect
         )
         self.event_handler.screen.blit(self.back_tile.image, self.back_tile.rect)
 
     def activate_tile(self, tile):
-        if tile.name == "screen_size_right_arrow":
-            self.current_resolution = self.screen_size_tile.next_text()
-            self.change_screen_resolution_and_rebuild(self.current_resolution)
-        if tile.name == "screen_size_left_arrow":
-            self.current_resolution = self.screen_size_tile.previous_text()
-            self.change_screen_resolution_and_rebuild(self.current_resolution)
         if tile.name == "music_toggle_on" or tile.name == "music_toggle_off":
             self.music_toggle.next_value()
             self.music_state_on = not self.music_state_on
@@ -350,7 +297,14 @@ class Settings(GameWindow):
             self.name_input_box.mark_clicked()
             return self.event_handler.wait_text_input(self.name_input_box)
         if tile.name == "slider_handle":
-            self.event_handler.handle_slider_clicked(self.slider)
+            self.event_handler.handle_slider_clicked(self.slider_resolution)
+
+            try:
+                self.current_resolution = self.SCREEN_SIZE_CAPTIONS[self.slider_resolution.get_index()]
+            except IndexError:
+                raise custom_exceptions.ScreenResolutionSliderException()
+
+            self.change_screen_resolution_and_rebuild(self.current_resolution)
         if tile.name == "back":
             self.event_handler.change_window(self.event_handler.menu)
 
