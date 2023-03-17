@@ -64,9 +64,7 @@ def start_game():
     thumbnail = pygame.image.load(f"{IMG_PATH}crack-the-code-thumbnail.png")
     pygame.display.set_icon(thumbnail)
 
-    menu = Menu(screen)
-
-    event_handler = EventHandler(player_id, current_window=menu, screen=screen)
+    event_handler = EventHandler(player_id, screen=screen)
 
     running = True
     while running:

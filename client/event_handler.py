@@ -9,14 +9,19 @@ from client.utils.singelton import Singleton
 
 
 class EventHandler(Singleton):
-    def __init__(self, player_id, current_window, screen):
+    def __init__(self, player_id, screen):
+        self.game_windows = []
         self.screen = screen
-        self.current_window = current_window
+        self.screen_rect = screen.get_rect()
+        self.current_window = Menu(self)
 
         self.player_id = player_id
 
-        self.menu = Menu(self.screen)
-        self.settings = Settings(self.screen)
+        self.menu = self.current_window
+        self.settings = Settings(self)
+
+        self.game_windows.append(self.menu)
+        self.game_windows.append(self.settings)
 
     def handle_event(self, event):
         keys = pygame.key.get_pressed()
@@ -131,13 +136,21 @@ class EventHandler(Singleton):
     def change_window(self, new_window):
         self.current_window = new_window
 
+    def change_screen(self, screen):
+        self.screen = screen
+        self.screen_rect = self.screen.get_rect()
+
+        for window in self.game_windows:
+            window.delete()
+            window.build()
+
     def handle_mouse_click(self):
         print("Mouse is clicked")
         tiles_copy = self.current_window.tiles_group.copy()
         for tile in tiles_copy:
             if tile.rect.collidepoint(pygame.mouse.get_pos()):
                 print(tile.name)
-                return self.current_window.activate_tile(tile, self)
+                return self.current_window.activate_tile(tile)
         # Unclickable tile pressed
         return None, False
 
@@ -148,7 +161,5 @@ class EventHandler(Singleton):
         self.screen = pygame.display.set_mode(
             (0, 0), pygame.FULLSCREEN
         )
-        self.current_window.change_screen(self.screen)
-        self.current_window.delete()
-        self.current_window.build()
+        self.change_screen(self.screen)
         return None, False
