@@ -71,9 +71,6 @@ class Settings(GameWindow):
         self.tiles_background = Tile(
             "tiles_background", surface, self.event_handler.screen, 100, 0, 0
         )
-        print(
-            f"{self.event_handler.screen_rect.centerx} x {self.event_handler.screen_rect.centery}"
-        )
 
         self.tiles_background.rect.centerx = self.event_handler.screen_rect.centerx
         self.tiles_background.rect.centery = self.event_handler.screen_rect.centery

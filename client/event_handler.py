@@ -1,8 +1,12 @@
+import time
+
 import pygame
 import json
 
 from client import ws_client as client, LOOP
+from client.game_objects.pages.join_game import JoinGame
 from client.game_objects.pages.menu import Menu
+from client.game_objects.pages.new_game import NewGame
 from client.game_objects.pages.settings import Settings
 from client.utils import common
 from client.utils.singelton import Singleton
@@ -19,9 +23,13 @@ class EventHandler(Singleton):
 
         self.menu = self.current_window
         self.settings = Settings(self)
+        self.new_game = NewGame(self)
+        self.join_game = JoinGame(self)
 
         self.game_windows.append(self.menu)
         self.game_windows.append(self.settings)
+        self.game_windows.append(self.new_game)
+        self.game_windows.append(self.join_game)
 
     def handle_event(self, event):
         keys = pygame.key.get_pressed()
