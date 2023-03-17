@@ -31,6 +31,8 @@ class Settings(GameWindow):
         self.music_state_on = pygame.mixer.music.get_busy()
         self.current_volume = int(pygame.mixer.music.get_volume() * 100)
 
+        self.username_label = None
+
         self.back_tile = None
 
         self.current_resolution = None
@@ -53,6 +55,8 @@ class Settings(GameWindow):
         self.build_music_label()
         self.build_music_slider()
 
+        self.build_username_label()
+
         self.build_back_tile()
 
     def resize(self):
@@ -66,6 +70,8 @@ class Settings(GameWindow):
 
         self.set_music_label_size()
         self.set_music_slider_tile_size()
+
+        self.set_username_label_size()
 
         self.set_back_tile()
 
@@ -235,6 +241,24 @@ class Settings(GameWindow):
         self.music_slider.rect.left = self.music_label_tile.rect.left
         self.music_slider.set_slider_handle_position()
 
+    def build_username_label(self):
+        surface = pygame.image.load(f"{client.IMG_PATH}change_nickname_description.png").convert_alpha()
+
+        self.username_label = Tile(
+            "username_label", surface, self.event_handler.screen, 46, 0, 0
+        )
+        self.set_username_label_size()
+
+    def set_username_label_size(self):
+        if not self.username_label:
+            return
+
+        self.username_label.resize()
+        self.username_label.rect.top = self.music_slider.rect.bottom + (
+            self.event_handler.screen_rect.bottom * 0.02
+        )
+        self.username_label.rect.left = self.music_slider.rect.left
+
     # def build_username_text_box(self):
     #     surface = pygame.image.load(f"{client.IMG_PATH}blank.png").convert_alpha()
     #     next_surface = pygame.image.load(
@@ -317,6 +341,8 @@ class Settings(GameWindow):
         self.event_handler.screen.blit(self.music_slider.image, self.music_slider.rect)
         self.event_handler.screen.blit(self.music_slider.slider_handle.image, self.music_slider.slider_handle.rect)
 
+        self.event_handler.screen.blit(self.username_label.image, self.username_label.rect)
+
         self.event_handler.screen.blit(self.back_tile.image, self.back_tile.rect)
 
     def activate_tile(self, tile):
@@ -326,7 +352,7 @@ class Settings(GameWindow):
             try:
                 self.current_resolution = self.SCREEN_SIZE_CAPTIONS[self.resolution_slider.get_index()]
             except IndexError:
-                raise custom_exceptions.ScreenResolutionSliderException()
+                raise custom_exceptions.ScreenResolutionIndexError()
 
             self.change_screen_resolution_and_rebuild(self.current_resolution)
         if tile.name == "music_slider_handle":

@@ -169,5 +169,5 @@ class EventHandler(Singleton):
             (0, 0), pygame.FULLSCREEN
         )
         self.change_screen(self.screen)
-        self.settings.slider_resolution.handle_position = self.settings.SCREEN_SIZE_CAPTIONS.index("fullscreen")
+        self.settings.resolution_slider.handle_position = self.settings.SCREEN_SIZE_CAPTIONS.index("fullscreen")
         return None, False
