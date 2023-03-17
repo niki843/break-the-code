@@ -45,3 +45,8 @@ class Slider(Tile):
         self.slider_handle.rect.centerx = self.rect.left + (self.image.get_width() * common.get_percentage_multiplier_from_percentage(self.slider_percentage))
 
         print(self.slider_percentage)
+
+    def resize(self):
+        super().resize()
+        if hasattr(self, "slider_handle"):
+            self.slider_handle.resize()

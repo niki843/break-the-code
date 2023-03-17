@@ -2,6 +2,7 @@ import pygame
 from pygame.sprite import Group
 
 from client import IMG_PATH
+from client.game_objects.tiles.tile import Tile
 
 
 class GameWindow:
@@ -11,7 +12,6 @@ class GameWindow:
         self.event_handler = event_handler
 
         self.background_image = None
-        self.background_rect = None
 
         self.build_background()
 
@@ -21,18 +21,24 @@ class GameWindow:
     def build(self):
         self.build_background()
 
+    def resize(self):
+        self.set_background_size()
+
     def build_background(self):
-        self.background_image = pygame.image.load(
+        surface = pygame.image.load(
             f"{IMG_PATH}background.png"
         ).convert_alpha()
 
-        self.background_image = pygame.transform.scale(
-            self.background_image, (self.event_handler.screen.get_width(), self.event_handler.screen.get_height())
-        )
-        self.background_rect = self.background_image.get_rect()
+        self.background_image = Tile("background", surface, self.event_handler.screen, 100, 0, 0)
+        self.set_background_size()
+
+    def set_background_size(self):
+        self.background_image.resize()
+        self.background_image.rect.centerx = self.event_handler.screen_rect.centerx
+        self.background_image.rect.centery = self.event_handler.screen_rect.centery
 
     def blit(self):
-        self.event_handler.screen.blit(self.background_image, self.background_rect)
+        self.event_handler.screen.blit(self.background_image.image, self.background_image.rect)
 
     def delete(self):
         pass

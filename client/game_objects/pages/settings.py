@@ -11,7 +11,7 @@ from client.game_objects.tiles.text_slideshow_tile import TextSlideshowTile
 
 class Settings(GameWindow):
     SCREEN_SIZE_CAPTIONS = [
-        "1024x620",
+        "1024x576",
         "1280x720",
         "1366x768",
         "1536x864",
@@ -42,7 +42,7 @@ class Settings(GameWindow):
 
     def build(self):
         self.build_background()
-        self.build_buttons_background()
+        self.build_tiles_background()
         self.build_settings_label()
         self.build_resolution_label()
         self.build_screen_size_tile()
@@ -51,27 +51,37 @@ class Settings(GameWindow):
         self.build_slider()
         self.build_back_tile()
 
+    def resize(self):
+        self.set_background_size()
+        self.set_tiles_background_size()
+        self.set_settings_label_size()
+        self.set_resolution_label_size()
+        self.set_build_screen_size_tile_size()
+        self.set_music_toggle_size()
+        self.set_username_text_box_size()
+        self.set_slider_tile_size()
+        self.set_back_tile()
+
     def build_background(self):
-        self.background_image = pygame.image.load(
+        surface = pygame.image.load(
             f"{client.IMG_PATH}clear_bgr.png"
         ).convert_alpha()
 
-        self.background_image = pygame.transform.scale(
-            self.background_image,
-            (
-                self.event_handler.screen.get_width(),
-                self.event_handler.screen.get_height(),
-            ),
-        )
-        self.background_rect = self.background_image.get_rect()
+        self.background_image = Tile("background", surface, self.event_handler.screen, 100, 0, 0)
+        self.set_background_size()
 
-    def build_buttons_background(self):
+    def build_tiles_background(self):
         surface = pygame.image.load(f"{client.IMG_PATH}menu_field.png").convert_alpha()
 
         self.tiles_background = Tile(
             "tiles_background", surface, self.event_handler.screen, 100, 0, 0
         )
+        self.set_tiles_background_size()
 
+    def set_tiles_background_size(self):
+        if not self.tiles_background:
+            return
+        self.tiles_background.resize()
         self.tiles_background.rect.centerx = self.event_handler.screen_rect.centerx
         self.tiles_background.rect.centery = self.event_handler.screen_rect.centery
 
@@ -83,7 +93,13 @@ class Settings(GameWindow):
         self.settings_label_tile = Tile(
             "settings_label", surface, self.event_handler.screen, 30, 0, 0
         )
+        self.set_settings_label_size()
 
+    def set_settings_label_size(self):
+        if not self.settings_label_tile:
+            return
+
+        self.settings_label_tile.resize()
         self.settings_label_tile.rect.centerx = self.event_handler.screen_rect.centerx
         self.settings_label_tile.rect.top = self.event_handler.screen_rect.top + (
             self.event_handler.screen_rect.bottom * 0.03
@@ -97,7 +113,13 @@ class Settings(GameWindow):
         self.resolution_label_tile = Tile(
             "resolution_label", surface, self.event_handler.screen, 30, 0, 0
         )
+        self.set_resolution_label_size()
 
+    def set_resolution_label_size(self):
+        if not self.resolution_label_tile:
+            return
+
+        self.resolution_label_tile.resize()
         self.resolution_label_tile.rect.top = self.tiles_background.rect.top + (
             self.event_handler.screen_rect.bottom * 0.22
         )
@@ -124,15 +146,20 @@ class Settings(GameWindow):
             2,
             8,
         )
+        self.set_slider_tile_size()
+        self.tiles_group.add(self.slider.slider_handle)
 
+    def set_slider_tile_size(self):
+        if not self.slider:
+            return
+
+        self.slider.resize()
         self.slider.rect.top = self.resolution_label_tile.rect.top + (
             self.event_handler.screen_rect.bottom * 0.11
         )
         self.slider.rect.left = self.resolution_label_tile.rect.left
         self.slider.slider_handle.rect.centerx = self.slider.rect.centerx
         self.slider.slider_handle.rect.centery = self.slider.rect.centery
-
-        self.tiles_group.add(self.slider.slider_handle)
 
     def build_screen_size_tile(self):
         surface = pygame.image.load(f"{client.IMG_PATH}blank.png").convert_alpha()
@@ -158,6 +185,15 @@ class Settings(GameWindow):
             self.SCREEN_SIZE_CAPTIONS,
         )
 
+        self.set_build_screen_size_tile_size()
+        self.tiles_group.add(self.screen_size_right_arrow)
+        self.tiles_group.add(self.screen_size_left_arrow)
+
+    def set_build_screen_size_tile_size(self):
+        if not self.screen_size_tile:
+            return
+
+        self.screen_size_tile.resize()
         self.screen_size_right_arrow = self.screen_size_tile.right_arrow
         self.screen_size_left_arrow = self.screen_size_tile.left_arrow
 
@@ -165,9 +201,6 @@ class Settings(GameWindow):
         self.screen_size_tile.rect.bottom = self.event_handler.screen_rect.centery - 15
 
         self.screen_size_tile.update()
-
-        self.tiles_group.add(self.screen_size_right_arrow)
-        self.tiles_group.add(self.screen_size_left_arrow)
 
     def build_screen_resolution_slide(self):
         pass
@@ -193,10 +226,16 @@ class Settings(GameWindow):
             next_surface,
         )
 
+        self.set_music_toggle_size()
+        self.tiles_group.add(self.music_toggle)
+
+    def set_music_toggle_size(self):
+        if not self.music_toggle:
+            return
+
+        self.music_toggle.resize()
         self.music_toggle.rect.centerx = self.event_handler.screen_rect.centerx
         self.music_toggle.rect.top = self.event_handler.screen_rect.centery + 15
-
-        self.tiles_group.add(self.music_toggle)
 
     def build_username_text_box(self):
         surface = pygame.image.load(f"{client.IMG_PATH}blank.png").convert_alpha()
@@ -213,16 +252,22 @@ class Settings(GameWindow):
             client.TILE_HEIGHT_ADDITION,
             next_surface,
             self.temp_username if self.temp_username else self.current_username,
-            50,
+            text_size_percentage_from_screen_height=10,
         )
 
+        self.set_username_text_box_size()
+        self.tiles_group.add(self.name_input_box)
+
+    def set_username_text_box_size(self):
+        if not self.name_input_box:
+            return
+
+        self.name_input_box.resize()
         self.name_input_box.rect.centerx = self.event_handler.screen_rect.centerx
         self.name_input_box.rect.top = self.music_toggle.rect.bottom + 15
 
         self.name_input_box.text_rect.centerx = self.name_input_box.rect.centerx
         self.name_input_box.text_rect.centery = self.name_input_box.rect.centery
-
-        self.tiles_group.add(self.name_input_box)
 
     def build_back_tile(self):
         back_surface = pygame.image.load(f"{client.IMG_PATH}back.png")
@@ -235,13 +280,19 @@ class Settings(GameWindow):
             0,
         )
 
+        self.set_back_tile()
+        self.tiles_group.add(self.back_tile)
+
+    def set_back_tile(self):
+        if not self.back_tile:
+            return
+
+        self.back_tile.resize()
         self.back_tile.rect.left = self.event_handler.screen_rect.left + 40
         self.back_tile.rect.top = self.event_handler.screen_rect.top + 20
 
-        self.tiles_group.add(self.back_tile)
-
     def blit(self):
-        self.event_handler.screen.blit(self.background_image, self.background_rect)
+        self.event_handler.screen.blit(self.background_image.image, self.background_image.rect)
         self.event_handler.screen.blit(
             self.tiles_background.image, self.tiles_background.rect
         )
@@ -322,7 +373,7 @@ class Settings(GameWindow):
     def delete(self):
         # Apparently pygame doesn't have an option to actually delete visual objects
         # instead we should just make them transparent
-        self.background_image.fill(pygame.Color(0, 0, 0))
+        self.background_image.image.fill(pygame.Color(0, 0, 0))
         self.screen_size_tile.image.fill(pygame.Color(0, 0, 0))
         self.screen_size_right_arrow.image.fill(pygame.Color(0, 0, 0))
         self.screen_size_left_arrow.image.fill(pygame.Color(0, 0, 0))

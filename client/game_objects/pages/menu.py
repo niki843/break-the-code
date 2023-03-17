@@ -3,8 +3,6 @@ from pygame import Color
 import client
 import pygame
 
-from client.game_objects.pages.join_game import JoinGame
-from client.game_objects.pages.new_game import NewGame
 from client.game_objects.pages.game_window import GameWindow
 from client.game_objects.tiles.tile import Tile
 
@@ -27,6 +25,13 @@ class Menu(GameWindow):
         self.build_settings()
         self.build_quit_game()
 
+    def resize(self):
+        self.set_background_size()
+        self.set_join_game_size()
+        self.set_new_game_size()
+        self.set_settings_size()
+        self.set_quit_game_size()
+
     def build_join_game(self):
         surface = pygame.image.load(f"{client.IMG_PATH}join_game.png").convert_alpha()
         self.join_game_tile = Tile(
@@ -37,7 +42,13 @@ class Menu(GameWindow):
             client.TILE_WIDTH_ADDITION,
             client.TILE_HEIGHT_ADDITION,
         )
+        self.set_join_game_size()
 
+    def set_join_game_size(self):
+        if not self.join_game_tile:
+            return
+
+        self.join_game_tile.resize()
         self.join_game_tile.rect.centerx = self.event_handler.screen_rect.centerx
         self.join_game_tile.rect.centery = self.event_handler.screen_rect.centery
         self.tiles_group.add(self.join_game_tile)
@@ -52,7 +63,13 @@ class Menu(GameWindow):
             client.TILE_WIDTH_ADDITION,
             client.TILE_HEIGHT_ADDITION,
         )
+        self.set_new_game_size()
 
+    def set_new_game_size(self):
+        if not self.new_game_tile:
+            return
+
+        self.new_game_tile.resize()
         self.new_game_tile.rect.centerx = self.event_handler.screen_rect.centerx
         self.new_game_tile.rect.bottom = (
             self.join_game_tile.rect.top - client.BETWEEN_TILES_SPACING
@@ -69,7 +86,13 @@ class Menu(GameWindow):
             client.TILE_WIDTH_ADDITION,
             client.TILE_HEIGHT_ADDITION,
         )
+        self.set_settings_size()
 
+    def set_settings_size(self):
+        if not self.settings_tile:
+            return
+
+        self.settings_tile.resize()
         self.settings_tile.rect.centerx = self.event_handler.screen_rect.centerx
         self.settings_tile.rect.top = (
             self.join_game_tile.rect.bottom + client.BETWEEN_TILES_SPACING
@@ -86,7 +109,13 @@ class Menu(GameWindow):
             client.TILE_WIDTH_ADDITION,
             client.TILE_HEIGHT_ADDITION,
         )
+        self.set_quit_game_size()
 
+    def set_quit_game_size(self):
+        if not self.quit_tile:
+            return
+
+        self.quit_tile.resize()
         self.quit_tile.rect.right = (
             self.event_handler.screen_rect.right - client.BETWEEN_TILE_AND_SCREEN_SPACING
         )
@@ -99,7 +128,7 @@ class Menu(GameWindow):
 
     def blit(self):
         # Refresh the object on the screen so any runtime changes will be reflected
-        self.event_handler.screen.blit(self.background_image, self.background_rect)
+        self.event_handler.screen.blit(self.background_image.image, self.background_image.rect)
         self.event_handler.screen.blit(self.join_game_tile.image, self.join_game_tile.rect)
         self.event_handler.screen.blit(self.new_game_tile.image, self.new_game_tile.rect)
         self.event_handler.screen.blit(self.settings_tile.image, self.settings_tile.rect)

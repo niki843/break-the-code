@@ -145,12 +145,13 @@ class EventHandler(Singleton):
         self.current_window = new_window
 
     def change_screen(self, screen):
+        print(time.time())
         self.screen = screen
         self.screen_rect = self.screen.get_rect()
 
         for window in self.game_windows:
-            window.delete()
-            window.build()
+            window.resize()
+        print(time.time())
 
     def handle_mouse_click(self):
         print("Mouse is clicked")

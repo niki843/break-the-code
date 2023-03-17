@@ -61,12 +61,9 @@ class TextSlideshowTile(Tile):
         self.right_arrow = None
         self.left_arrow = None
 
-        self.font = common.load_font(
-            self.image.get_width()
-            * common.get_percentage_multiplier_from_percentage(
-                client.TEXT_SIZE_PERCENTAGE_FROM_BOX
-            )
-        )
+        self.font = None
+
+        self.resize()
 
         self.load_text()
 
@@ -144,3 +141,14 @@ class TextSlideshowTile(Tile):
         self.update_text_position()
 
         return self.slide_values[next_index]
+
+    def resize(self):
+        super().resize()
+        if hasattr(self, "font"):
+            self.font = common.load_font(
+                self.image.get_width()
+                * common.get_percentage_multiplier_from_percentage(
+                    client.TEXT_SIZE_PERCENTAGE_FROM_BOX
+                )
+            )
+            self.load_text()

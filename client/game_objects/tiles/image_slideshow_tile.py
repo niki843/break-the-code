@@ -4,7 +4,7 @@ import client
 from client.game_objects.tiles.tile import Tile
 
 
-# TODO: Not fully functional yet
+# TODO: Not fully functional yet missing implentation for loading next/previous Tile and showing it as current
 class ImageSlideshowTile(Tile):
     """
     A class used to create a Image Slideshow Tile, meaning that a list of images will be changed on arrow click
@@ -25,7 +25,7 @@ class ImageSlideshowTile(Tile):
     tile_addition_height : int
         used for additional pixels to the height of the image that's being used
     slide_surfaces : list
-        a list with the values that will be displayed in the image box
+        a list of the names of the pngs that will be displayed for next and previous
     """
 
     def __init__(
@@ -47,7 +47,10 @@ class ImageSlideshowTile(Tile):
             tile_addition_height,
         )
 
+        self.surface = surface
+
         self.slides = slide_surfaces
+        self.tiles = {}
 
         self.right_arrow = None
         self.left_arrow = None
@@ -82,3 +85,45 @@ class ImageSlideshowTile(Tile):
             0,
             0,
         )
+
+    def build_next_tiles(
+        self,
+        name,
+        screen,
+        size_percent,
+        tile_addition_width,
+        tile_addition_height,
+    ):
+        for slide in self.slides:
+            self.surface = pygame.image.load(slide)
+            self.tiles.update({self.surface:
+                Tile(
+                    name,
+                    self.surface,
+                    screen,
+                    size_percent,
+                    tile_addition_width,
+                    tile_addition_height,
+                )
+                               })
+
+    def next(self):
+        self.change_tile(1)
+
+    def previous(self):
+        self.change_tile(-1)
+
+    def change_tile(self, addition_index):
+        tiles_list = list(self.tiles)
+        next_index = tiles_list.index(self.surface) + addition_index
+        if next_index > len(tiles_list):
+            next_index = 0
+        next_surface = tiles_list[next_index]
+        self.image = self.tiles.get(next_surface).image
+        self.rect = self.tiles.get(next_surface).rect
+
+    def resize(self):
+        super().resize()
+        if self.slides:
+            for slide in self.slides:
+                slide.resize()
