@@ -2,6 +2,7 @@ import time
 
 import pygame
 import json
+import client as client_init
 
 from client import ws_client as client, LOOP
 from client.game_objects.pages.join_game import JoinGame
@@ -45,7 +46,12 @@ class EventHandler(Singleton):
         elif (keys[pygame.K_LALT] or keys[pygame.K_RALT]) and (
             keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]
         ):
-            self.open_full_screen()
+            if client_init.IS_FULLSCREEN_ENABLED == False:
+                self.open_full_screen()
+                return None, False
+            if client_init.IS_FULLSCREEN_ENABLED == True:
+                self.open_windowed_screen()
+                return None, False
         elif event.type == pygame.KEYUP and event.key == pygame.K_n:
             # TODO Remove this and all bellow when the game is complete
             return (
@@ -181,4 +187,14 @@ class EventHandler(Singleton):
         )
         self.change_screen(self.screen)
         self.settings.resolution_slider.handle_position = self.settings.SCREEN_SIZE_CAPTIONS.index("fullscreen")
+        client_init.IS_FULLSCREEN_ENABLED = True
+        return None, False
+
+    def open_windowed_screen(self):
+        self.screen = pygame.display.set_mode(
+            (1280, 720), pygame.HWSURFACE
+        )
+        self.change_screen(self.screen)
+        self.settings.resolution_slider.handle_position = self.settings.SCREEN_SIZE_CAPTIONS.index("1280x720")
+        client_init.IS_FULLSCREEN_ENABLED = False
         return None, False
