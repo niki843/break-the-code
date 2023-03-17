@@ -14,6 +14,7 @@ class Slider(Tile):
         handle_name,
         handle_surface,
         handle_size_percent,
+        delimiters_count,
     ):
         super().__init__(
             name,
@@ -28,6 +29,7 @@ class Slider(Tile):
         )
 
         self.slider_percentage = 0
+        self.delimiters = delimiters_count
 
     def move_slider(self, pos_x):
         if pos_x < self.rect.left or pos_x > self.rect.right:
