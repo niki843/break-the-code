@@ -436,7 +436,7 @@ class Settings(GameWindow):
         if tile.name == "apply_button_on" or tile.name == "apply_button_off":
             self.apply_button.next_value()
             # Save the username if only it's not empty
-            if self.username_input_box.text > 0:
+            if len(self.username_input_box.text) > 0:
                 self.current_username = self.username_input_box.text
             self.event_handler.handle_save_button(self.apply_button)
         if tile.name == "back":
