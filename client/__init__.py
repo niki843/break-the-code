@@ -26,3 +26,5 @@ GAME_BASE_COLOR = (127, 169, 6)
 NEUTRAL_COLOR = (0, 0, 0)
 
 LOOP = asyncio.get_event_loop()
+
+IS_FULLSCREEN_ENABLED = False
