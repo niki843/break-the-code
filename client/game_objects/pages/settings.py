@@ -233,7 +233,7 @@ class Settings(GameWindow):
             handle_name="music_slider_handle",
             handle_surface=slider_handle,
             handle_size_percent=2,
-            delimiters_count=10,
+            delimiters_count=11,
             handle_position=2,
         )
         self.set_music_slider_tile_size()

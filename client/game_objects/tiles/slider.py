@@ -61,8 +61,7 @@ class Slider(Tile):
         )
 
         self.actual_percentage = []
-        self.points_of_interest = []
-        self.setup_points_of_interest_and_percents(delimiters_count)
+        self.setup_percents(delimiters_count)
 
         self.handle_position = handle_position
 
@@ -73,34 +72,32 @@ class Slider(Tile):
         if pos_x < self.rect.left or pos_x > self.rect.right:
             return
 
+        print((pos_x - self.rect.left) / self.image.get_width() * 100)
         self.handle_position = bisect(
-            self.points_of_interest,
+            self.actual_percentage,
             round(
-                int(((pos_x - self.rect.left) / self.image.get_width()) * 100)
-                - (self.slider_handle.image.get_width() / 3),
+                ((pos_x - self.rect.left) / self.image.get_width() * 100),
                 -1,
             ),
-        )
+        ) - 1
+        print(self.handle_position)
 
         self.slider_percentage = self.actual_percentage[self.handle_position]
+
         self.slider_handle.rect.centerx = self.rect.left + (
             self.image.get_width()
             * common.get_percentage_multiplier_from_percentage(self.slider_percentage)
         )
 
-    def setup_points_of_interest_and_percents(self, delimiters_count):
+    def setup_percents(self, delimiters_count):
         # -1 to compensate for the 0 value that will be first
         reference_value = 100 / (delimiters_count - 1)
         self.actual_percentage.append(0)
         # points of interests first element will be half of the reference value
         # this will allow the slider handle to move to the lower value if it's under
         # half of the slider's separation area and to the upper value if it's over
-        self.points_of_interest.append(reference_value / 2)
         for i in range(1, delimiters_count):
             self.actual_percentage.append(
-                self.actual_percentage[i - 1] + reference_value
-            )
-            self.points_of_interest.append(
                 self.actual_percentage[i - 1] + reference_value
             )
 
