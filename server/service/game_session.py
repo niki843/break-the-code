@@ -158,6 +158,16 @@ class GameSession:
         )
         await self.give_out_condition_cards()
 
+    async def send_message_to_all_others(self, player_id, message_content):
+        event = {
+            "type": "chat_message",
+            "playerid": player_id,
+            "message": f"{message_content}",
+        }
+        websockets.broadcast(
+            self.__connected_player_connections.values(), json.dumps(event)
+        )
+
     async def guess_number_and_change_player(self, player_id, player_guess):
         self.validate_current_player(player_id)
         player = self.__connected_players[self.__current_player_at_hand_id]
