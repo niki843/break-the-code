@@ -23,10 +23,10 @@ class InputBox:
         self.color = client.GAME_BASE_COLOR if self.active else client.NEUTRAL_COLOR
 
         if self.active:
-            self.highlight(self.screen)
+            self.highlight()
 
     def write(self, text):
-        if self.active and len(self.text) < self.max_char:
+        if len(self.text) < self.max_char:
             self.text += text
             self.text_surface = self.font.render(self.text, True, self.color)
             self.text_rect = self.text_surface.get_rect()
@@ -44,12 +44,13 @@ class InputBox:
         self.text_rect = self.text_surface.get_rect()
         self.screen.blit(self.text_surface, self.text_rect)
 
-    def highlight(self, screen):
+    def highlight(self):
         # Draw the highlight.
-        pygame.draw.rect(screen, self.color, self.text_rect, 10)
+        pygame.draw.rect(self.screen, self.color, self.text_rect, 10)
 
     def resize_text(self):
         text_size = int(self.screen.get_height() * common.get_percentage_multiplier_from_percentage(self.text_size_percentage))
         self.font = common.load_font(text_size)
         self.text_surface = self.font.render(self.text, True, client.GAME_BASE_COLOR)
         self.text_rect = self.text_surface.get_rect()
+        self.screen.blit(self.text_surface, self.text_rect)

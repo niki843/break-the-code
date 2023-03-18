@@ -37,7 +37,6 @@ class Settings(GameWindow):
         self.username_input_box = None
         # TODO: implement username
         self.current_username = "test"
-        self.temp_username = None
 
         self.apply_button = None
 
@@ -288,7 +287,7 @@ class Settings(GameWindow):
             client.TILE_WIDTH_ADDITION,
             client.TILE_HEIGHT_ADDITION,
             next_surface,
-            self.temp_username if self.temp_username else self.current_username,
+            self.current_username,
             text_size_percentage_from_screen_height=5,
         )
 
@@ -436,11 +435,15 @@ class Settings(GameWindow):
                 pygame.mixer.music.stop()
         if tile.name == "apply_button_on" or tile.name == "apply_button_off":
             self.apply_button.next_value()
+            # Save the username if only it's not empty
+            if self.username_input_box.text > 0:
+                self.current_username = self.username_input_box.text
             self.event_handler.handle_save_button(self.apply_button)
-            self.current_username = self.temp_username
         if tile.name == "back":
             self.event_handler.change_window(self.event_handler.menu)
-            self.temp_username = self.current_username if self.current_username else "test"
+            self.username_input_box.text = self.current_username
+            self.username_input_box.resize_text()
+            self.username_input_box.center()
         if tile.name == "name_input":
             self.username_input_box.mark_clicked()
             return self.event_handler.wait_text_input(self.username_input_box)
