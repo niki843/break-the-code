@@ -133,7 +133,7 @@ class Settings(GameWindow):
         ).convert_alpha()
 
         self.resolution_label_tile = Tile(
-            "resolution_label", surface, self.event_handler.screen, 30, 0, 0
+            "resolution_label", surface, self.event_handler.screen, 21, 0, 0
         )
         self.set_resolution_label_size()
 
@@ -155,7 +155,7 @@ class Settings(GameWindow):
             f"{client.IMG_PATH}slider_res_bar.png"
         ).convert_alpha()
         slider_handle = pygame.image.load(
-            f"{client.IMG_PATH}slider_handle.png"
+            f"{client.IMG_PATH}slider_button.png"
         ).convert_alpha()
 
         max_desktop_res = pygame.display.get_desktop_sizes()[0]
@@ -187,8 +187,8 @@ class Settings(GameWindow):
             return
 
         self.resolution_slider.resize()
-        self.resolution_slider.rect.top = self.resolution_label_tile.rect.top + (
-            self.event_handler.screen_rect.bottom * 0.11
+        self.resolution_slider.rect.top = self.resolution_label_tile.rect.bottom + (
+            self.event_handler.screen.get_height() * 0.05
         )
         self.resolution_slider.rect.left = self.resolution_label_tile.rect.left
         self.resolution_slider.set_slider_handle_position()
@@ -199,7 +199,7 @@ class Settings(GameWindow):
         ).convert_alpha()
 
         self.music_label_tile = Tile(
-            "music_label", surface, self.event_handler.screen, 17, 0, 0
+            "music_label", surface, self.event_handler.screen, 11, 0, 0
         )
         self.set_music_label_size()
 
@@ -208,19 +208,17 @@ class Settings(GameWindow):
             return
 
         self.music_label_tile.resize()
-        self.music_label_tile.rect.top = self.tiles_background.rect.top + (
-            self.event_handler.screen_rect.bottom * 0.38
+        self.music_label_tile.rect.top = self.resolution_slider.rect.bottom + (
+            self.event_handler.screen_rect.bottom * 0.05
         )
-        self.music_label_tile.rect.left = self.tiles_background.rect.left + (
-            self.event_handler.screen_rect.right * 0.16
-        )
+        self.music_label_tile.rect.left = self.resolution_slider.rect.left
 
     def build_music_slider(self):
         slider_surface = pygame.image.load(
             f"{client.IMG_PATH}slider_music_bar.png"
         ).convert_alpha()
         slider_handle = pygame.image.load(
-            f"{client.IMG_PATH}slider_handle.png"
+            f"{client.IMG_PATH}slider_button.png"
         ).convert_alpha()
 
         self.music_slider = Slider(
@@ -256,7 +254,7 @@ class Settings(GameWindow):
         ).convert_alpha()
 
         self.username_label = Tile(
-            "username_label", surface, self.event_handler.screen, 46, 0, 0
+            "username_label", surface, self.event_handler.screen, 33, 0, 0
         )
         self.set_username_label_size()
 
@@ -266,7 +264,7 @@ class Settings(GameWindow):
 
         self.username_label.resize()
         self.username_label.rect.top = self.music_slider.rect.bottom + (
-            self.event_handler.screen_rect.bottom * 0.02
+            self.event_handler.screen_rect.bottom * 0.05
         )
         self.username_label.rect.left = self.music_slider.rect.left
 
