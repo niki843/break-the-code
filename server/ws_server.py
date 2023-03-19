@@ -149,6 +149,11 @@ async def handle_user_input(player_id, websocket, game_session):
                     game_session,
                     msg.get("player_guess"),
                 )
+            elif msg_type == "chat_message":
+                await game_session.send_message_to_all_others(
+                    player_id,
+                    msg.get("content", None)
+                )
             else:
                 await send_message(
                     websocket=websocket,
