@@ -165,7 +165,7 @@ class GameSession:
             "message": f"{message_content}",
         }
         websockets.broadcast(
-            self.__connected_player_connections.values(), json.dumps(event)
+            self.get_player_connection_without_id(player_id), json.dumps(event)
         )
 
     async def guess_number_and_change_player(self, player_id, player_guess):
