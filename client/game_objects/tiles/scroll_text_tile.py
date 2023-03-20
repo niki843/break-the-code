@@ -1,4 +1,5 @@
 import client
+from client.game_objects.tiles.slider import Slider
 from client.game_objects.tiles.text_slideshow_tile import TextSlideshowTile
 
 from client.utils import common
@@ -8,7 +9,11 @@ class ScrollTextTile(TextSlideshowTile):
     def __init__(
         self,
         name,
-        surface,
+        slider_name,
+        handle_name,
+        main_background_surface,
+        slider_surface,
+        handle_surface,
         screen,
         size_percent,
         tile_addition_width,
@@ -22,9 +27,10 @@ class ScrollTextTile(TextSlideshowTile):
         self.max_elements_to_display = max_elements_to_display
         self.text_size_percentage = text_size_percentage
 
-        super().__init__(
+        TextSlideshowTile.__init__(
+            self,
             name,
-            surface,
+            main_background_surface,
             screen,
             size_percent,
             tile_addition_width,
@@ -32,6 +38,20 @@ class ScrollTextTile(TextSlideshowTile):
             None,
             text_items or [],
             horizontal=False
+        )
+        self.slider = Slider(
+            slider_name,
+            slider_surface,
+            screen,
+            0.58,
+            35,
+            0,
+            handle_name,
+            handle_surface,
+            3,
+            0,
+            0,
+            False,
         )
 
         self.text_size = (
@@ -60,6 +80,11 @@ class ScrollTextTile(TextSlideshowTile):
 
         self.left_arrow.rect.right = self.rect.right
         self.left_arrow.rect.bottom = self.rect.bottom
+
+        self.slider.rect.right = self.rect.right - (self.image.get_width() * 0.02)
+        self.slider.rect.centery = self.rect.centery
+
+        self.slider.set_slider_handle_position()
 
     def update_text_position(self):
         current_top_surface = self.rect.top + 50
@@ -103,5 +128,7 @@ class ScrollTextTile(TextSlideshowTile):
         self.screen.blit(self.image, self.rect)
         self.screen.blit(self.right_arrow.image, self.right_arrow.rect)
         self.screen.blit(self.left_arrow.image, self.left_arrow.rect)
+        self.screen.blit(self.slider.image, self.slider.rect)
+        self.screen.blit(self.slider.slider_handle.image, self.slider.slider_handle.rect)
         for surface, rect in self.text_surfaces:
             self.screen.blit(surface, rect)

@@ -61,10 +61,20 @@ class JoinGame(GameWindow):
 
     def build_scrollable_text(self):
         surface = pygame.image.load(f"{client.IMG_PATH}blank.png").convert_alpha()
+        slider_surface = pygame.image.load(
+            f"{client.IMG_PATH}slider_music_bar.png"
+        ).convert_alpha()
+        slider_handle = pygame.image.load(
+            f"{client.IMG_PATH}slider_button.png"
+        ).convert_alpha()
 
         self.scroll_text_tile = ScrollTextTile(
             "hover",
+            "slider",
+            "handle",
             surface,
+            slider_surface,
+            slider_handle,
             self.event_handler.screen,
             30,
             130,

@@ -1,3 +1,5 @@
+import pygame
+
 from client.game_objects.tiles.tile import Tile
 from client.utils import common
 from bisect import bisect
@@ -47,7 +49,12 @@ class Slider(Tile):
         handle_size_percent,
         delimiters_count,
         handle_position,
+        horizontal=True,
     ):
+        if not horizontal:
+            surface = self.rotate(surface)
+            handle_surface = self.rotate(handle_surface)
+
         super().__init__(
             name,
             surface,
@@ -62,6 +69,7 @@ class Slider(Tile):
 
         self.actual_percentage = []
         self.setup_percents(delimiters_count)
+        self.horizontal = horizontal
 
         self.handle_position = handle_position
 
@@ -102,15 +110,24 @@ class Slider(Tile):
             )
 
     def set_slider_handle_position(self):
-        self.slider_handle.rect.centery = self.rect.centery
-        self.slider_handle.rect.centerx = self.rect.left + (
-            (self.image.get_width() / (self.delimiters - 1)) * self.handle_position
-        )
+        if self.horizontal:
+            self.slider_handle.rect.centery = self.rect.centery
+            self.slider_handle.rect.centerx = self.rect.left + (
+                (self.image.get_width() / (self.delimiters - 1)) * self.handle_position
+            )
+        else:
+            self.slider_handle.rect.centerx = self.rect.centerx
+            self.slider_handle.rect.centery = self.rect.top - (
+                (self.image.get_width() / (self.delimiters - 1)) * self.handle_position
+            )
 
     def resize(self):
         super().resize()
         if hasattr(self, "slider_handle"):
             self.slider_handle.resize()
+
+    def rotate(self, image):
+        return pygame.transform.rotate(image, 90)
 
     def get_index(self):
         """Returns the index of the percentage that the tile is currently on"""
