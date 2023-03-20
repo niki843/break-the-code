@@ -1,3 +1,5 @@
+import pygame
+
 import client
 from client.game_objects.tiles.slider import Slider
 from client.game_objects.tiles.text_slideshow_tile import TextSlideshowTile
@@ -18,6 +20,8 @@ class ScrollTextTile(TextSlideshowTile):
         handle_surface,
         screen,
         size_percent,
+        slider_size_percent,
+        slider_handle_size_percent,
         tile_addition_width,
         tile_addition_height,
         text_items: list,
@@ -41,22 +45,26 @@ class ScrollTextTile(TextSlideshowTile):
             tile_addition_height,
             None,
             text_items or [],
-            horizontal=False
+            horizontal=False,
         )
         self.slider = Slider(
-            slider_name,
-            slider_surface,
-            screen,
-            0.58,
-            35,
-            0,
-            handle_name,
-            handle_surface,
-            3,
-            0,
-            0,
-            False,
+            name=slider_name,
+            surface=slider_surface,
+            screen=screen,
+            size_percent=0.70,
+            tile_addition_width=35,
+            tile_addition_height=0,
+            handle_name=handle_name,
+            handle_surface=handle_surface,
+            handle_size_percent=3,
+            delimiters_count=0,
+            handle_position=0,
+            horizontal=False,
         )
+        self.slider_size_percent = slider_size_percent
+        self.slider_handle_size_percent = slider_handle_size_percent
+
+        self.resize_slider()
 
         self.text_size = (
             self.image.get_height()
@@ -128,11 +136,36 @@ class ScrollTextTile(TextSlideshowTile):
             self.font = common.load_font(self.text_size)
             self.load_text()
 
+    def resize_slider(self):
+        width = (
+            self.image.get_width()
+            * common.get_percentage_multiplier_from_percentage(self.slider_size_percent)
+        )
+        self.slider.image = pygame.transform.scale(
+            self.slider.image,
+            (
+                width,
+                self.image.get_height() - (self.image.get_height() * 0.1),
+            ),
+        )
+        self.slider.rect = self.slider.image.get_rect()
+
+        self.slider.slider_handle.image = pygame.transform.scale(
+            self.slider.slider_handle.image,
+            (
+                width,
+                width * self.slider.slider_handle.original_image.get_height() / self.slider.slider_handle.original_image.get_width(),
+            ),
+        )
+        self.slider.slider_handle.rect = self.slider.slider_handle.image.get_rect()
+
     def blit_text(self):
         self.screen.blit(self.image, self.rect)
         self.screen.blit(self.right_arrow.image, self.right_arrow.rect)
         self.screen.blit(self.left_arrow.image, self.left_arrow.rect)
         self.screen.blit(self.slider.image, self.slider.rect)
-        self.screen.blit(self.slider.slider_handle.image, self.slider.slider_handle.rect)
+        self.screen.blit(
+            self.slider.slider_handle.image, self.slider.slider_handle.rect
+        )
         for surface, rect in self.text_surfaces:
             self.screen.blit(surface, rect)
