@@ -42,6 +42,7 @@ class TextSlideshowTile(Tile):
         tile_addition_height,
         initial_text,
         slide_values: list,
+        horizontal=False,
     ):
         super().__init__(
             name,
@@ -62,6 +63,8 @@ class TextSlideshowTile(Tile):
         self.left_arrow = None
 
         self.font = None
+
+        self.horizontal = horizontal
 
         self.resize()
 
@@ -95,10 +98,12 @@ class TextSlideshowTile(Tile):
         right_arrow_surface = pygame.image.load(
             f"{client.IMG_PATH}next.png"
         ).convert_alpha()
+        right_top_arrow_surface = right_arrow_surface if self.horizontal else pygame.transform.rotate(right_arrow_surface, 90)
+        left_bottom_arrow_surface = pygame.transform.flip(right_top_arrow_surface, True, True)
 
         self.right_arrow = Tile(
             "screen_size_right_arrow",
-            right_arrow_surface,
+            right_top_arrow_surface,
             self.screen,
             client.ARROW_WITH_PERCENTAGE_FROM_SCREEN,
             0,
@@ -106,7 +111,7 @@ class TextSlideshowTile(Tile):
         )
         self.left_arrow = Tile(
             "screen_size_left_arrow",
-            pygame.transform.flip(right_arrow_surface, True, True),
+            left_bottom_arrow_surface,
             self.screen,
             client.ARROW_WITH_PERCENTAGE_FROM_SCREEN,
             0,

@@ -2,7 +2,7 @@ import pygame
 import client
 
 from client.game_objects.pages.game_window import GameWindow
-from client.game_objects.tiles.hover_text_tile import HoverTextTile
+from client.game_objects.tiles.scroll_text_tile import ScrollTextTile
 from client.game_objects.tiles.tile import Tile
 
 
@@ -11,7 +11,7 @@ class JoinGame(GameWindow):
         super().__init__(event_handler)
 
         self.join_game_tile = None
-        self.hoverable_text_tile = None
+        self.scroll_text_tile = None
         self.build()
 
     def build(self):
@@ -22,7 +22,7 @@ class JoinGame(GameWindow):
     def resize(self):
         super().resize()
         self.set_join_game_button_size()
-        self.set_hoverable_text_size()
+        self.set_scroll_text_size()
 
     def build_background(self):
         surface = pygame.image.load(f"{client.IMG_PATH}clear_bgr.png").convert_alpha()
@@ -62,13 +62,13 @@ class JoinGame(GameWindow):
     def build_hoverable_text(self):
         surface = pygame.image.load(f"{client.IMG_PATH}blank.png").convert_alpha()
 
-        self.hoverable_text_tile = HoverTextTile(
+        self.scroll_text_tile = ScrollTextTile(
             "hover",
             surface,
             self.event_handler.screen,
             30,
-            0,
-            0,
+            130,
+            200,
             [
                 "some fucking shit",
                 "test2",
@@ -79,21 +79,22 @@ class JoinGame(GameWindow):
                 "test 7",
             ],
             6,
-            15
+            10
         )
 
-        self.set_hoverable_text_size()
+        self.set_scroll_text_size()
 
-    def set_hoverable_text_size(self):
-        if not self.hoverable_text_tile:
+    def set_scroll_text_size(self):
+        if not self.scroll_text_tile:
             return
 
-        self.hoverable_text_tile.rect.centerx = self.event_handler.screen_rect.centerx
-        self.hoverable_text_tile.rect.centery = self.event_handler.screen_rect.centery
+        self.scroll_text_tile.resize()
+        self.scroll_text_tile.rect.centerx = self.event_handler.screen_rect.centerx
+        self.scroll_text_tile.rect.centery = self.event_handler.screen_rect.centery
 
-        self.hoverable_text_tile.center()
+        self.scroll_text_tile.update()
 
-        self.tiles_group.add(self.hoverable_text_tile)
+        self.tiles_group.add(self.scroll_text_tile)
 
     def blit(self):
         super().blit()
@@ -102,12 +103,12 @@ class JoinGame(GameWindow):
         )
 
         self.event_handler.screen.blit(
-            self.hoverable_text_tile.image, self.hoverable_text_tile.rect
+            self.scroll_text_tile.image, self.scroll_text_tile.rect
         )
-        self.hoverable_text_tile.blit_text()
+        self.scroll_text_tile.blit_text()
 
     def activate_tile(self, tile):
         if tile.name == "hover":
-            self.hoverable_text_tile.next_line()
+            self.scroll_text_tile.next_text()
 
         return None, False
