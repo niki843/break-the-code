@@ -19,14 +19,14 @@ class Menu(GameWindow):
 
     def build(self):
         # This order is important and should not change
-        self.build_background()
+        super().build()
         self.build_join_game()
         self.build_new_game()
         self.build_settings()
         self.build_quit_game()
 
     def resize(self):
-        self.set_background_size()
+        super().resize()
         self.set_join_game_size()
         self.set_new_game_size()
         self.set_settings_size()
@@ -128,7 +128,7 @@ class Menu(GameWindow):
 
     def blit(self):
         # Refresh the object on the screen so any runtime changes will be reflected
-        self.event_handler.screen.blit(self.background_image.image, self.background_image.rect)
+        super().blit()
         self.event_handler.screen.blit(self.join_game_tile.image, self.join_game_tile.rect)
         self.event_handler.screen.blit(self.new_game_tile.image, self.new_game_tile.rect)
         self.event_handler.screen.blit(self.settings_tile.image, self.settings_tile.rect)
