@@ -60,7 +60,7 @@ class JoinGame(GameWindow):
         self.tiles_group.add(self.join_game_tile)
 
     def build_scrollable_text(self):
-        surface = pygame.image.load(f"{client.IMG_PATH}blank.png").convert_alpha()
+        surface = pygame.image.load(f"{client.IMG_PATH}menu_field_croped.png").convert_alpha()
         slider_surface = pygame.image.load(
             f"{client.IMG_PATH}slider_music_bar.png"
         ).convert_alpha()
@@ -72,11 +72,13 @@ class JoinGame(GameWindow):
             "hover",
             "slider",
             "handle",
+            "left_arrow",
+            "right_arrow",
             surface,
             slider_surface,
             slider_handle,
             self.event_handler.screen,
-            30,
+            50,
             130,
             200,
             [
@@ -87,6 +89,11 @@ class JoinGame(GameWindow):
                 "test5",
                 "test6",
                 "test 7",
+                "test 8",
+                "test 9",
+                "test 10",
+                "test 11",
+                "test 12",
             ],
             6,
             10
@@ -104,7 +111,8 @@ class JoinGame(GameWindow):
 
         self.scroll_text_tile.update()
 
-        self.tiles_group.add(self.scroll_text_tile)
+        self.tiles_group.add(self.scroll_text_tile.right_arrow)
+        self.tiles_group.add(self.scroll_text_tile.left_arrow)
 
     def blit(self):
         super().blit()
@@ -118,7 +126,9 @@ class JoinGame(GameWindow):
         self.scroll_text_tile.blit_text()
 
     def activate_tile(self, tile):
-        if tile.name == "hover":
+        if tile.name == "right_arrow":
             self.scroll_text_tile.next_text()
+        if tile.name == "left_arrow":
+            self.scroll_text_tile.previous_text()
 
         return None, False

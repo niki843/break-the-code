@@ -11,6 +11,8 @@ class ScrollTextTile(TextSlideshowTile):
         name,
         slider_name,
         handle_name,
+        left_arrow_name,
+        right_arrow_name,
         main_background_surface,
         slider_surface,
         handle_surface,
@@ -30,6 +32,8 @@ class ScrollTextTile(TextSlideshowTile):
         TextSlideshowTile.__init__(
             self,
             name,
+            left_arrow_name,
+            right_arrow_name,
             main_background_surface,
             screen,
             size_percent,
@@ -76,10 +80,10 @@ class ScrollTextTile(TextSlideshowTile):
 
     def update_arrows_position(self):
         self.right_arrow.rect.right = self.rect.right
-        self.right_arrow.rect.top = self.rect.top
+        self.right_arrow.rect.bottom = self.rect.bottom
 
         self.left_arrow.rect.right = self.rect.right
-        self.left_arrow.rect.bottom = self.rect.bottom
+        self.left_arrow.rect.top = self.rect.top
 
         self.slider.rect.right = self.rect.right - (self.image.get_width() * 0.02)
         self.slider.rect.centery = self.rect.centery

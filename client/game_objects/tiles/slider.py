@@ -80,7 +80,6 @@ class Slider(Tile):
         if pos_x < self.rect.left or pos_x > self.rect.right:
             return
 
-        print((pos_x - self.rect.left) / self.image.get_width() * 100)
         self.handle_position = bisect(
             self.actual_percentage,
             round(
@@ -88,7 +87,6 @@ class Slider(Tile):
                 -1,
             ),
         ) - 1
-        print(self.handle_position)
 
         self.slider_percentage = self.actual_percentage[self.handle_position]
 

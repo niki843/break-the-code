@@ -35,6 +35,8 @@ class TextSlideshowTile(Tile):
     def __init__(
         self,
         name,
+        left_arrow_name,
+        right_arrow_name,
         surface,
         screen,
         size_percent,
@@ -70,7 +72,7 @@ class TextSlideshowTile(Tile):
 
         self.load_text()
 
-        self.load_arrows()
+        self.load_arrows(left_arrow_name, right_arrow_name)
 
     def update(self, *args, **kwargs) -> None:
         self.update_arrows_position()
@@ -94,15 +96,15 @@ class TextSlideshowTile(Tile):
         )
         self.current_text_rect = self.current_text_surface.get_rect()
 
-    def load_arrows(self):
+    def load_arrows(self, left_arrow_name, right_arrow_name):
         right_arrow_surface = pygame.image.load(
             f"{client.IMG_PATH}next.png"
         ).convert_alpha()
-        right_top_arrow_surface = right_arrow_surface if self.horizontal else pygame.transform.rotate(right_arrow_surface, 90)
+        right_top_arrow_surface = right_arrow_surface if self.horizontal else pygame.transform.rotate(right_arrow_surface, 270)
         left_bottom_arrow_surface = pygame.transform.flip(right_top_arrow_surface, True, True)
 
         self.right_arrow = Tile(
-            "screen_size_right_arrow",
+            right_arrow_name,
             right_top_arrow_surface,
             self.screen,
             client.ARROW_WITH_PERCENTAGE_FROM_SCREEN,
@@ -110,7 +112,7 @@ class TextSlideshowTile(Tile):
             0,
         )
         self.left_arrow = Tile(
-            "screen_size_left_arrow",
+            left_arrow_name,
             left_bottom_arrow_surface,
             self.screen,
             client.ARROW_WITH_PERCENTAGE_FROM_SCREEN,
