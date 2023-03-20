@@ -273,7 +273,7 @@ class Settings(GameWindow):
             f"{client.IMG_PATH}non_selected_nickname.png"
         ).convert_alpha()
         next_surface = pygame.image.load(
-            f"{client.IMG_PATH}non_selected_nickname.png"
+            f"{client.IMG_PATH}selected_nickname.png"
         ).convert_alpha()
 
         self.username_input_box = InputBoxTile(
