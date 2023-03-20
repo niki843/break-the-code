@@ -17,7 +17,7 @@ class JoinGame(GameWindow):
     def build(self):
         super().build()
         self.build_join_game_button()
-        self.build_hoverable_text()
+        self.build_scrollable_text()
 
     def resize(self):
         super().resize()
@@ -59,7 +59,7 @@ class JoinGame(GameWindow):
         )
         self.tiles_group.add(self.join_game_tile)
 
-    def build_hoverable_text(self):
+    def build_scrollable_text(self):
         surface = pygame.image.load(f"{client.IMG_PATH}blank.png").convert_alpha()
 
         self.scroll_text_tile = ScrollTextTile(
