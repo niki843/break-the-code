@@ -33,6 +33,8 @@ class ScrollTextTile(TextSlideshowTile):
         self.first_element = 0
         self.max_elements_to_display = max_elements_to_display
         self.text_size_percentage = text_size_percentage
+        self.scroll_delimiters = len(text_items) - max_elements_to_display + 1 if text_items else 0
+        self.old_rect = None
 
         TextSlideshowTile.__init__(
             self,
@@ -59,7 +61,7 @@ class ScrollTextTile(TextSlideshowTile):
             handle_name=handle_name,
             handle_surface=handle_surface,
             handle_size_percent=3,
-            delimiters_count=100,
+            delimiters_count=self.scroll_delimiters,
             handle_position=0,
             horizontal=False,
         )
@@ -107,6 +109,16 @@ class ScrollTextTile(TextSlideshowTile):
             rect.top = current_top_surface + (self.screen.get_height() * 0.015)
             current_top_surface = rect.bottom
 
+    def move_slider(self, event):
+        current_percentage = self.slider.slider_percentage
+        self.slider.move_slider_horizontally(event.pos[0]) if self.horizontal else self.slider.move_slider_vertically(event.pos[1])
+
+        if current_percentage > self.slider.slider_percentage:
+            self.previous_text()
+
+        if current_percentage < self.slider.slider_percentage:
+            self.next_text()
+
     def next_text(self):
         self.change_tile(1)
 
@@ -124,7 +136,7 @@ class ScrollTextTile(TextSlideshowTile):
             return
 
         self.load_text()
-        self.update()
+        self.update_text_position()
 
     def resize(self):
         super().resize()
@@ -173,5 +185,6 @@ class ScrollTextTile(TextSlideshowTile):
         self.screen.blit(
             self.slider.slider_handle.image, self.slider.slider_handle.rect
         )
+        self.old_rect = self.slider.slider_handle.rect
         for surface, rect in self.text_surfaces:
             self.screen.blit(surface, rect)

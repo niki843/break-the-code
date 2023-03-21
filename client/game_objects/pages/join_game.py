@@ -123,7 +123,6 @@ class JoinGame(GameWindow):
         self.event_handler.screen.blit(
             self.join_game_tile.image, self.join_game_tile.rect
         )
-
         self.event_handler.screen.blit(
             self.scroll_text_tile.image, self.scroll_text_tile.rect
         )
@@ -132,9 +131,11 @@ class JoinGame(GameWindow):
     def activate_tile(self, tile):
         if tile.name == "right_arrow":
             self.scroll_text_tile.next_text()
+            self.scroll_text_tile.slider.next_handle_position()
         if tile.name == "left_arrow":
             self.scroll_text_tile.previous_text()
+            self.scroll_text_tile.slider.previous_handle_position()
         if tile.name == "handle":
-            self.event_handler.handle_slider_clicked(self.scroll_text_tile.slider)
+            self.event_handler.handle_slider_clicked(self.scroll_text_tile)
 
         return None, False
