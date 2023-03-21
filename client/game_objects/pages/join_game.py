@@ -69,7 +69,7 @@ class JoinGame(GameWindow):
         ).convert_alpha()
 
         self.scroll_text_tile = ScrollTextTile(
-            "hover",
+            "scroll_tile",
             "slider",
             "handle",
             "left_arrow",
@@ -117,6 +117,7 @@ class JoinGame(GameWindow):
         self.tiles_group.add(self.scroll_text_tile.right_arrow)
         self.tiles_group.add(self.scroll_text_tile.left_arrow)
         self.tiles_group.add(self.scroll_text_tile.slider.slider_handle)
+        self.tiles_group.add(self.scroll_text_tile)
 
     def blit(self):
         super().blit()
@@ -137,5 +138,16 @@ class JoinGame(GameWindow):
             self.scroll_text_tile.slider.previous_handle_position()
         if tile.name == "handle":
             self.event_handler.handle_slider_clicked(self.scroll_text_tile)
+
+        return None, False
+
+    def scroll_tile(self, tile, scrolled_up):
+        if tile.name == "scroll_tile":
+            if scrolled_up:
+                self.scroll_text_tile.previous_text()
+                self.scroll_text_tile.slider.previous_handle_position()
+            else:
+                self.scroll_text_tile.next_text()
+                self.scroll_text_tile.slider.next_handle_position()
 
         return None, False
