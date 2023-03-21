@@ -47,7 +47,7 @@ class Settings(GameWindow):
         self.build()
 
     def build(self):
-        self.build_background()
+        super().build()
         self.build_tiles_background()
 
         self.build_settings_label()
@@ -66,7 +66,7 @@ class Settings(GameWindow):
         self.build_back_tile()
 
     def resize(self):
-        self.set_background_size()
+        super().resize()
         self.set_tiles_background_size()
 
         self.set_settings_label_size()
@@ -350,13 +350,15 @@ class Settings(GameWindow):
             return
 
         self.back_tile.resize()
-        self.back_tile.rect.left = self.event_handler.screen_rect.left + 40
-        self.back_tile.rect.top = self.event_handler.screen_rect.top + 20
+        self.back_tile.rect.left = self.event_handler.screen_rect.left + (
+            self.event_handler.screen.get_width() * 0.03
+        )
+        self.back_tile.rect.top = self.event_handler.screen_rect.top + (
+            self.event_handler.screen.get_height() * 0.03
+        )
 
     def blit(self):
-        self.event_handler.screen.blit(
-            self.background_image.image, self.background_image.rect
-        )
+        super().blit()
 
         self.event_handler.screen.blit(
             self.tiles_background.image, self.tiles_background.rect
