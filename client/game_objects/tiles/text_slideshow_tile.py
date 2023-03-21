@@ -40,6 +40,7 @@ class TextSlideshowTile(Tile):
         surface,
         screen,
         size_percent,
+        arrow_size_percent,
         tile_addition_width,
         tile_addition_height,
         initial_text,
@@ -57,6 +58,7 @@ class TextSlideshowTile(Tile):
 
         self.slide_values = slide_values
         self.current_text = initial_text
+        self.arrow_size_percent = arrow_size_percent
 
         self.current_text_surface = None
         self.current_text_rect = None
@@ -107,7 +109,7 @@ class TextSlideshowTile(Tile):
             right_arrow_name,
             right_top_arrow_surface,
             self.screen,
-            client.ARROW_WITH_PERCENTAGE_FROM_SCREEN,
+            self.arrow_size_percent,
             0,
             0,
         )
@@ -115,7 +117,7 @@ class TextSlideshowTile(Tile):
             left_arrow_name,
             left_bottom_arrow_surface,
             self.screen,
-            client.ARROW_WITH_PERCENTAGE_FROM_SCREEN,
+            self.arrow_size_percent,
             0,
             0,
         )

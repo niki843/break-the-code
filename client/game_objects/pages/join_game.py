@@ -81,6 +81,7 @@ class JoinGame(GameWindow):
             80,
             2,
             2,
+            2,
             0,
             0,
             [

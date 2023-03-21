@@ -20,6 +20,7 @@ class ScrollTextTile(TextSlideshowTile):
         handle_surface,
         screen,
         size_percent,
+        arrow_size_percent,
         slider_size_percent,
         slider_handle_size_percent,
         tile_addition_width,
@@ -41,6 +42,7 @@ class ScrollTextTile(TextSlideshowTile):
             main_background_surface,
             screen,
             size_percent,
+            arrow_size_percent,
             tile_addition_width,
             tile_addition_height,
             None,
@@ -51,8 +53,8 @@ class ScrollTextTile(TextSlideshowTile):
             name=slider_name,
             surface=slider_surface,
             screen=screen,
-            size_percent=0.70,
-            tile_addition_width=35,
+            size_percent=1,
+            tile_addition_width=0,
             tile_addition_height=0,
             handle_name=handle_name,
             handle_surface=handle_surface,
@@ -87,16 +89,16 @@ class ScrollTextTile(TextSlideshowTile):
             self.text_surfaces.append((text_surface, text_surface.get_rect()))
 
     def update_arrows_position(self):
-        self.right_arrow.rect.right = self.rect.right
-        self.right_arrow.rect.bottom = self.rect.bottom
-
-        self.left_arrow.rect.right = self.rect.right
-        self.left_arrow.rect.top = self.rect.top
-
         self.slider.rect.right = self.rect.right - (self.image.get_width() * 0.02)
         self.slider.rect.centery = self.rect.centery
 
         self.slider.set_slider_handle_position()
+
+        self.right_arrow.rect.centerx = self.slider.rect.centerx
+        self.right_arrow.rect.bottom = self.rect.bottom
+
+        self.left_arrow.rect.centerx = self.slider.rect.centerx
+        self.left_arrow.rect.top = self.rect.top
 
     def update_text_position(self):
         current_top_surface = self.rect.top + 50
@@ -137,14 +139,18 @@ class ScrollTextTile(TextSlideshowTile):
             self.load_text()
 
     def resize_slider(self):
-        width = (
+        width_slider = (
             self.image.get_width()
             * common.get_percentage_multiplier_from_percentage(self.slider_size_percent)
+        )
+        width_slider_handle = (
+            self.image.get_width()
+            * common.get_percentage_multiplier_from_percentage(self.slider_handle_size_percent)
         )
         self.slider.image = pygame.transform.scale(
             self.slider.image,
             (
-                width,
+                width_slider,
                 self.image.get_height() - (self.image.get_height() * 0.1),
             ),
         )
@@ -153,8 +159,8 @@ class ScrollTextTile(TextSlideshowTile):
         self.slider.slider_handle.image = pygame.transform.scale(
             self.slider.slider_handle.image,
             (
-                width,
-                width * self.slider.slider_handle.original_image.get_height() / self.slider.slider_handle.original_image.get_width(),
+                width_slider_handle,
+                width_slider_handle * self.slider.slider_handle.original_image.get_height() / self.slider.slider_handle.original_image.get_width(),
             ),
         )
         self.slider.slider_handle.rect = self.slider.slider_handle.image.get_rect()
