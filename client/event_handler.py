@@ -123,7 +123,7 @@ class EventHandler(Singleton):
                 elif event.type == pygame.QUIT:
                     return '{"type": "close_connection"}', True
                 elif (keys[pygame.K_LALT] or keys[pygame.K_RALT]) and (
-                        keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]
+                    keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]
                 ):
                     self.open_full_screen()
 
@@ -189,19 +189,19 @@ class EventHandler(Singleton):
         pass
 
     def open_full_screen(self):
-        self.screen = pygame.display.set_mode(
-            (0, 0), pygame.FULLSCREEN
-        )
+        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.change_screen(self.screen)
-        self.settings.resolution_slider.handle_position = self.settings.SCREEN_SIZE_CAPTIONS.index("fullscreen")
+        self.settings.resolution_slider.handle_position = (
+            self.settings.SCREEN_SIZE_CAPTIONS.index("fullscreen")
+        )
         client_init.IS_FULLSCREEN_ENABLED = True
         return None, False
 
     def open_windowed_screen(self):
-        self.screen = pygame.display.set_mode(
-            (1280, 720), pygame.HWSURFACE
-        )
+        self.screen = pygame.display.set_mode((1280, 720), pygame.HWSURFACE)
         self.change_screen(self.screen)
-        self.settings.resolution_slider.handle_position = self.settings.SCREEN_SIZE_CAPTIONS.index("1280x720")
+        self.settings.resolution_slider.handle_position = (
+            self.settings.SCREEN_SIZE_CAPTIONS.index("1280x720")
+        )
         client_init.IS_FULLSCREEN_ENABLED = False
         return None, False

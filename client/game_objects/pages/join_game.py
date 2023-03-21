@@ -60,7 +60,9 @@ class JoinGame(GameWindow):
         self.tiles_group.add(self.join_game_tile)
 
     def build_scrollable_text(self):
-        surface = pygame.image.load(f"{client.IMG_PATH}menu_field_croped.png").convert_alpha()
+        surface = pygame.image.load(
+            f"{client.IMG_PATH}menu_field_croped.png"
+        ).convert_alpha()
         slider_surface = pygame.image.load(
             f"{client.IMG_PATH}slider_vertical.png"
         ).convert_alpha()
@@ -99,7 +101,7 @@ class JoinGame(GameWindow):
                 "test 12",
             ],
             6,
-            10
+            10,
         )
 
         self.set_scroll_text_size()

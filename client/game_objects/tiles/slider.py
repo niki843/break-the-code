@@ -114,7 +114,9 @@ class Slider(Tile):
 
     def set_value(self, index):
         self.handle_position += index
-        if self.handle_position < 0 or self.handle_position >= len(self.actual_percentage):
+        if self.handle_position < 0 or self.handle_position >= len(
+            self.actual_percentage
+        ):
             self.handle_position -= index
             return
 
@@ -122,26 +124,30 @@ class Slider(Tile):
 
     def update_slider_handle_by_position(self):
         self.slider_percentage = self.actual_percentage[self.handle_position]
-        slider_size = self.image.get_width() if self.horizontal else self.image.get_height()
+        slider_size = (
+            self.image.get_width() if self.horizontal else self.image.get_height()
+        )
         starting_position = self.rect.left if self.horizontal else self.rect.top
 
         if self.horizontal:
             self.slider_handle.rect.centerx = starting_position + (
-                    slider_size
-                    * common.get_percentage_multiplier_from_percentage(self.slider_percentage)
+                slider_size
+                * common.get_percentage_multiplier_from_percentage(
+                    self.slider_percentage
+                )
             )
             return
 
         self.slider_handle.rect.centery = starting_position + (
-                slider_size
-                * common.get_percentage_multiplier_from_percentage(self.slider_percentage)
+            slider_size
+            * common.get_percentage_multiplier_from_percentage(self.slider_percentage)
         )
 
     def setup_percents(self, delimiters_count):
         # -1 to compensate for the 0 value that will be first
         reference_value = 100 / (delimiters_count - 1)
         self.actual_percentage.append(0)
-        self.pivot_values.append(-(reference_value/2))
+        self.pivot_values.append(-(reference_value / 2))
         # points of interests first element will be half of the reference value
         # this will allow the slider handle to move to the lower value if it's under
         # half of the slider's separation area and to the upper value if it's over
@@ -149,9 +155,7 @@ class Slider(Tile):
             self.actual_percentage.append(
                 self.actual_percentage[i - 1] + reference_value
             )
-            self.pivot_values.append(
-                self.pivot_values[i - 1] + reference_value
-            )
+            self.pivot_values.append(self.pivot_values[i - 1] + reference_value)
         # Because of float not being big enough and the final values sometimes is a little more than 100
         # we just set it as 100 this won't really be seen from the user
         self.actual_percentage[len(self.actual_percentage) - 1] = 100

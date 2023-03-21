@@ -117,7 +117,8 @@ class Menu(GameWindow):
 
         self.quit_tile.resize()
         self.quit_tile.rect.right = (
-            self.event_handler.screen_rect.right - client.BETWEEN_TILE_AND_SCREEN_SPACING
+            self.event_handler.screen_rect.right
+            - client.BETWEEN_TILE_AND_SCREEN_SPACING
         )
         self.quit_tile.rect.top = (
             self.event_handler.screen_rect.bottom
@@ -129,9 +130,15 @@ class Menu(GameWindow):
     def blit(self):
         # Refresh the object on the screen so any runtime changes will be reflected
         super().blit()
-        self.event_handler.screen.blit(self.join_game_tile.image, self.join_game_tile.rect)
-        self.event_handler.screen.blit(self.new_game_tile.image, self.new_game_tile.rect)
-        self.event_handler.screen.blit(self.settings_tile.image, self.settings_tile.rect)
+        self.event_handler.screen.blit(
+            self.join_game_tile.image, self.join_game_tile.rect
+        )
+        self.event_handler.screen.blit(
+            self.new_game_tile.image, self.new_game_tile.rect
+        )
+        self.event_handler.screen.blit(
+            self.settings_tile.image, self.settings_tile.rect
+        )
         self.event_handler.screen.blit(self.quit_tile.image, self.quit_tile.rect)
 
     def delete(self):

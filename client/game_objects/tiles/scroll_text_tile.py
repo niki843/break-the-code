@@ -33,7 +33,9 @@ class ScrollTextTile(TextSlideshowTile):
         self.first_element = 0
         self.max_elements_to_display = max_elements_to_display
         self.text_size_percentage = text_size_percentage
-        self.scroll_delimiters = len(text_items) - max_elements_to_display + 1 if text_items else 0
+        self.scroll_delimiters = (
+            len(text_items) - max_elements_to_display + 1 if text_items else 0
+        )
         self.old_rect = None
 
         TextSlideshowTile.__init__(
@@ -111,7 +113,9 @@ class ScrollTextTile(TextSlideshowTile):
 
     def move_slider(self, event):
         current_percentage = self.slider.slider_percentage
-        self.slider.move_slider_horizontally(event.pos[0]) if self.horizontal else self.slider.move_slider_vertically(event.pos[1])
+        self.slider.move_slider_horizontally(
+            event.pos[0]
+        ) if self.horizontal else self.slider.move_slider_vertically(event.pos[1])
 
         if current_percentage > self.slider.slider_percentage:
             self.previous_text()
@@ -157,7 +161,9 @@ class ScrollTextTile(TextSlideshowTile):
         )
         width_slider_handle = (
             self.image.get_width()
-            * common.get_percentage_multiplier_from_percentage(self.slider_handle_size_percent)
+            * common.get_percentage_multiplier_from_percentage(
+                self.slider_handle_size_percent
+            )
         )
         self.slider.image = pygame.transform.scale(
             self.slider.image,
@@ -172,7 +178,9 @@ class ScrollTextTile(TextSlideshowTile):
             self.slider.slider_handle.image,
             (
                 width_slider_handle,
-                width_slider_handle * self.slider.slider_handle.original_image.get_height() / self.slider.slider_handle.original_image.get_width(),
+                width_slider_handle
+                * self.slider.slider_handle.original_image.get_height()
+                / self.slider.slider_handle.original_image.get_width(),
             ),
         )
         self.slider.slider_handle.rect = self.slider.slider_handle.image.get_rect()

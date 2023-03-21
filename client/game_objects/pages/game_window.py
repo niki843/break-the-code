@@ -25,11 +25,11 @@ class GameWindow:
         self.set_background_size()
 
     def build_background(self):
-        surface = pygame.image.load(
-            f"{IMG_PATH}background.png"
-        ).convert_alpha()
+        surface = pygame.image.load(f"{IMG_PATH}background.png").convert_alpha()
 
-        self.background_image = Tile("background", surface, self.event_handler.screen, 100, 0, 0)
+        self.background_image = Tile(
+            "background", surface, self.event_handler.screen, 100, 0, 0
+        )
         self.set_background_size()
 
     def set_background_size(self):
@@ -38,7 +38,9 @@ class GameWindow:
         self.background_image.rect.centery = self.event_handler.screen_rect.centery
 
     def blit(self):
-        self.event_handler.screen.blit(self.background_image.image, self.background_image.rect)
+        self.event_handler.screen.blit(
+            self.background_image.image, self.background_image.rect
+        )
 
     def delete(self):
         pass

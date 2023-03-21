@@ -398,14 +398,15 @@ class Settings(GameWindow):
             self.username_input_box.text_surface, self.username_input_box.text_rect
         )
 
-        self.event_handler.screen.blit(
-            self.apply_button.image, self.apply_button.rect
-        )
+        self.event_handler.screen.blit(self.apply_button.image, self.apply_button.rect)
 
         self.event_handler.screen.blit(self.back_tile.image, self.back_tile.rect)
 
     def activate_tile(self, tile, event):
-        if tile.name == "resolution_slider_handle" and event.button == client.LEFT_BUTTON_CLICK:
+        if (
+            tile.name == "resolution_slider_handle"
+            and event.button == client.LEFT_BUTTON_CLICK
+        ):
             self.event_handler.handle_slider_clicked(self.resolution_slider)
 
             try:
@@ -416,7 +417,10 @@ class Settings(GameWindow):
                 raise custom_exceptions.ScreenResolutionIndexError()
 
             self.change_screen_resolution_and_rebuild(self.current_resolution)
-        if tile.name == "music_slider_handle" and event.button == client.LEFT_BUTTON_CLICK:
+        if (
+            tile.name == "music_slider_handle"
+            and event.button == client.LEFT_BUTTON_CLICK
+        ):
             self.event_handler.handle_slider_clicked(self.music_slider)
 
             try:
@@ -433,7 +437,9 @@ class Settings(GameWindow):
             if self.current_volume <= 0:
                 self.music_state_on = False
                 pygame.mixer.music.stop()
-        if (tile.name == "apply_button_on" or tile.name == "apply_button_off") and event.button == client.LEFT_BUTTON_CLICK:
+        if (
+            tile.name == "apply_button_on" or tile.name == "apply_button_off"
+        ) and event.button == client.LEFT_BUTTON_CLICK:
             self.apply_button.next_value()
             # Save the username if only it's not empty
             if len(self.username_input_box.text) > 0:

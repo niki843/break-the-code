@@ -27,7 +27,7 @@ class InputBoxTile(ToggleTile, InputBox):
             size_percent,
             tile_addition_width,
             tile_addition_height,
-            next_surface
+            next_surface,
         )
         InputBox.__init__(
             self,
