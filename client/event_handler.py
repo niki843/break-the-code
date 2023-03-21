@@ -37,12 +37,7 @@ class EventHandler(Singleton):
         if event.type == pygame.QUIT:
             return '{"type": "close_connection"}', True
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
-                return self.handle_mouse_click()
-            if event.button == 4:
-                return self.handle_scroll(True)
-            if event.button == 5:
-                return self.handle_scroll(False)
+            return self.handle_mouse_click(event)
         elif event.type == client.EVENT_TYPE:
             # TODO Implement when a server event happens
             self.handle_server_message(event.message)
@@ -124,7 +119,7 @@ class EventHandler(Singleton):
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         text_surface.mark_clicked()
-                        return self.handle_mouse_click()
+                        return self.handle_mouse_click(event)
                 elif event.type == pygame.QUIT:
                     return '{"type": "close_connection"}', True
                 elif (keys[pygame.K_LALT] or keys[pygame.K_RALT]) and (
@@ -172,12 +167,12 @@ class EventHandler(Singleton):
         for window in self.game_windows:
             window.resize()
 
-    def handle_mouse_click(self):
+    def handle_mouse_click(self, event):
         tiles_copy = self.current_window.tiles_group.copy()
         for tile in tiles_copy:
             if tile.rect.collidepoint(pygame.mouse.get_pos()):
                 print(tile.name)
-                return self.current_window.activate_tile(tile)
+                return self.current_window.activate_tile(tile, event)
         # Unclickable tile pressed
         return None, False
 

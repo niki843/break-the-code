@@ -15,10 +15,7 @@ class GameWindow:
 
         self.build_background()
 
-    def activate_tile(self, tile):
-        return None, False
-
-    def scroll_tile(self, tile, scrolled_up):
+    def activate_tile(self, tile, event):
         return None, False
 
     def build(self):

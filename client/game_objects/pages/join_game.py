@@ -129,25 +129,20 @@ class JoinGame(GameWindow):
         )
         self.scroll_text_tile.blit_text()
 
-    def activate_tile(self, tile):
-        if tile.name == "right_arrow":
+    def activate_tile(self, tile, event):
+        if tile.name == "right_arrow" and event.button == client.LEFT_BUTTON_CLICK:
             self.scroll_text_tile.next_text()
             self.scroll_text_tile.slider.next_handle_position()
-        if tile.name == "left_arrow":
+        if tile.name == "left_arrow" and event.button == client.LEFT_BUTTON_CLICK:
             self.scroll_text_tile.previous_text()
             self.scroll_text_tile.slider.previous_handle_position()
-        if tile.name == "handle":
+        if tile.name == "handle" and event.button == client.LEFT_BUTTON_CLICK:
             self.event_handler.handle_slider_clicked(self.scroll_text_tile)
-
-        return None, False
-
-    def scroll_tile(self, tile, scrolled_up):
-        if tile.name == "scroll_tile":
-            if scrolled_up:
-                self.scroll_text_tile.previous_text()
-                self.scroll_text_tile.slider.previous_handle_position()
-            else:
-                self.scroll_text_tile.next_text()
-                self.scroll_text_tile.slider.next_handle_position()
+        if tile.name == "scroll_tile" and event.button == client.SCROLL_UP:
+            self.scroll_text_tile.previous_text()
+            self.scroll_text_tile.slider.previous_handle_position()
+        if tile.name == "scroll_tile" and event.button == client.SCROLL_DOWN:
+            self.scroll_text_tile.next_text()
+            self.scroll_text_tile.slider.next_handle_position()
 
         return None, False

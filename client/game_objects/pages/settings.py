@@ -404,8 +404,8 @@ class Settings(GameWindow):
 
         self.event_handler.screen.blit(self.back_tile.image, self.back_tile.rect)
 
-    def activate_tile(self, tile):
-        if tile.name == "resolution_slider_handle":
+    def activate_tile(self, tile, event):
+        if tile.name == "resolution_slider_handle" and event.button == client.LEFT_BUTTON_CLICK:
             self.event_handler.handle_slider_clicked(self.resolution_slider)
 
             try:
@@ -416,7 +416,7 @@ class Settings(GameWindow):
                 raise custom_exceptions.ScreenResolutionIndexError()
 
             self.change_screen_resolution_and_rebuild(self.current_resolution)
-        if tile.name == "music_slider_handle":
+        if tile.name == "music_slider_handle" and event.button == client.LEFT_BUTTON_CLICK:
             self.event_handler.handle_slider_clicked(self.music_slider)
 
             try:
@@ -433,18 +433,18 @@ class Settings(GameWindow):
             if self.current_volume <= 0:
                 self.music_state_on = False
                 pygame.mixer.music.stop()
-        if tile.name == "apply_button_on" or tile.name == "apply_button_off":
+        if (tile.name == "apply_button_on" or tile.name == "apply_button_off") and event.button == client.LEFT_BUTTON_CLICK:
             self.apply_button.next_value()
             # Save the username if only it's not empty
             if len(self.username_input_box.text) > 0:
                 self.current_username = self.username_input_box.text
             self.event_handler.handle_save_button(self.apply_button)
-        if tile.name == "back":
+        if tile.name == "back" and event.button == client.LEFT_BUTTON_CLICK:
             self.event_handler.change_window(self.event_handler.menu)
             self.username_input_box.text = self.current_username
             self.username_input_box.resize_text()
             self.username_input_box.center()
-        if tile.name == "name_input":
+        if tile.name == "name_input" and event.button == client.LEFT_BUTTON_CLICK:
             self.username_input_box.mark_clicked()
             return self.event_handler.wait_text_input(self.username_input_box)
         return None, False

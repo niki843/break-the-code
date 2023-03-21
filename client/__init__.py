@@ -28,3 +28,7 @@ NEUTRAL_COLOR = (0, 0, 0)
 LOOP = asyncio.get_event_loop()
 
 IS_FULLSCREEN_ENABLED = False
+
+LEFT_BUTTON_CLICK = 1
+SCROLL_UP = 4
+SCROLL_DOWN = 5
