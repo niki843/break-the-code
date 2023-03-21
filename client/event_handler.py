@@ -144,7 +144,7 @@ class EventHandler(Singleton):
                 if event.type == pygame.MOUSEBUTTONUP:
                     clicked = False
                 if event.type == pygame.MOUSEMOTION:
-                    slider.move_slider(event.pos[0])
+                    slider.move_slider(event)
             self.current_window.blit()
 
     def handle_save_button(self, button):

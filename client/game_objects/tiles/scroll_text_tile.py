@@ -59,7 +59,7 @@ class ScrollTextTile(TextSlideshowTile):
             handle_name=handle_name,
             handle_surface=handle_surface,
             handle_size_percent=3,
-            delimiters_count=0,
+            delimiters_count=100,
             handle_position=0,
             horizontal=False,
         )

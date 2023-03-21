@@ -51,10 +51,6 @@ class Slider(Tile):
         handle_position,
         horizontal=True,
     ):
-        if not horizontal:
-            surface = self.rotate(surface)
-            handle_surface = self.rotate(handle_surface)
-
         super().__init__(
             name,
             surface,
@@ -76,7 +72,26 @@ class Slider(Tile):
         self.slider_percentage = 0
         self.delimiters = delimiters_count
 
-    def move_slider(self, pos_x):
+    def move_slider(self, event):
+        self.move_slider_horizontally(event.pos[0]) if self.horizontal else self.move_slider_vertically(event.pos[1])
+
+    def move_slider_vertically(self, pos_y):
+        if pos_y < self.rect.top or pos_y > self.rect.bottom:
+            return
+
+        self.handle_position = bisect(
+            self.actual_percentage,
+            round((((pos_y - self.rect.top) / self.image.get_height()) * 100)),
+        ) - 1
+
+        self.slider_percentage = self.actual_percentage[self.handle_position]
+
+        self.slider_handle.rect.centery = self.rect.top + (
+            self.image.get_height()
+            * common.get_percentage_multiplier_from_percentage(self.slider_percentage)
+        )
+
+    def move_slider_horizontally(self, pos_x):
         if pos_x < self.rect.left or pos_x > self.rect.right:
             return
 
@@ -106,6 +121,7 @@ class Slider(Tile):
             self.actual_percentage.append(
                 self.actual_percentage[i - 1] + reference_value
             )
+        print(self.actual_percentage)
 
     def set_slider_handle_position(self):
         if self.horizontal:
@@ -123,9 +139,6 @@ class Slider(Tile):
         super().resize()
         if hasattr(self, "slider_handle"):
             self.slider_handle.resize()
-
-    def rotate(self, image):
-        return pygame.transform.rotate(image, 90)
 
     def get_index(self):
         """Returns the index of the percentage that the tile is currently on"""
