@@ -61,7 +61,7 @@ class JoinGame(GameWindow):
 
     def build_scrollable_text(self):
         surface = pygame.image.load(
-            f"{client.IMG_PATH}menu_field_croped.png"
+            f"{client.IMG_PATH}menu_field_cropped.png"
         ).convert_alpha()
         slider_surface = pygame.image.load(
             f"{client.IMG_PATH}slider_vertical.png"
