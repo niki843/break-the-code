@@ -10,6 +10,7 @@ class JoinGame(GameWindow):
     def __init__(self, event_handler):
         super().__init__(event_handler)
 
+        self.back_button_tile = None
         self.join_game_tile = None
         self.scroll_text_tile = None
         self.build()
@@ -17,11 +18,13 @@ class JoinGame(GameWindow):
     def build(self):
         super().build()
         self.build_join_game_button()
+        self.build_back_tile()
         self.build_scrollable_text()
 
     def resize(self):
         super().resize()
         self.set_join_game_button_size()
+        self.set_back_button_tile()
         self.set_scroll_text_size()
 
     def build_background(self):
@@ -121,8 +124,35 @@ class JoinGame(GameWindow):
         self.tiles_group.add(self.scroll_text_tile.slider.slider_handle)
         self.tiles_group.add(self.scroll_text_tile)
 
+    def build_back_tile(self):
+        surface = pygame.image.load(f"{client.IMG_PATH}back.png").convert_alpha()
+
+        self.back_button_tile = Tile(
+            "back_button",
+            surface,
+            self.event_handler.screen,
+            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
+            0,
+            0,
+        )
+        self.set_back_button_tile()
+        self.tiles_group.add(self.back_button_tile)
+
+    def set_back_button_tile(self):
+        if not self.back_button_tile:
+            return
+
+        self.back_button_tile.resize()
+        self.back_button_tile.rect.left = self.event_handler.screen_rect.left + (
+                self.event_handler.screen.get_width() * 0.03
+        )
+        self.back_button_tile.rect.top = self.event_handler.screen_rect.top + (
+                self.event_handler.screen.get_height() * 0.03
+        )
+
     def blit(self):
         super().blit()
+        self.event_handler.screen.blit(self.back_button_tile.image, self.back_button_tile.rect)
         self.event_handler.screen.blit(
             self.join_game_tile.image, self.join_game_tile.rect
         )
@@ -132,6 +162,8 @@ class JoinGame(GameWindow):
         self.scroll_text_tile.blit_text()
 
     def activate_tile(self, tile, event):
+        if tile.name == "back_button":
+            self.event_handler.change_window(self.event_handler.menu)
         if tile.name == "right_arrow" and event.button == client.LEFT_BUTTON_CLICK:
             self.scroll_text_tile.next_text()
             self.scroll_text_tile.slider.next_handle_position()
@@ -146,5 +178,5 @@ class JoinGame(GameWindow):
         if tile.name == "scroll_tile" and event.button == client.SCROLL_DOWN:
             self.scroll_text_tile.next_text()
             self.scroll_text_tile.slider.next_handle_position()
-
+        
         return None, False
