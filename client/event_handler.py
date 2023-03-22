@@ -36,9 +36,8 @@ class EventHandler(Singleton):
         keys = pygame.key.get_pressed()
         if event.type == pygame.QUIT:
             return '{"type": "close_connection"}', True
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
-                return self.handle_mouse_click()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            return self.handle_mouse_click(event)
         elif event.type == client.EVENT_TYPE:
             # TODO Implement when a server event happens
             self.handle_server_message(event.message)
@@ -120,11 +119,11 @@ class EventHandler(Singleton):
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
                         text_surface.mark_clicked()
-                        return self.handle_mouse_click()
+                        return self.handle_mouse_click(event)
                 elif event.type == pygame.QUIT:
                     return '{"type": "close_connection"}', True
                 elif (keys[pygame.K_LALT] or keys[pygame.K_RALT]) and (
-                        keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]
+                    keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]
                 ):
                     self.open_full_screen()
 
@@ -144,7 +143,7 @@ class EventHandler(Singleton):
                 if event.type == pygame.MOUSEBUTTONUP:
                     clicked = False
                 if event.type == pygame.MOUSEMOTION:
-                    slider.move_slider(event.pos[0])
+                    slider.move_slider(event)
             self.current_window.blit()
 
     def handle_save_button(self, button):
@@ -168,13 +167,21 @@ class EventHandler(Singleton):
         for window in self.game_windows:
             window.resize()
 
-    def handle_mouse_click(self):
-        print("Mouse is clicked")
+    def handle_mouse_click(self, event):
         tiles_copy = self.current_window.tiles_group.copy()
         for tile in tiles_copy:
             if tile.rect.collidepoint(pygame.mouse.get_pos()):
                 print(tile.name)
-                return self.current_window.activate_tile(tile)
+                return self.current_window.activate_tile(tile, event)
+        # Unclickable tile pressed
+        return None, False
+
+    def handle_scroll(self, scrolled_up):
+        tiles_copy = self.current_window.tiles_group.copy()
+        for tile in tiles_copy:
+            if tile.rect.collidepoint(pygame.mouse.get_pos()):
+                print(tile.name)
+                return self.current_window.scroll_tile(tile, scrolled_up)
         # Unclickable tile pressed
         return None, False
 
@@ -182,19 +189,19 @@ class EventHandler(Singleton):
         pass
 
     def open_full_screen(self):
-        self.screen = pygame.display.set_mode(
-            (0, 0), pygame.FULLSCREEN
-        )
+        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.change_screen(self.screen)
-        self.settings.resolution_slider.handle_position = self.settings.SCREEN_SIZE_CAPTIONS.index("fullscreen")
+        self.settings.resolution_slider.handle_position = (
+            self.settings.SCREEN_SIZE_CAPTIONS.index("fullscreen")
+        )
         client_init.IS_FULLSCREEN_ENABLED = True
         return None, False
 
     def open_windowed_screen(self):
-        self.screen = pygame.display.set_mode(
-            (1280, 720), pygame.HWSURFACE
-        )
+        self.screen = pygame.display.set_mode((1280, 720), pygame.HWSURFACE)
         self.change_screen(self.screen)
-        self.settings.resolution_slider.handle_position = self.settings.SCREEN_SIZE_CAPTIONS.index("1280x720")
+        self.settings.resolution_slider.handle_position = (
+            self.settings.SCREEN_SIZE_CAPTIONS.index("1280x720")
+        )
         client_init.IS_FULLSCREEN_ENABLED = False
         return None, False
