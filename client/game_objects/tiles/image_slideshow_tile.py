@@ -96,16 +96,18 @@ class ImageSlideshowTile(Tile):
     ):
         for slide in self.slides:
             self.surface = pygame.image.load(slide)
-            self.tiles.update({self.surface:
-                Tile(
-                    name,
-                    self.surface,
-                    screen,
-                    size_percent,
-                    tile_addition_width,
-                    tile_addition_height,
-                )
-                               })
+            self.tiles.update(
+                {
+                    self.surface: Tile(
+                        name,
+                        self.surface,
+                        screen,
+                        size_percent,
+                        tile_addition_width,
+                        tile_addition_height,
+                    )
+                }
+            )
 
     def next(self):
         self.change_tile(1)

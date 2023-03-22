@@ -53,10 +53,14 @@ class Tile(sprite.Sprite):
 
     def resize(self):
         width, height = self.screen.get_size()
-        self.standard_tile_width = width * common.get_percentage_multiplier_from_percentage(self.size_percent)
+        self.standard_tile_width = (
+            width * common.get_percentage_multiplier_from_percentage(self.size_percent)
+        )
 
         self.standard_tile_height = (
-            self.standard_tile_width * self.original_image.get_height() / self.original_image.get_width()
+            self.standard_tile_width
+            * self.original_image.get_height()
+            / self.original_image.get_width()
         )
 
         self.image = pygame.transform.scale(

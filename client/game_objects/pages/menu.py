@@ -117,7 +117,8 @@ class Menu(GameWindow):
 
         self.quit_tile.resize()
         self.quit_tile.rect.right = (
-            self.event_handler.screen_rect.right - client.BETWEEN_TILE_AND_SCREEN_SPACING
+            self.event_handler.screen_rect.right
+            - client.BETWEEN_TILE_AND_SCREEN_SPACING
         )
         self.quit_tile.rect.top = (
             self.event_handler.screen_rect.bottom
@@ -129,9 +130,15 @@ class Menu(GameWindow):
     def blit(self):
         # Refresh the object on the screen so any runtime changes will be reflected
         super().blit()
-        self.event_handler.screen.blit(self.join_game_tile.image, self.join_game_tile.rect)
-        self.event_handler.screen.blit(self.new_game_tile.image, self.new_game_tile.rect)
-        self.event_handler.screen.blit(self.settings_tile.image, self.settings_tile.rect)
+        self.event_handler.screen.blit(
+            self.join_game_tile.image, self.join_game_tile.rect
+        )
+        self.event_handler.screen.blit(
+            self.new_game_tile.image, self.new_game_tile.rect
+        )
+        self.event_handler.screen.blit(
+            self.settings_tile.image, self.settings_tile.rect
+        )
         self.event_handler.screen.blit(self.quit_tile.image, self.quit_tile.rect)
 
     def delete(self):
@@ -153,14 +160,14 @@ class Menu(GameWindow):
 
         self.tiles_group.empty()
 
-    def activate_tile(self, tile):
-        if tile.name == "new_game":
+    def activate_tile(self, tile, event):
+        if tile.name == "new_game" and event.button == client.LEFT_BUTTON_CLICK:
             self.event_handler.change_window(self.event_handler.new_game)
-        elif tile.name == "join_game":
+        elif tile.name == "join_game" and event.button == client.LEFT_BUTTON_CLICK:
             self.event_handler.change_window(self.event_handler.join_game)
-        elif tile.name == "settings":
+        elif tile.name == "settings" and event.button == client.LEFT_BUTTON_CLICK:
             self.event_handler.change_window(self.event_handler.settings)
-        elif tile.name == "quit_game":
+        elif tile.name == "quit_game" and event.button == client.LEFT_BUTTON_CLICK:
             print("Closing the game")
             return '{"type": "close_connection"}', True
 

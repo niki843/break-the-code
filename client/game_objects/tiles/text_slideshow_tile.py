@@ -35,13 +35,17 @@ class TextSlideshowTile(Tile):
     def __init__(
         self,
         name,
+        left_arrow_name,
+        right_arrow_name,
         surface,
         screen,
         size_percent,
+        arrow_size_percent,
         tile_addition_width,
         tile_addition_height,
         initial_text,
         slide_values: list,
+        horizontal=False,
     ):
         super().__init__(
             name,
@@ -54,6 +58,7 @@ class TextSlideshowTile(Tile):
 
         self.slide_values = slide_values
         self.current_text = initial_text
+        self.arrow_size_percent = arrow_size_percent
 
         self.current_text_surface = None
         self.current_text_rect = None
@@ -63,11 +68,13 @@ class TextSlideshowTile(Tile):
 
         self.font = None
 
+        self.horizontal = horizontal
+
         self.resize()
 
         self.load_text()
 
-        self.load_arrows()
+        self.load_arrows(left_arrow_name, right_arrow_name)
 
     def update(self, *args, **kwargs) -> None:
         self.update_arrows_position()
@@ -91,24 +98,32 @@ class TextSlideshowTile(Tile):
         )
         self.current_text_rect = self.current_text_surface.get_rect()
 
-    def load_arrows(self):
+    def load_arrows(self, left_arrow_name, right_arrow_name):
         right_arrow_surface = pygame.image.load(
             f"{client.IMG_PATH}next.png"
         ).convert_alpha()
+        right_top_arrow_surface = (
+            right_arrow_surface
+            if self.horizontal
+            else pygame.transform.rotate(right_arrow_surface, 270)
+        )
+        left_bottom_arrow_surface = pygame.transform.flip(
+            right_top_arrow_surface, True, True
+        )
 
         self.right_arrow = Tile(
-            "screen_size_right_arrow",
-            right_arrow_surface,
+            right_arrow_name,
+            right_top_arrow_surface,
             self.screen,
-            client.ARROW_WITH_PERCENTAGE_FROM_SCREEN,
+            self.arrow_size_percent,
             0,
             0,
         )
         self.left_arrow = Tile(
-            "screen_size_left_arrow",
-            pygame.transform.flip(right_arrow_surface, True, True),
+            left_arrow_name,
+            left_bottom_arrow_surface,
             self.screen,
-            client.ARROW_WITH_PERCENTAGE_FROM_SCREEN,
+            self.arrow_size_percent,
             0,
             0,
         )
