@@ -38,8 +38,7 @@ class ScrollTextTile(TextSlideshowTile):
         )
         self.old_rect = None
 
-        TextSlideshowTile.__init__(
-            self,
+        super().__init__(
             name,
             left_arrow_name,
             right_arrow_name,
