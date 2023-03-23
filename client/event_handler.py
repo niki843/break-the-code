@@ -198,6 +198,7 @@ class EventHandler(Singleton):
         self.settings.resolution_slider.handle_position = (
             self.settings.SCREEN_SIZE_CAPTIONS.index("fullscreen")
         )
+        self.settings.resolution_slider.set_slider_handle_position()
         client_init.IS_FULLSCREEN_ENABLED = True
         return None, False
 
@@ -207,5 +208,6 @@ class EventHandler(Singleton):
         self.settings.resolution_slider.handle_position = (
             self.settings.SCREEN_SIZE_CAPTIONS.index("1280x720")
         )
+        self.settings.resolution_slider.set_slider_handle_position()
         client_init.IS_FULLSCREEN_ENABLED = False
         return None, False

@@ -113,7 +113,7 @@ class JoinGame(GameWindow):
                 "test 12",
             ],
             max_elements_to_display=6,
-            text_size_percentage=10,
+            text_size_percentage=6,
         )
 
         self.set_scroll_text_size()

@@ -73,7 +73,7 @@ class ScrollTextTile(TextSlideshowTile):
         self.resize_slider()
 
         self.text_size = (
-            self.image.get_height()
+            self.image.get_width()
             * common.get_percentage_multiplier_from_percentage(text_size_percentage)
         )
         self.font = common.load_font(self.text_size)
@@ -161,13 +161,7 @@ class ScrollTextTile(TextSlideshowTile):
     def resize_slider(self):
         width_slider = (
             self.image.get_width()
-            * common.get_percentage_multiplier_from_percentage(self.slider_size_percent)
-        )
-        width_slider_handle = (
-            self.image.get_width()
-            * common.get_percentage_multiplier_from_percentage(
-                self.slider_handle_size_percent
-            )
+            * common.get_percentage_multiplier_from_percentage(5)
         )
         self.slider.image = pygame.transform.scale(
             self.slider.image,
@@ -181,8 +175,8 @@ class ScrollTextTile(TextSlideshowTile):
         self.slider.slider_handle.image = pygame.transform.scale(
             self.slider.slider_handle.image,
             (
-                width_slider_handle,
-                width_slider_handle
+                width_slider,
+                width_slider
                 * self.slider.slider_handle.original_image.get_height()
                 / self.slider.slider_handle.original_image.get_width(),
             ),
