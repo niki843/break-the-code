@@ -26,17 +26,10 @@ class ScrollTextTile(TextSlideshowTile):
         tile_addition_width,
         tile_addition_height,
         text_items: list,
-        max_elements_to_display,
         text_size_percentage,
     ):
         self.text_surfaces = []
         self.first_element = 0
-        self.max_elements_to_display = max_elements_to_display
-        self.text_size_percentage = text_size_percentage
-        self.scroll_delimiters = (
-            len(text_items) - max_elements_to_display + 1 if text_items else 0
-        )
-        self.old_rect = None
 
         super().__init__(
             name,
@@ -52,6 +45,22 @@ class ScrollTextTile(TextSlideshowTile):
             text_items or [],
             horizontal=False,
         )
+
+        self.text_size = int(
+            self.image.get_height()
+            * common.get_percentage_multiplier_from_percentage(text_size_percentage)
+        )
+        self.font = common.load_font(self.text_size)
+
+        self.max_elements_to_display = int(self.image.get_height() / (self.text_size + self.screen.get_height() * 0.01))
+        self.text_size_percentage = text_size_percentage
+        self.scroll_delimiters = (
+            len(text_items) - self.max_elements_to_display if text_items else 0
+        )
+        self.old_rect = None
+        self.slider_size_percent = slider_size_percent
+        self.slider_handle_size_percent = slider_handle_size_percent
+
         self.slider = Slider(
             name=slider_name,
             surface=slider_surface,
@@ -66,16 +75,8 @@ class ScrollTextTile(TextSlideshowTile):
             handle_position=0,
             horizontal=False,
         )
-        self.slider_size_percent = slider_size_percent
-        self.slider_handle_size_percent = slider_handle_size_percent
 
         self.resize_slider()
-
-        self.text_size = int(
-            self.image.get_height()
-            * common.get_percentage_multiplier_from_percentage(text_size_percentage)
-        )
-        self.font = common.load_font(self.text_size)
 
     def load_text(self):
         if self.text_surfaces:
@@ -104,7 +105,7 @@ class ScrollTextTile(TextSlideshowTile):
         self.left_arrow.rect.top = self.rect.top
 
     def update_text_position(self):
-        current_top_surface = self.rect.top + 50
+        current_top_surface = self.rect.top
         for surface, rect in self.text_surfaces:
             rect.centerx = self.rect.centerx
             rect.top = current_top_surface + (self.screen.get_height() * 0.015)

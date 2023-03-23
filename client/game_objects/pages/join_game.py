@@ -99,20 +99,9 @@ class JoinGame(GameWindow):
             tile_addition_width=-(self.event_handler.screen.get_width() * 0.2),
             tile_addition_height=self.event_handler.screen.get_height() * 0.2,
             text_items=[
-                "some fucking shit",
+                "test1",
                 "test2",
-                "test3",
-                "test4",
-                "test5",
-                "test6",
-                "test 7",
-                "test 8",
-                "test 9",
-                "test 10",
-                "test 11",
-                "test 12",
             ],
-            max_elements_to_display=6,
             text_size_percentage=6,
         )
 

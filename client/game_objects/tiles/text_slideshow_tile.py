@@ -70,10 +70,6 @@ class TextSlideshowTile(Tile):
 
         self.horizontal = horizontal
 
-        self.resize()
-
-        self.load_text()
-
         self.load_arrows(left_arrow_name, right_arrow_name)
 
     def update(self, *args, **kwargs) -> None:
