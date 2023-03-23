@@ -124,7 +124,7 @@ class Settings(GameWindow):
 
         self.resolution_label_tile.resize()
         self.resolution_label_tile.rect.top = self.tiles_background.rect.top + (
-            self.event_handler.screen.get_height() * 0.05
+            self.event_handler.screen.get_height() * 0.07
         )
         self.resolution_label_tile.rect.left = self.tiles_background.rect.left + (
             self.event_handler.screen.get_width() * 0.06
