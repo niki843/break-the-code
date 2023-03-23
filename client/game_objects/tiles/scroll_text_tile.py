@@ -72,8 +72,8 @@ class ScrollTextTile(TextSlideshowTile):
 
         self.resize_slider()
 
-        self.text_size = (
-            self.image.get_width()
+        self.text_size = int(
+            self.image.get_height()
             * common.get_percentage_multiplier_from_percentage(text_size_percentage)
         )
         self.font = common.load_font(self.text_size)
@@ -145,8 +145,8 @@ class ScrollTextTile(TextSlideshowTile):
     def resize(self):
         super().resize()
         if hasattr(self, "font"):
-            self.text_size = (
-                self.image.get_height()
+            self.text_size = int(
+                self.image.get_width()
                 * common.get_percentage_multiplier_from_percentage(
                     self.text_size_percentage
                 )
