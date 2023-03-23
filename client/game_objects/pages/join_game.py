@@ -124,9 +124,11 @@ class JoinGame(GameWindow):
 
         self.scroll_text_tile.resize()
         self.scroll_text_tile.rect.right = self.tiles_background.rect.right - (
-            self.event_handler.screen.get_width() * 0.134
+            self.event_handler.screen.get_width() * 0.01
         )
-        self.scroll_text_tile.rect.centery = self.tiles_background.rect.centery - 3
+        self.scroll_text_tile.rect.centery = self.tiles_background.rect.centery - (
+            self.event_handler.screen.get_height() * 0.001
+        )
 
         self.scroll_text_tile.update()
 
