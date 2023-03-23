@@ -93,9 +93,6 @@ class JoinGame(GameWindow):
             handle_surface=slider_handle,
             screen=self.event_handler.screen,
             size_percent=49,
-            arrow_size_percent=2,
-            slider_size_percent=4,
-            slider_handle_size_percent=4,
             tile_addition_width=-(self.event_handler.screen.get_width() * 0.2),
             tile_addition_height=self.event_handler.screen.get_height() * 0.2,
             text_items=[

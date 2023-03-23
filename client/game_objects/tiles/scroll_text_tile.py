@@ -20,9 +20,6 @@ class ScrollTextTile(TextSlideshowTile):
         handle_surface,
         screen,
         size_percent,
-        arrow_size_percent,
-        slider_size_percent,
-        slider_handle_size_percent,
         tile_addition_width,
         tile_addition_height,
         text_items: list,
@@ -38,7 +35,7 @@ class ScrollTextTile(TextSlideshowTile):
             main_background_surface,
             screen,
             size_percent,
-            arrow_size_percent,
+            2,
             tile_addition_width,
             tile_addition_height,
             None,
@@ -57,9 +54,6 @@ class ScrollTextTile(TextSlideshowTile):
         self.scroll_delimiters = (
             len(text_items) - self.max_elements_to_display if text_items else 0
         )
-        self.old_rect = None
-        self.slider_size_percent = slider_size_percent
-        self.slider_handle_size_percent = slider_handle_size_percent
 
         self.slider = Slider(
             name=slider_name,
@@ -191,6 +185,5 @@ class ScrollTextTile(TextSlideshowTile):
         self.screen.blit(
             self.slider.slider_handle.image, self.slider.slider_handle.rect
         )
-        self.old_rect = self.slider.slider_handle.rect
         for surface, rect in self.text_surfaces:
             self.screen.blit(surface, rect)
