@@ -42,13 +42,17 @@ class EventHandler(Singleton):
             # TODO Implement when a server event happens
             self.handle_server_message(event.message)
             print(event.message)
-        elif (keys[pygame.K_LALT] or keys[pygame.K_RALT]) and (
-            keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]
+        elif (
+            (keys[pygame.K_LALT] or keys[pygame.K_RALT])
+            and (keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN])
+            and event.type == pygame.KEYDOWN
         ):
-            if client_init.IS_FULLSCREEN_ENABLED == False:
+            if not client_init.IS_FULLSCREEN_ENABLED:
+                print("opening full screen")
                 self.open_full_screen()
                 return None, False
-            if client_init.IS_FULLSCREEN_ENABLED == True:
+            elif client_init.IS_FULLSCREEN_ENABLED:
+                print("closing_fullscreen")
                 self.open_windowed_screen()
                 return None, False
         elif event.type == pygame.KEYUP and event.key == pygame.K_n:

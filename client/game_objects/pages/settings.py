@@ -23,8 +23,6 @@ class Settings(GameWindow):
         super().__init__(event_handler)
         self.settings_label_tile = None
 
-        self.tiles_background = None
-
         self.resolution_label_tile = None
         self.resolution_slider = None
 
@@ -39,8 +37,6 @@ class Settings(GameWindow):
         self.current_username = "test"
 
         self.apply_button = None
-
-        self.back_tile = None
 
         self.current_resolution = None
 
@@ -91,21 +87,6 @@ class Settings(GameWindow):
             "background", surface, self.event_handler.screen, 100, 0, 0
         )
         self.set_background_size()
-
-    def build_tiles_background(self):
-        surface = pygame.image.load(f"{client.IMG_PATH}menu_field.png").convert_alpha()
-
-        self.tiles_background = Tile(
-            "tiles_background", surface, self.event_handler.screen, 100, 0, 0
-        )
-        self.set_tiles_background_size()
-
-    def set_tiles_background_size(self):
-        if not self.tiles_background:
-            return
-        self.tiles_background.resize()
-        self.tiles_background.rect.centerx = self.event_handler.screen_rect.centerx
-        self.tiles_background.rect.centery = self.event_handler.screen_rect.centery
 
     def build_settings_label(self):
         surface = pygame.image.load(
@@ -329,32 +310,6 @@ class Settings(GameWindow):
         self.apply_button.rect.centery = self.username_input_box.rect.centery
         self.apply_button.rect.left = self.username_input_box.rect.right + (
             self.event_handler.screen.get_width() * 0.02
-        )
-
-    def build_back_tile(self):
-        back_surface = pygame.image.load(f"{client.IMG_PATH}back.png")
-        self.back_tile = Tile(
-            "back",
-            back_surface,
-            self.event_handler.screen,
-            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
-            0,
-            0,
-        )
-
-        self.set_back_tile()
-        self.tiles_group.add(self.back_tile)
-
-    def set_back_tile(self):
-        if not self.back_tile:
-            return
-
-        self.back_tile.resize()
-        self.back_tile.rect.left = self.event_handler.screen_rect.left + (
-            self.event_handler.screen.get_width() * 0.03
-        )
-        self.back_tile.rect.top = self.event_handler.screen_rect.top + (
-            self.event_handler.screen.get_height() * 0.03
         )
 
     def blit(self):

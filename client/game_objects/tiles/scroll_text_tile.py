@@ -62,7 +62,7 @@ class ScrollTextTile(TextSlideshowTile):
             tile_addition_height=0,
             handle_name=handle_name,
             handle_surface=handle_surface,
-            handle_size_percent=3,
+            handle_size_percent=self.image.get_width() * 0.2,
             delimiters_count=self.scroll_delimiters,
             handle_position=0,
             horizontal=False,
@@ -153,6 +153,10 @@ class ScrollTextTile(TextSlideshowTile):
             )
             self.font = common.load_font(self.text_size)
             self.load_text()
+
+        if hasattr(self, "slider"):
+            self.slider.screen = self.screen
+            self.resize_slider()
 
     def resize_slider(self):
         width_slider = (
