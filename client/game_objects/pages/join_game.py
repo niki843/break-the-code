@@ -2,6 +2,7 @@ import pygame
 import client
 
 from client.game_objects.pages.game_window import GameWindow
+from client.game_objects.tiles.multiline_text_tile import MultilineTextTile
 from client.game_objects.tiles.scroll_text_tile import ScrollTextTile
 from client.game_objects.tiles.tile import Tile
 
@@ -14,6 +15,8 @@ class JoinGame(GameWindow):
 
         self.scroll_text_tile = None
 
+        self.text_box = None
+
         self.build()
 
     def build(self):
@@ -25,6 +28,8 @@ class JoinGame(GameWindow):
         self.build_scrollable_text()
 
         self.build_join_game_button()
+
+        self.build_text_box()
 
     def resize(self):
         super().resize()
@@ -141,6 +146,32 @@ class JoinGame(GameWindow):
         self.tiles_group.add(self.scroll_text_tile.slider.slider_handle)
         self.tiles_group.add(self.scroll_text_tile)
 
+    def build_text_box(self):
+        surface = pygame.image.load(
+            f"{client.IMG_PATH}menu_field_cropped.png"
+        ).convert_alpha()
+        self.text_box = MultilineTextTile(
+            "test_text",
+            surface,
+            self.event_handler.screen,
+            50,
+            0,
+            0,
+            "test string because I want to check if it will work as expected, so please work because I'm not in the mood for games!!!",
+            20,
+        )
+
+        self.set_text_box_size()
+
+    def set_text_box_size(self):
+        if not self.text_box:
+            return
+
+        self.text_box.resize()
+        self.text_box.rect.centerx = self.event_handler.screen_rect.centerx
+        self.text_box.rect.centery = self.event_handler.screen_rect.centery
+        self.text_box.center_text()
+
     def blit(self):
         super().blit()
         self.event_handler.screen.blit(
@@ -151,10 +182,16 @@ class JoinGame(GameWindow):
         self.event_handler.screen.blit(
             self.join_game_tile.image, self.join_game_tile.rect
         )
+        # self.event_handler.screen.blit(
+        #     self.scroll_text_tile.image, self.scroll_text_tile.rect
+        # )
+        # self.scroll_text_tile.blit_text()
+
         self.event_handler.screen.blit(
-            self.scroll_text_tile.image, self.scroll_text_tile.rect
+            self.text_box.image, self.text_box.rect
         )
-        self.scroll_text_tile.blit_text()
+
+        self.text_box.blit()
 
     def activate_tile(self, tile, event):
         if tile.name == "back":
