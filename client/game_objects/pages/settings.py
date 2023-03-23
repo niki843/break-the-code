@@ -307,9 +307,10 @@ class Settings(GameWindow):
         if not self.apply_button:
             return
 
+        self.apply_button.resize()
         self.apply_button.rect.centery = self.username_input_box.rect.centery
         self.apply_button.rect.left = self.username_input_box.rect.right + (
-            self.event_handler.screen.get_width() * 0.02
+            self.event_handler.screen.get_width() * 0.04
         )
 
     def blit(self):
