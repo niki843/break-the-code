@@ -25,9 +25,6 @@ class ScrollTextTile(TextSlideshowTile):
         text_items: list,
         text_size_percentage,
     ):
-        self.text_surfaces = []
-        self.first_element = 0
-
         super().__init__(
             name,
             left_arrow_name,
@@ -42,6 +39,9 @@ class ScrollTextTile(TextSlideshowTile):
             text_items or [],
             horizontal=False,
         )
+
+        self.text_surfaces = []
+        self.first_element = 0
 
         self.text_size = int(
             self.image.get_height()
