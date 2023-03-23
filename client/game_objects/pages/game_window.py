@@ -66,10 +66,10 @@ class GameWindow:
         )
 
     def build_tiles_background(self):
-        surface = pygame.image.load(f"{client.IMG_PATH}menu_field.png").convert_alpha()
+        surface = pygame.image.load(f"{client.IMG_PATH}menu_field_cropped.png").convert_alpha()
 
         self.tiles_background = Tile(
-            "tiles_background", surface, self.event_handler.screen, 100, 0, 0
+            "tiles_background", surface, self.event_handler.screen, 80, 0, 0
         )
         self.set_tiles_background_size()
 

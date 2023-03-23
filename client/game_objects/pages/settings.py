@@ -124,10 +124,10 @@ class Settings(GameWindow):
 
         self.resolution_label_tile.resize()
         self.resolution_label_tile.rect.top = self.tiles_background.rect.top + (
-            self.event_handler.screen_rect.bottom * 0.22
+            self.event_handler.screen.get_height() * 0.05
         )
         self.resolution_label_tile.rect.left = self.tiles_background.rect.left + (
-            self.event_handler.screen_rect.right * 0.16
+            self.event_handler.screen.get_width() * 0.06
         )
 
     def build_resolution_slider(self):
@@ -169,7 +169,7 @@ class Settings(GameWindow):
 
         self.resolution_slider.resize()
         self.resolution_slider.rect.top = self.resolution_label_tile.rect.bottom + (
-            self.event_handler.screen.get_height() * 0.05
+            self.event_handler.screen.get_height() * 0.04
         )
         self.resolution_slider.rect.left = self.resolution_label_tile.rect.left
         self.resolution_slider.set_slider_handle_position()
@@ -190,7 +190,7 @@ class Settings(GameWindow):
 
         self.music_label_tile.resize()
         self.music_label_tile.rect.top = self.resolution_slider.rect.bottom + (
-            self.event_handler.screen_rect.bottom * 0.05
+            self.event_handler.screen.get_height() * 0.05
         )
         self.music_label_tile.rect.left = self.resolution_slider.rect.left
 
@@ -223,8 +223,8 @@ class Settings(GameWindow):
             return
 
         self.music_slider.resize()
-        self.music_slider.rect.top = self.music_label_tile.rect.top + (
-            self.event_handler.screen_rect.bottom * 0.11
+        self.music_slider.rect.top = self.music_label_tile.rect.bottom + (
+            self.event_handler.screen.get_height() * 0.04
         )
         self.music_slider.rect.left = self.music_label_tile.rect.left
         self.music_slider.set_slider_handle_position()
@@ -245,7 +245,7 @@ class Settings(GameWindow):
 
         self.username_label.resize()
         self.username_label.rect.top = self.music_slider.rect.bottom + (
-            self.event_handler.screen_rect.bottom * 0.05
+            self.event_handler.screen.get_height() * 0.05
         )
         self.username_label.rect.left = self.music_slider.rect.left
 
@@ -279,7 +279,7 @@ class Settings(GameWindow):
 
         self.username_input_box.resize()
         self.username_input_box.rect.top = self.username_label.rect.bottom + (
-            self.event_handler.screen_rect.bottom * 0.02
+            self.event_handler.screen.get_height() * 0.03
         )
         self.username_input_box.rect.left = self.username_label.rect.left
 
