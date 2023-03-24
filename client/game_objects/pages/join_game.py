@@ -133,9 +133,12 @@ class JoinGame(GameWindow):
             self.event_handler.screen,
             78,
             -660,
-            -148,
-            "Player1: haaaaasaaaan 12344543643523232343241224 \n 1 \n Player2: peshoslep12 Player3: gosho, idawdadvdfbfdgbd , fsdgbdfbdfb qwfvfdbdtfbsa sawdsabdf awfvfdbdfbndrt efvdfbdfbernb ewegbreber vrsegbrebernbb niki",
-            9,
+            -143,
+            """
+            Player1: hhhhhhhhhhhhhhhhhhhh
+            Player2: hhhhhhhhhhhhhhhhhhhh 
+            Player3: hhhhhhhhhhhhhhhhhhhh""",
+            8,
             1
         )
 
@@ -164,15 +167,15 @@ class JoinGame(GameWindow):
         self.event_handler.screen.blit(
             self.join_game_tile.image, self.join_game_tile.rect
         )
-        self.event_handler.screen.blit(
-            self.scroll_text_tile.image, self.scroll_text_tile.rect
-        )
-        self.scroll_text_tile.blit()
-
         # self.event_handler.screen.blit(
-        #     self.text_box.image, self.text_box.rect
+        #     self.scroll_text_tile.image, self.scroll_text_tile.rect
         # )
-        # self.text_box.blit()
+        # self.scroll_text_tile.blit()
+
+        self.event_handler.screen.blit(
+            self.text_box.image, self.text_box.rect
+        )
+        self.text_box.blit()
 
     def activate_tile(self, tile, event):
         if tile.name == "back":
