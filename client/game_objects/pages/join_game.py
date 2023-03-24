@@ -41,6 +41,8 @@ class JoinGame(GameWindow):
 
         self.set_join_game_button_size()
 
+        self.set_text_box_size()
+
     def build_background(self):
         surface = pygame.image.load(f"{client.IMG_PATH}clear_bgr.png").convert_alpha()
 
@@ -154,11 +156,13 @@ class JoinGame(GameWindow):
             "test_text",
             surface,
             self.event_handler.screen,
-            50,
-            0,
-            0,
-            "test string because I want to check if it will work as expected, so please work because I'm not in the mood for games!!!",
-            20,
+            78,
+            -660,
+            -148,
+            """Player1: fikret-storaropeshoslepia 12344543643523232343241224 \n 1 \n
+            Player2: peshoslep12 Player3: gosho, idawdadvdfbfdgbd , fsdgbdfbdfb
+            qwfvfdbdtfbsa sawdsabdf awfvfdbdfbndrt efvdfbdfbernb ewegbreber vrsegbrebernbb niki""",
+            9,
         )
 
         self.set_text_box_size()
@@ -168,8 +172,12 @@ class JoinGame(GameWindow):
             return
 
         self.text_box.resize()
-        self.text_box.rect.centerx = self.event_handler.screen_rect.centerx
-        self.text_box.rect.centery = self.event_handler.screen_rect.centery
+        self.text_box.rect.top = self.tiles_background.rect.top + (
+            self.event_handler.screen.get_height() * 0.1
+        )
+        self.text_box.rect.right = self.tiles_background.rect.right - (
+            self.event_handler.screen.get_width() * 0.02
+        )
         self.text_box.center_text()
 
     def blit(self):
