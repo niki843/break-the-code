@@ -1,9 +1,7 @@
 import pygame
 
-import client
 from client.game_objects.tiles.multiline_text_tile import MultilineTextTile
 from client.game_objects.tiles.slider import Slider
-from client.game_objects.tiles.text_slideshow_tile import TextSlideshowTile
 
 from client.utils import common
 
@@ -26,23 +24,22 @@ class ScrollTextTile(MultilineTextTile):
     ):
         MultilineTextTile.__init__(
             self,
-            name,
-            main_background_surface,
-            screen,
-            size_percent,
-            tile_addition_width,
-            tile_addition_height,
-            text_to_display,
-            text_size_percentage,
+            name=name,
+            surface=main_background_surface,
+            screen=screen,
+            size_percent=size_percent,
+            tile_addition_width=tile_addition_width,
+            tile_addition_height=tile_addition_height,
+            text_to_display=text_to_display,
+            text_size_percent=text_size_percentage,
+            start_line=0,
         )
 
         self.load_text()
 
-        self.first_element = 0
-        self.scroll_delimiters = (
-            len(self.text_surfaces) - self.max_lines_to_display if self.text_surfaces else 0
+        delimiters = (
+            (len(self.text_surfaces) - self.max_lines_to_display) + 1 if self.text else 0
         )
-
         self.slider = Slider(
             name=slider_name,
             surface=slider_surface,
@@ -53,7 +50,7 @@ class ScrollTextTile(MultilineTextTile):
             handle_name=handle_name,
             handle_surface=handle_surface,
             handle_size_percent=self.image.get_width() * 0.2,
-            delimiters_count=self.scroll_delimiters,
+            delimiters_count=delimiters,
             handle_position=0,
             horizontal=False,
         )
@@ -80,22 +77,22 @@ class ScrollTextTile(MultilineTextTile):
             self.scroll_down()
 
     def scroll_down(self):
-        self.change_text(1)
+        self.change_line(1)
 
     def scroll_up(self):
-        self.change_text(-1)
+        self.change_line(-1)
 
-    def change_text(self, index):
-        self.first_element += index
+    def change_line(self, index):
+        self.start_line += index
 
         if (
-            self.max_lines_to_display + self.first_element > len(self.text_surfaces)
-            or self.first_element < 0
+            self.max_lines_to_display + self.start_line > len(self.text_surfaces)
+            or self.start_line < 0
         ):
-            self.first_element -= index
+            self.start_line -= index
             return
 
-        self.load_text(self.first_element)
+        self.load_text()
         self.center_text()
 
     def resize(self):

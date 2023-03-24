@@ -14,14 +14,15 @@ class MultilineTextTile(Tile):
         tile_addition_height,
         text_to_display: str,
         text_size_percent: int,
+        start_line: int,
     ):
         super().__init__(
-            name,
-            surface,
-            screen,
-            size_percent,
-            tile_addition_width,
-            tile_addition_height,
+            name=name,
+            surface=surface,
+            screen=screen,
+            size_percent=size_percent,
+            tile_addition_width=tile_addition_width,
+            tile_addition_height=tile_addition_height,
         )
 
         self.text = text_to_display
@@ -29,6 +30,7 @@ class MultilineTextTile(Tile):
         self.text_size_percent = text_size_percent
         self.font = None
         self.text_size = 1
+        self.start_line = start_line
 
         self.load_font()
         self.new_line_space = self.screen.get_height() * 0.015
@@ -47,21 +49,17 @@ class MultilineTextTile(Tile):
         )
         self.font = common.load_font(self.text_size)
 
-    def load_text(self, start_line=0):
+    def load_text(self):
         self.text_surfaces = []
         split_text = self.text.split(" ")
         lines = 1
         # This approach is making sure that we always start from 0 in the while
         # and in the beginning of each next loop we change the value to the next one
         # it's either this or a try finally, but I personally prefer this
-        i = start_line - 1
+        i = -1
         current_word = split_text[0]
         while i < len(split_text):
             i += 1
-
-            # If the lines a too much for the text to fit in stop writing
-            if lines > self.max_lines_to_display:
-                break
 
             next_word = ""
             if i < len(split_text) - 1:
@@ -94,13 +92,15 @@ class MultilineTextTile(Tile):
 
     def center_text(self):
         current_top_surface = self.rect.top
-        for surface, rect in self.text_surfaces:
+        displayed_surfaces = self.text_surfaces[self.start_line:self.start_line + self.max_lines_to_display]
+        for surface, rect in displayed_surfaces:
             rect.left = self.rect.left + self.text_left_spacing
             rect.top = current_top_surface + self.new_line_space
             current_top_surface = rect.bottom
 
     def blit(self):
-        for surface, rect in self.text_surfaces:
+        displayed_surfaces = self.text_surfaces[self.start_line:self.start_line + self.max_lines_to_display]
+        for surface, rect in displayed_surfaces:
             self.screen.blit(surface, rect)
 
     def add_text(self, text_to_apply):

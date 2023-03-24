@@ -136,6 +136,7 @@ class JoinGame(GameWindow):
             -148,
             "Player1: haaaaasaaaan 12344543643523232343241224 \n 1 \n Player2: peshoslep12 Player3: gosho, idawdadvdfbfdgbd , fsdgbdfbdfb qwfvfdbdtfbsa sawdsabdf awfvfdbdfbndrt efvdfbdfbernb ewegbreber vrsegbrebernbb niki",
             9,
+            1
         )
 
         self.set_text_box_size()
@@ -171,7 +172,6 @@ class JoinGame(GameWindow):
         # self.event_handler.screen.blit(
         #     self.text_box.image, self.text_box.rect
         # )
-
         # self.text_box.blit()
 
     def activate_tile(self, tile, event):
