@@ -159,7 +159,7 @@ class JoinGame(GameWindow):
             78,
             -660,
             -148,
-            """Player1: fikret-storaropeshoslepia 12344543643523232343241224 \n 1 \n
+            """Player1: haaaaasaaaan 12344543643523232343241224 \n 1 \n
             Player2: peshoslep12 Player3: gosho, idawdadvdfbfdgbd , fsdgbdfbdfb
             qwfvfdbdtfbsa sawdsabdf awfvfdbdfbndrt efvdfbdfbernb ewegbreber vrsegbrebernbb niki""",
             9,
