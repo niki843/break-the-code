@@ -170,8 +170,9 @@ class JoinGame(GameWindow):
             """
             Player1: hasaaaaan 
             Player2: peshoslepia12 
-            Player3: fikret-storaro""",
-            8,
+            Player3: fikret-storaro
+            Player4: neadekvaten""",
+            5.1,
             1
         )
 
