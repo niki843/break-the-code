@@ -164,13 +164,9 @@ class JoinGame(GameWindow):
             30,
             0,
             0,
-            """
-            Player1: hasaaaaan 
-            Player2: peshoslepia12 
-            Player3: fikret-storaro
-            Player4: neadekvaten""",
+            "Player1: hasaaaaan  \n Player2: peshoslepia12 \n Player3: fikret-storaro \n Player4: neadekvaten",
             5.1,
-            1
+            0
         )
 
         self.set_game_info_size()
