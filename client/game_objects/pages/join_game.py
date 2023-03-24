@@ -16,8 +16,7 @@ class JoinGame(GameWindow):
         self.scroll_text_tile = None
 
         self.game_info_tile = None
-
-        self.text_box = None
+        self.game_info_box = None
 
         self.build()
 
@@ -30,10 +29,9 @@ class JoinGame(GameWindow):
         # self.build_scrollable_text()
 
         self.build_game_info_label()
+        self.build_game_info_box()
 
         self.build_join_game_button()
-
-        self.build_text_box()
 
     def resize(self):
         super().resize()
@@ -43,11 +41,10 @@ class JoinGame(GameWindow):
 
         # self.set_scroll_text_size()
 
+        self.set_game_info_label_size()
         self.set_game_info_size()
 
         self.set_join_game_button_size()
-
-        self.set_text_box_size()
 
     def build_background(self):
         surface = pygame.image.load(f"{client.IMG_PATH}clear_bgr.png").convert_alpha()
@@ -142,9 +139,9 @@ class JoinGame(GameWindow):
             tile_addition_height=0
         )
 
-        self.set_game_info_size()
+        self.set_game_info_label_size()
 
-    def set_game_info_size(self):
+    def set_game_info_label_size(self):
         if not self.game_info_tile:
             return
 
@@ -156,17 +153,17 @@ class JoinGame(GameWindow):
             self.event_handler.screen.get_width() * 0.03
         )
 
-    def build_text_box(self):
+    def build_game_info_box(self):
         surface = pygame.image.load(
-            f"{client.IMG_PATH}menu_field_cropped.png"
+            f"{client.IMG_PATH}game_info_menu.png"
         ).convert_alpha()
-        self.text_box = MultilineTextTile(
+        self.game_info_box = MultilineTextTile(
             "test_text",
             surface,
             self.event_handler.screen,
-            78,
-            -660,
-            -100,
+            30,
+            0,
+            0,
             """
             Player1: hasaaaaan 
             Player2: peshoslepia12 
@@ -176,18 +173,18 @@ class JoinGame(GameWindow):
             1
         )
 
-        self.set_text_box_size()
+        self.set_game_info_size()
 
-    def set_text_box_size(self):
-        if not self.text_box:
+    def set_game_info_size(self):
+        if not self.game_info_box:
             return
 
-        self.text_box.resize()
-        self.text_box.rect.top = self.game_info_tile.rect.bottom + (
-            self.event_handler.screen.get_height() * 0.005
+        self.game_info_box.resize()
+        self.game_info_box.rect.bottom = self.tiles_background.rect.bottom - (
+            self.event_handler.screen.get_height() * 0.02
         )
-        self.text_box.rect.centerx = self.game_info_tile.rect.centerx
-        self.text_box.center_text()
+        self.game_info_box.rect.centerx = self.game_info_tile.rect.centerx
+        self.game_info_box.center_text()
 
     def blit(self):
         super().blit()
@@ -210,9 +207,9 @@ class JoinGame(GameWindow):
         )
 
         self.event_handler.screen.blit(
-            self.text_box.image, self.text_box.rect
+            self.game_info_box.image, self.game_info_box.rect
         )
-        self.text_box.blit()
+        self.game_info_box.blit()
 
     def activate_tile(self, tile, event):
         if tile.name == "back":
