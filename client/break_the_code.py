@@ -3,7 +3,13 @@ import uuid
 import pygame
 import os
 import asyncio
-from client import ws_client as client, IMG_PATH, ASYNC_SLEEP_TIME_ON_EXIT, MUSIC_PATH, LOOP
+from client import (
+    ws_client as client,
+    IMG_PATH,
+    ASYNC_SLEEP_TIME_ON_EXIT,
+    MUSIC_PATH,
+    LOOP,
+)
 from client.game_objects.pages.menu import Menu
 from client.event_handler import EventHandler
 from client.utils import common
@@ -21,6 +27,7 @@ async def send_message(message):
     await ws_client.send_server_messages(message)
 
     print("Message sent")
+
 
 # Connect to server
 LOOP.create_task(connect())
@@ -61,7 +68,7 @@ def start_game():
     screen = pygame.display.set_mode((1280, 720), pygame.HWSURFACE | pygame.DOUBLEBUF)
     pygame.display.set_caption("Break The Code")
 
-    thumbnail = pygame.image.load(f"{IMG_PATH}crack-the-code-thumbnail.png")
+    thumbnail = pygame.image.load(f"{IMG_PATH}logo_thumbnail.png")
     pygame.display.set_icon(thumbnail)
 
     event_handler = EventHandler(player_id, screen=screen)

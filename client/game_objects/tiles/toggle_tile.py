@@ -2,17 +2,16 @@ from client.game_objects.tiles.tile import Tile
 
 
 class ToggleTile(Tile):
-
     def __init__(
-            self,
-            name,
-            next_name,
-            current_surface,
-            screen,
-            size_percent,
-            tile_addition_width,
-            tile_addition_height,
-            next_surface,
+        self,
+        name,
+        next_name,
+        current_surface,
+        screen,
+        size_percent,
+        tile_addition_width,
+        tile_addition_height,
+        next_surface,
     ):
         super().__init__(
             name,
@@ -23,7 +22,14 @@ class ToggleTile(Tile):
             tile_addition_height,
         )
 
-        self.next_surface = Tile(next_name, next_surface, screen, size_percent, tile_addition_width, tile_addition_height)
+        self.next_surface = Tile(
+            next_name,
+            next_surface,
+            screen,
+            size_percent,
+            tile_addition_width,
+            tile_addition_height,
+        )
 
         self.values = (self, self.next_surface)
 
