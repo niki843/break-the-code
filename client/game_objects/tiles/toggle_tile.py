@@ -12,6 +12,7 @@ class ToggleTile(Tile):
         tile_addition_width,
         tile_addition_height,
         next_surface,
+        shrink_percent=0,
     ):
         super().__init__(
             name,
@@ -26,7 +27,7 @@ class ToggleTile(Tile):
             next_name,
             next_surface,
             screen,
-            size_percent,
+            size_percent - shrink_percent,
             tile_addition_width,
             tile_addition_height,
         )

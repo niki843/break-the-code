@@ -287,17 +287,18 @@ class Settings(GameWindow):
 
     def build_apply_button(self):
         surface = pygame.image.load(f"{client.IMG_PATH}apply.png").convert_alpha()
-        next_surface = pygame.image.load(f"{client.IMG_PATH}add.png").convert_alpha()
+        next_surface = pygame.image.load(f"{client.IMG_PATH}apply_pressed.png").convert_alpha()
 
         self.apply_button = ToggleTile(
-            "apply_button_on",
-            "apply_button_off",
-            surface,
-            self.event_handler.screen,
-            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
-            0,
-            0,
-            next_surface,
+            name="apply_button_on",
+            next_name="apply_button_off",
+            current_surface=surface,
+            screen=self.event_handler.screen,
+            size_percent=client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
+            tile_addition_width=0,
+            tile_addition_height=0,
+            next_surface=next_surface,
+            shrink_percent=1,
         )
 
         self.set_apply_button_size()
