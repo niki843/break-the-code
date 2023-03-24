@@ -92,12 +92,6 @@ class MultilineTextTile(Tile):
             current_word += " " + next_word
             current_word = current_word.lstrip(" ")
 
-    def __add_text_to_text_surfaces(self, text):
-        text_surface = self.font.render(
-            text, True, client.GAME_BASE_COLOR
-        )
-        self.text_surfaces.append((text_surface, text_surface.get_rect()))
-
     def center_text(self):
         current_top_surface = self.rect.top
         for surface, rect in self.text_surfaces:
