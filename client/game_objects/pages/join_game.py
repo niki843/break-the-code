@@ -93,8 +93,6 @@ class JoinGame(GameWindow):
             name="scroll_tile",
             slider_name="slider",
             handle_name="handle",
-            left_arrow_name="left_arrow",
-            right_arrow_name="right_arrow",
             main_background_surface=surface,
             slider_surface=slider_surface,
             handle_surface=slider_handle,
@@ -102,28 +100,7 @@ class JoinGame(GameWindow):
             size_percent=49,
             tile_addition_width=-(self.event_handler.screen.get_width() * 0.2),
             tile_addition_height=self.event_handler.screen.get_height() * 0.2,
-            text_items=[
-                "test1",
-                "test2",
-                "test3",
-                "test4",
-                "test5",
-                "test6",
-                "test 7",
-                "test 8",
-                "test 9",
-                "test 10",
-                "test 11",
-                "test 12",
-                "test 13",
-                "test 14",
-                "test 15",
-                "test 16",
-                "test 17",
-                "test 18",
-                "test 19",
-                "test 20",
-            ],
+            text_to_display="Player1: haaaaasaaaan 12344543643523232343241224 \n 1 \n Player2: peshoslep12 Player3: gosho, idawdadvdfbfdgbd , fsdgbdfbdfb qwfvfdbdtfbsa sawdsabdf awfvfdbdfbndrt efvdfbdfbernb ewegbreber vrsegbrebernbb niki",
             text_size_percentage=6,
         )
 
@@ -141,10 +118,8 @@ class JoinGame(GameWindow):
             self.event_handler.screen.get_height() * 0.001
         )
 
-        self.scroll_text_tile.update()
+        self.scroll_text_tile.center_elements()
 
-        self.tiles_group.add(self.scroll_text_tile.right_arrow)
-        self.tiles_group.add(self.scroll_text_tile.left_arrow)
         self.tiles_group.add(self.scroll_text_tile.slider.slider_handle)
         self.tiles_group.add(self.scroll_text_tile)
 
@@ -159,9 +134,7 @@ class JoinGame(GameWindow):
             78,
             -660,
             -148,
-            """Player1: haaaaasaaaan 12344543643523232343241224 \n 1 \n
-            Player2: peshoslep12 Player3: gosho, idawdadvdfbfdgbd , fsdgbdfbdfb
-            qwfvfdbdtfbsa sawdsabdf awfvfdbdfbndrt efvdfbdfbernb ewegbreber vrsegbrebernbb niki""",
+            "Player1: haaaaasaaaan 12344543643523232343241224 \n 1 \n Player2: peshoslep12 Player3: gosho, idawdadvdfbfdgbd , fsdgbdfbdfb qwfvfdbdtfbsa sawdsabdf awfvfdbdfbndrt efvdfbdfbernb ewegbreber vrsegbrebernbb niki",
             9,
         )
 
@@ -190,33 +163,27 @@ class JoinGame(GameWindow):
         self.event_handler.screen.blit(
             self.join_game_tile.image, self.join_game_tile.rect
         )
-        # self.event_handler.screen.blit(
-        #     self.scroll_text_tile.image, self.scroll_text_tile.rect
-        # )
-        # self.scroll_text_tile.blit_text()
-
         self.event_handler.screen.blit(
-            self.text_box.image, self.text_box.rect
+            self.scroll_text_tile.image, self.scroll_text_tile.rect
         )
+        self.scroll_text_tile.blit()
 
-        self.text_box.blit()
+        # self.event_handler.screen.blit(
+        #     self.text_box.image, self.text_box.rect
+        # )
+
+        # self.text_box.blit()
 
     def activate_tile(self, tile, event):
         if tile.name == "back":
             self.event_handler.change_window(self.event_handler.menu)
-        if tile.name == "right_arrow" and event.button == client.LEFT_BUTTON_CLICK:
-            self.scroll_text_tile.next_text()
-            self.scroll_text_tile.slider.next_handle_position()
-        if tile.name == "left_arrow" and event.button == client.LEFT_BUTTON_CLICK:
-            self.scroll_text_tile.previous_text()
-            self.scroll_text_tile.slider.previous_handle_position()
         if tile.name == "handle" and event.button == client.LEFT_BUTTON_CLICK:
             self.event_handler.handle_slider_clicked(self.scroll_text_tile)
         if tile.name == "scroll_tile" and event.button == client.SCROLL_UP:
-            self.scroll_text_tile.previous_text()
+            self.scroll_text_tile.scroll_up()
             self.scroll_text_tile.slider.previous_handle_position()
         if tile.name == "scroll_tile" and event.button == client.SCROLL_DOWN:
-            self.scroll_text_tile.next_text()
+            self.scroll_text_tile.scroll_down()
             self.scroll_text_tile.slider.next_handle_position()
 
         return None, False

@@ -1,5 +1,3 @@
-from itertools import cycle
-
 import client
 from client.game_objects.tiles.tile import Tile
 from client.utils import common
@@ -49,13 +47,14 @@ class MultilineTextTile(Tile):
         )
         self.font = common.load_font(self.text_size)
 
-    def load_text(self):
+    def load_text(self, start_line=0):
+        self.text_surfaces = []
         split_text = self.text.split(" ")
         lines = 1
         # This approach is making sure that we always start from 0 in the while
         # and in the beginning of each next loop we change the value to the next one
         # it's either this or a try finally, but I personally prefer this
-        i = -1
+        i = start_line - 1
         current_word = split_text[0]
         while i < len(split_text):
             i += 1

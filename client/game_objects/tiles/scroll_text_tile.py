@@ -1,20 +1,19 @@
 import pygame
 
 import client
+from client.game_objects.tiles.multiline_text_tile import MultilineTextTile
 from client.game_objects.tiles.slider import Slider
 from client.game_objects.tiles.text_slideshow_tile import TextSlideshowTile
 
 from client.utils import common
 
 
-class ScrollTextTile(TextSlideshowTile):
+class ScrollTextTile(MultilineTextTile):
     def __init__(
         self,
         name,
         slider_name,
         handle_name,
-        left_arrow_name,
-        right_arrow_name,
         main_background_surface,
         slider_surface,
         handle_surface,
@@ -22,37 +21,26 @@ class ScrollTextTile(TextSlideshowTile):
         size_percent,
         tile_addition_width,
         tile_addition_height,
-        text_items: list,
-        text_size_percentage,
+        text_to_display: str,
+        text_size_percentage: int,
     ):
-        super().__init__(
+        MultilineTextTile.__init__(
+            self,
             name,
-            left_arrow_name,
-            right_arrow_name,
             main_background_surface,
             screen,
             size_percent,
-            2,
             tile_addition_width,
             tile_addition_height,
-            None,
-            text_items or [],
-            horizontal=False,
+            text_to_display,
+            text_size_percentage,
         )
 
-        self.text_surfaces = []
+        self.load_text()
+
         self.first_element = 0
-
-        self.text_size = int(
-            self.image.get_height()
-            * common.get_percentage_multiplier_from_percentage(text_size_percentage)
-        )
-        self.font = common.load_font(self.text_size)
-
-        self.max_elements_to_display = int(self.image.get_height() / (self.text_size + self.screen.get_height() * 0.01))
-        self.text_size_percentage = text_size_percentage
         self.scroll_delimiters = (
-            len(text_items) - self.max_elements_to_display if text_items else 0
+            len(self.text_surfaces) - self.max_lines_to_display if self.text_surfaces else 0
         )
 
         self.slider = Slider(
@@ -72,84 +60,48 @@ class ScrollTextTile(TextSlideshowTile):
 
         self.resize_slider()
 
-    def load_text(self):
-        if self.text_surfaces:
-            self.text_surfaces = []
-
-        for idx, text in enumerate(self.slide_values):
-            if self.first_element > idx:
-                continue
-
-            if idx >= self.max_elements_to_display + self.first_element:
-                break
-
-            text_surface = self.font.render(text, True, client.GAME_BASE_COLOR)
-            self.text_surfaces.append((text_surface, text_surface.get_rect()))
-
-    def update_arrows_position(self):
+    def center_elements(self):
         self.slider.rect.right = self.rect.right - (self.image.get_width() * 0.02)
         self.slider.rect.centery = self.rect.centery
 
         self.slider.set_slider_handle_position()
-
-        self.right_arrow.rect.centerx = self.slider.rect.centerx
-        self.right_arrow.rect.bottom = self.rect.bottom
-
-        self.left_arrow.rect.centerx = self.slider.rect.centerx
-        self.left_arrow.rect.top = self.rect.top
-
-    def update_text_position(self):
-        current_top_surface = self.rect.top
-        for surface, rect in self.text_surfaces:
-            rect.centerx = self.rect.centerx
-            rect.top = current_top_surface + (self.screen.get_height() * 0.015)
-            current_top_surface = rect.bottom
+        self.center_text()
 
     def move_slider(self, event):
         current_percentage = self.slider.slider_percentage
         self.slider.move_slider_horizontally(
             event.pos[0]
-        ) if self.horizontal else self.slider.move_slider_vertically(event.pos[1])
+        ) if self.slider.horizontal else self.slider.move_slider_vertically(event.pos[1])
 
         if current_percentage > self.slider.slider_percentage:
-            self.previous_text()
+            self.scroll_up()
 
         if current_percentage < self.slider.slider_percentage:
-            self.next_text()
+            self.scroll_down()
 
-    def next_text(self):
-        self.change_tile(1)
+    def scroll_down(self):
+        self.change_text(1)
 
-    def previous_text(self):
-        self.change_tile(-1)
+    def scroll_up(self):
+        self.change_text(-1)
 
-    def change_tile(self, index):
+    def change_text(self, index):
         self.first_element += index
 
         if (
-            self.max_elements_to_display + self.first_element > len(self.slide_values)
+            self.max_lines_to_display + self.first_element > len(self.text_surfaces)
             or self.first_element < 0
         ):
             self.first_element -= index
             return
 
-        self.load_text()
-        self.update_text_position()
+        self.load_text(self.first_element)
+        self.center_text()
 
     def resize(self):
         super().resize()
-        if hasattr(self, "font"):
-            self.text_size = int(
-                self.image.get_width()
-                * common.get_percentage_multiplier_from_percentage(
-                    self.text_size_percentage
-                )
-            )
-            self.font = common.load_font(self.text_size)
-            self.load_text()
 
         if hasattr(self, "slider"):
-            self.slider.screen = self.screen
             self.resize_slider()
 
     def resize_slider(self):
@@ -177,13 +129,10 @@ class ScrollTextTile(TextSlideshowTile):
         )
         self.slider.slider_handle.rect = self.slider.slider_handle.image.get_rect()
 
-    def blit_text(self):
+    def blit(self):
         self.screen.blit(self.image, self.rect)
-        self.screen.blit(self.right_arrow.image, self.right_arrow.rect)
-        self.screen.blit(self.left_arrow.image, self.left_arrow.rect)
         self.screen.blit(self.slider.image, self.slider.rect)
         self.screen.blit(
             self.slider.slider_handle.image, self.slider.slider_handle.rect
         )
-        for surface, rect in self.text_surfaces:
-            self.screen.blit(surface, rect)
+        super().blit()
