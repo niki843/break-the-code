@@ -41,8 +41,3 @@ class WebsocketClient:
         print("SENDING MESSAGE")
         await self.websocket.send(message)
         print("Message sent")
-
-
-# if __name__ == "__main__":
-#     ws_client = WebsocketClient()
-#     asyncio.run(ws_client.connect_to_server())
