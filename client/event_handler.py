@@ -36,9 +36,9 @@ class EventHandler(Singleton):
         if event.type == pygame.QUIT:
             self.server_communication_manager.close_connection()
             print("closing conneciton")
-            return None, True
+            return True
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            return self.handle_mouse_click(event)
+            self.handle_mouse_click(event)
         elif event.type == client.EVENT_TYPE:
             # TODO Implement when a server event happens
             self.handle_server_message(event.message)
@@ -51,12 +51,10 @@ class EventHandler(Singleton):
             if not client_init.IS_FULLSCREEN_ENABLED:
                 print("opening full screen")
                 self.open_full_screen()
-                return None, False
             elif client_init.IS_FULLSCREEN_ENABLED:
                 print("closing_fullscreen")
                 self.open_windowed_screen()
-                return None, False
-        return None, False
+        return False
 
     # 15/03/2023 NT: An interesting implementation here it turns out that in order to write and not affect anything else
     # we need to enter another infinite while to wait for text input and exit it on click.
@@ -89,7 +87,7 @@ class EventHandler(Singleton):
                         text_surface.mark_clicked()
                         return self.handle_mouse_click(event)
                 elif event.type == pygame.QUIT:
-                    return '{"type": "close_connection"}', True
+                    return True
                 elif (keys[pygame.K_LALT] or keys[pygame.K_RALT]) and (
                     keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]
                 ):
@@ -99,8 +97,6 @@ class EventHandler(Singleton):
             self.current_window.blit()
 
             common.run_once(LOOP)
-
-        return None, False
 
     def handle_slider_clicked(self, slider):
         clicked = True
@@ -145,8 +141,6 @@ class EventHandler(Singleton):
             if tile.rect.collidepoint(pygame.mouse.get_pos()):
                 print(tile.name)
                 return self.current_window.activate_tile(tile, event)
-        # Unclickable tile pressed
-        return None, False
 
     def handle_scroll(self, scrolled_up):
         tiles_copy = self.current_window.tiles_group.copy()
@@ -154,8 +148,6 @@ class EventHandler(Singleton):
             if tile.rect.collidepoint(pygame.mouse.get_pos()):
                 print(tile.name)
                 return self.current_window.scroll_tile(tile, scrolled_up)
-        # Unclickable tile pressed
-        return None, False
 
     def handle_server_message(self, message):
         pass

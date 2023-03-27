@@ -169,5 +169,3 @@ class Menu(GameWindow):
             self.event_handler.change_window(self.event_handler.settings)
         elif tile.name == "quit_game" and event.button == client.LEFT_BUTTON_CLICK:
             pygame.event.post(pygame.event.Event(pygame.QUIT))
-
-        return None, False

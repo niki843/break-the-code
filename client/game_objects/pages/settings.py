@@ -409,8 +409,7 @@ class Settings(GameWindow):
             self.username_input_box.center()
         if tile.name == "name_input" and event.button == client.LEFT_BUTTON_CLICK:
             self.username_input_box.mark_clicked()
-            return self.event_handler.wait_text_input(self.username_input_box)
-        return None, False
+            self.event_handler.wait_text_input(self.username_input_box)
 
     def change_screen_resolution_and_rebuild(self, resolution: str):
         if resolution == "fullscreen":

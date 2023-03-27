@@ -45,7 +45,7 @@ def start_game():
         events = pygame.event.get()
 
         for event in events:
-            message, quit_game = event_handler.handle_event(event)
+            quit_game = event_handler.handle_event(event)
 
             running = not quit_game
 
