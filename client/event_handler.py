@@ -9,18 +9,20 @@ from client.game_objects.pages.join_game import JoinGame
 from client.game_objects.pages.menu import Menu
 from client.game_objects.pages.new_game import NewGame
 from client.game_objects.pages.settings import Settings
+from client.server_comunication_manager import ServerCommunicationManager
 from client.utils import common
 from client.utils.singelton import Singleton
 
 
 class EventHandler(Singleton):
-    def __init__(self, player_id, screen):
+    def __init__(self, player_id, username, screen):
         self.game_windows = []
         self.screen = screen
         self.screen_rect = screen.get_rect()
         self.current_window = Menu(self)
 
         self.player_id = player_id
+        self.player_username = username
 
         self.menu = self.current_window
         self.settings = Settings(self)
@@ -31,6 +33,8 @@ class EventHandler(Singleton):
         self.game_windows.append(self.settings)
         self.game_windows.append(self.new_game)
         self.game_windows.append(self.join_game)
+
+        self.communication_manager = ServerCommunicationManager(self.player_username)
 
     def handle_event(self, event):
         keys = pygame.key.get_pressed()
@@ -170,6 +174,10 @@ class EventHandler(Singleton):
 
         for window in self.game_windows:
             window.resize()
+
+    def change_player_username(self, username):
+        self.player_username = username
+        common.change_username(username)
 
     def handle_mouse_click(self, event):
         tiles_copy = self.current_window.tiles_group.copy()

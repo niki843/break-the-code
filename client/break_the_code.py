@@ -1,8 +1,8 @@
 import uuid
 
 import pygame
-import os
 import asyncio
+from client.utils import common
 from client import (
     ws_client as client,
     IMG_PATH,
@@ -10,9 +10,7 @@ from client import (
     MUSIC_PATH,
     LOOP,
 )
-from client.game_objects.pages.menu import Menu
 from client.event_handler import EventHandler
-from client.utils import common
 
 ws_client = client.WebsocketClient()
 
@@ -33,25 +31,9 @@ async def send_message(message):
 LOOP.create_task(connect())
 
 
-def get_or_generate_player_id():
-    # Open the player_id file or create it if not existing
-    # and read the uuid or created if missing
-    with open("player_id.txt", "a+") as f:
-        if os.stat("player_id.txt").st_size == 0:
-            f.write(str(uuid.uuid4()))
-            f.write("\nUnknown")
-
-    # Open the player_id file and read the uuid
-    with open("player_id.txt", "r") as f:
-        player_details = f.read()
-
-    return player_details.split("\n")
-
-
 def start_game():
-    # This will stay commented for testing and will be removed when
-    # in actual release or specific testing of this feature
-    player_id, username = get_or_generate_player_id()
+    player_id, username = common.get_or_generate_player_id()
+    # TODO: Remove this when testing is done
     player_id = str(uuid.uuid4())
 
     pygame.init()
@@ -60,10 +42,8 @@ def start_game():
 
     pygame.mixer.music.load(f"{MUSIC_PATH}main_music.mp3")
     pygame.mixer.music.set_volume(0.2)
+    # Play the music on re-wind
     pygame.mixer.music.play(-1)
-
-    # Enable resizable mode currently not working !!!!!
-    # screen = pygame.display.set_mode((1280, 720), pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.RESIZABLE)
 
     screen = pygame.display.set_mode((1280, 720), pygame.HWSURFACE | pygame.DOUBLEBUF)
     pygame.display.set_caption("Break The Code")
@@ -71,7 +51,7 @@ def start_game():
     thumbnail = pygame.image.load(f"{IMG_PATH}logo_thumbnail.png")
     pygame.display.set_icon(thumbnail)
 
-    event_handler = EventHandler(player_id, screen=screen)
+    event_handler = EventHandler(player_id=player_id, username=username, screen=screen)
 
     running = True
     while running:

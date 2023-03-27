@@ -33,8 +33,7 @@ class Settings(GameWindow):
 
         self.username_label = None
         self.username_input_box = None
-        # TODO: implement username
-        self.current_username = "test"
+        self.current_username = self.event_handler.player_username
 
         self.apply_button = None
 
@@ -401,6 +400,7 @@ class Settings(GameWindow):
             # Save the username if only it's not empty
             if len(self.username_input_box.text) > 0:
                 self.current_username = self.username_input_box.text
+                self.event_handler.change_player_username(self.username_input_box.text)
             self.event_handler.handle_save_button(self.apply_button)
         if tile.name == "back" and event.button == client.LEFT_BUTTON_CLICK:
             self.event_handler.change_window(self.event_handler.menu)
