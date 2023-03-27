@@ -2,33 +2,16 @@ import uuid
 
 import pygame
 import asyncio
+
+from client.server_communication_manager import ServerCommunicationManager
 from client.utils import common
 from client import (
-    ws_client as client,
     IMG_PATH,
     ASYNC_SLEEP_TIME_ON_EXIT,
     MUSIC_PATH,
     LOOP,
 )
 from client.event_handler import EventHandler
-
-ws_client = client.WebsocketClient()
-
-
-async def connect():
-    print("Connecting to server")
-    await ws_client.connect_to_server()
-    print("Connected to server")
-
-
-async def send_message(message):
-    await ws_client.send_server_messages(message)
-
-    print("Message sent")
-
-
-# Connect to server
-LOOP.create_task(connect())
 
 
 def start_game():
@@ -51,7 +34,9 @@ def start_game():
     thumbnail = pygame.image.load(f"{IMG_PATH}logo_thumbnail.png")
     pygame.display.set_icon(thumbnail)
 
-    event_handler = EventHandler(player_id=player_id, username=username, screen=screen)
+    server_communication_manager = ServerCommunicationManager(player_username=username, player_id=player_id)
+
+    event_handler = EventHandler(player_id=player_id, username=username, screen=screen, server_communication_manager=server_communication_manager)
 
     running = True
     while running:
@@ -62,11 +47,7 @@ def start_game():
         for event in events:
             message, quit_game = event_handler.handle_event(event)
 
-            if quit_game:
-                running = False
-
-            if message:
-                LOOP.create_task(send_message(message))
+            running = not quit_game
 
         # tell event loop to run once
         # if there are no i/o events, this might return right away

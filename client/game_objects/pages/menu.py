@@ -168,7 +168,6 @@ class Menu(GameWindow):
         elif tile.name == "settings" and event.button == client.LEFT_BUTTON_CLICK:
             self.event_handler.change_window(self.event_handler.settings)
         elif tile.name == "quit_game" and event.button == client.LEFT_BUTTON_CLICK:
-            print("Closing the game")
-            return '{"type": "close_connection"}', True
+            pygame.event.post(pygame.event.Event(pygame.QUIT))
 
         return None, False
