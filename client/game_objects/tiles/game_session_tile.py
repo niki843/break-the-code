@@ -5,8 +5,7 @@ class GameSessionTile(ToggleTile):
 
     def __init__(
         self,
-        name,
-        next_name,
+        name_id,
         surface,
         screen,
         size_percent,
@@ -14,11 +13,12 @@ class GameSessionTile(ToggleTile):
         tile_addition_height,
         next_surface,
         active_players,
+        player_usernames,
     ):
         ToggleTile.__init__(
             self,
-            name,
-            next_name,
+            name_id,
+            name_id,
             surface,
             screen,
             size_percent,
@@ -28,3 +28,4 @@ class GameSessionTile(ToggleTile):
         )
 
         self.active_players = active_players
+        self.player_usernames = player_usernames

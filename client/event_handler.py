@@ -89,11 +89,10 @@ class EventHandler(Singleton):
                 and event.type == pygame.KEYDOWN
         ):
             if not client_init.IS_FULLSCREEN_ENABLED:
-                print("opening full screen")
                 self.open_full_screen()
             elif client_init.IS_FULLSCREEN_ENABLED:
-                print("closing_fullscreen")
                 self.open_windowed_screen()
+        return True
 
     def handle_slider_clicked(self, slider):
         clicked = True

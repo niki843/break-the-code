@@ -2,6 +2,7 @@ import asyncio
 
 import pygame
 import client
+from client.game_objects.tiles.game_session_tile import GameSessionTile
 from client.utils import common
 
 from client.game_objects.pages.game_window import GameWindow
@@ -193,7 +194,17 @@ class JoinGame(GameWindow):
         self.game_sessions = game_sessions
         for game_session_id, game_session in game_sessions.items():
             self.game_session_tiles.append(
-
+               GameSessionTile(
+                   game_session_id,
+                   common.get_image("non_selected_nickname.png"),
+                   self.event_handler.screen,
+                   50,
+                   0,
+                   0,
+                   common.get_image("selected_nickname.png"),
+                   game_session.get("connected_players"),
+                   game_session.get("player_id_name_map").values()
+               )
             )
 
     def blit(self):
