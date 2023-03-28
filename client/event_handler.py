@@ -78,9 +78,9 @@ class EventHandler(Singleton):
             self.current_window.close()
             self.server_communication_manager.close_connection()
             client_init.GAME_RUNNING = False
+            # Returning False for is_game_running
             return False
         elif event.type == client.EVENT_TYPE:
-            # TODO Implement when a server event happens
             self.handle_server_message(event.message)
             print(event.message)
         elif (
@@ -146,7 +146,9 @@ class EventHandler(Singleton):
                 return self.current_window.scroll_tile(tile, scrolled_up)
 
     def handle_server_message(self, message):
-        pass
+        message_type = message.get("type")
+        if message_type == "send_game_sessions":
+            self.current_window.add_or_update_game_sessions(message.get("game_sessions"))
 
     def open_full_screen(self):
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)

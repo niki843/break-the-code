@@ -20,6 +20,8 @@ class JoinGame(GameWindow):
         self.game_info_box = None
         self.game_sessions_loop = None
 
+        self.game_sessions = {}
+
         self.build()
 
     async def call_get_game_sessions(self):
@@ -188,6 +190,10 @@ class JoinGame(GameWindow):
         )
         self.game_info_box.rect.centerx = self.game_info_tile.rect.centerx
         self.game_info_box.center_text()
+
+    def add_or_update_game_sessions(self, game_sessions):
+        for game_session in game_sessions:
+            print(game_session)
 
     def blit(self):
         super().blit()
