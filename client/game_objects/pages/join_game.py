@@ -219,7 +219,7 @@ class JoinGame(GameWindow):
             elif self.game_session_tiles.get(
                 game_session_id
             ).active_players != game_session.get("connected_players"):
-                self.game_session_tiles.update_players(
+                self.game_session_tiles.get(game_session_id).update_players(
                     game_session.get("player_id_name_map")
                 )
 

@@ -52,7 +52,5 @@ class GameSessionTile(ToggleTile):
         self.player_usernames = players_id_name_map.values()
 
     def center_text(self):
-        self.text_box.text_rect.left = self.rect.left + (
-            self.screen.get_width() * 0.01
-        )
+        self.text_box.text_rect.left = self.rect.left + (self.screen.get_width() * 0.01)
         self.text_box.text_rect.centery = self.rect.centery
