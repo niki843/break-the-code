@@ -27,6 +27,7 @@ class PlainTextTile(Tile):
 
         self.text = text_to_display
         self.text_surface = None
+        self.text_rect = None
         self.text_size_percent = text_size_percent
         self.font = None
 
@@ -39,6 +40,7 @@ class PlainTextTile(Tile):
         )
         self.font = common.load_font(text_size)
         self.text_surface = self.font.render(self.text, True, client.GAME_BASE_COLOR)
+        self.text_rect = self.text_surface.get_rect()
 
     def resize(self):
         super().resize()

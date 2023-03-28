@@ -199,6 +199,7 @@ class JoinGame(GameWindow):
                     common.get_image("non_selected_nickname.png"),
                     self.event_handler.screen,
                     50,
+                    50,
                     -60,
                     0,
                     common.get_image("selected_nickname.png"),
@@ -233,6 +234,7 @@ class JoinGame(GameWindow):
 
         tiles[-1].rect.left = left
         tiles[-1].rect.top = top
+        tiles[-1].center_text()
 
     def blit(self):
         super().blit()
@@ -260,6 +262,7 @@ class JoinGame(GameWindow):
 
         for tile in self.game_session_tiles.values():
             self.event_handler.screen.blit(tile.image, tile.rect)
+            self.event_handler.screen.blit(tile.text_box.text_surface, tile.text_box.text_rect)
 
     def open(self):
         super().open()
@@ -281,8 +284,8 @@ class JoinGame(GameWindow):
         if tile.name == "scroll_tile" and event.button == client.SCROLL_DOWN:
             self.scroll_text_tile.scroll_down()
             self.scroll_text_tile.slider.next_handle_position()
-        if tile.name == "game_session":
-            print("game_session")
+        if tile.name == "game_session" and event.button == client.LEFT_BUTTON_CLICK:
+            tile.next_value()
 
     def delete(self):
         super().delete()
