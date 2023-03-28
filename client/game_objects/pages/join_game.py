@@ -24,6 +24,7 @@ class JoinGame(GameWindow):
 
         self.game_sessions = {}
         self.game_session_tiles = {}
+        self.clicked_game_session_tile = None
 
         self.build()
 
@@ -195,7 +196,8 @@ class JoinGame(GameWindow):
         for game_session_id, game_session in game_sessions.items():
             if game_session_id not in self.game_session_tiles:
                 self.game_session_tiles[game_session_id] = GameSessionTile(
-                    "game_session",
+                    "game_session_not_marked",
+                    "game_session_marked",
                     common.get_image("non_selected_nickname.png"),
                     self.event_handler.screen,
                     50,
@@ -208,8 +210,12 @@ class JoinGame(GameWindow):
                     game_session_id,
                 )
                 self.tiles_group.add(self.game_session_tiles[game_session_id])
-            elif self.game_session_tiles.get(game_session_id).active_players != game_session.get("connected_players"):
-                self.game_session_tiles.update_players(game_session.get("player_id_name_map"))
+            elif self.game_session_tiles.get(
+                game_session_id
+            ).active_players != game_session.get("connected_players"):
+                self.game_session_tiles.update_players(
+                    game_session.get("player_id_name_map")
+                )
 
             self.set_game_sessions_size()
 
@@ -218,11 +224,11 @@ class JoinGame(GameWindow):
             return
 
         left = self.tiles_background.rect.left + (
-                self.event_handler.screen.get_width() * 0.02
-            )
+            self.event_handler.screen.get_width() * 0.02
+        )
         top = self.tiles_background.rect.top + (
-                self.event_handler.screen.get_height() * 0.03
-            )
+            self.event_handler.screen.get_height() * 0.03
+        )
 
         tiles = list(self.game_session_tiles.values())
 
@@ -262,7 +268,9 @@ class JoinGame(GameWindow):
 
         for tile in self.game_session_tiles.values():
             self.event_handler.screen.blit(tile.image, tile.rect)
-            self.event_handler.screen.blit(tile.text_box.text_surface, tile.text_box.text_rect)
+            self.event_handler.screen.blit(
+                tile.text_box.text_surface, tile.text_box.text_rect
+            )
 
     def open(self):
         super().open()
@@ -284,8 +292,15 @@ class JoinGame(GameWindow):
         if tile.name == "scroll_tile" and event.button == client.SCROLL_DOWN:
             self.scroll_text_tile.scroll_down()
             self.scroll_text_tile.slider.next_handle_position()
-        if tile.name == "game_session" and event.button == client.LEFT_BUTTON_CLICK:
+        if tile.name == "game_session_marked" and event.button == client.LEFT_BUTTON_CLICK:
             tile.next_value()
+            self.clicked_game_session_tile = None
+        if tile.name == "game_session_not_marked" and event.button == client.LEFT_BUTTON_CLICK:
+            tile.next_value()
+
+            if self.clicked_game_session_tile:
+                self.clicked_game_session_tile.next_value()
+            self.clicked_game_session_tile = tile
 
     def delete(self):
         super().delete()

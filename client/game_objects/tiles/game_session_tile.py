@@ -7,6 +7,7 @@ class GameSessionTile(ToggleTile):
     def __init__(
         self,
         tile_name,
+        next_tile_name,
         surface,
         screen,
         size_percent,
@@ -22,7 +23,7 @@ class GameSessionTile(ToggleTile):
         ToggleTile.__init__(
             self,
             tile_name,
-            tile_name,
+            next_tile_name,
             surface,
             screen,
             size_percent,
