@@ -176,7 +176,7 @@ class JoinGame(GameWindow):
             0,
             0,
             "Player1: hasaaaaan  \n Player2: peshoslepia12 \n Player3: fikret-storaro \n Player4: neadekvaten",
-            5.1,
+            6,
             0,
         )
 

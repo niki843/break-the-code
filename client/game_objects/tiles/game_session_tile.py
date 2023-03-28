@@ -1,6 +1,5 @@
 from client.game_objects.tiles.plain_text_box import PlainTextTile
 from client.game_objects.tiles.toggle_tile import ToggleTile
-from client.utils import common
 
 
 class GameSessionTile(ToggleTile):
