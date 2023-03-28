@@ -23,12 +23,9 @@ class JoinGame(GameWindow):
         self.build()
 
     async def call_get_game_sessions(self):
-        print("call_get_game_sessions")
         while True:
-            print("sleeping")
-            await asyncio.sleep(5)
-            print("current_game")
             self.event_handler.server_communication_manager.get_current_game()
+            await asyncio.sleep(5)
 
     def build(self):
         super().build()
@@ -227,7 +224,7 @@ class JoinGame(GameWindow):
 
     def activate_tile(self, tile, event):
         if tile.name == "back":
-            self.event_handler.change_window(self.event_handler.menu)
+            self.event_handler.menu.open()
             self.close()
         if tile.name == "handle" and event.button == client.LEFT_BUTTON_CLICK:
             self.event_handler.handle_slider_clicked(self.scroll_text_tile)
