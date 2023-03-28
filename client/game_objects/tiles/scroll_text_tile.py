@@ -38,7 +38,9 @@ class ScrollTextTile(MultilineTextTile):
         self.load_text()
 
         delimiters = (
-            (len(self.text_surfaces) - self.max_lines_to_display) + 1 if self.text else 0
+            (len(self.text_surfaces) - self.max_lines_to_display) + 1
+            if self.text
+            else 0
         )
         self.slider = Slider(
             name=slider_name,
@@ -68,7 +70,9 @@ class ScrollTextTile(MultilineTextTile):
         current_percentage = self.slider.slider_percentage
         self.slider.move_slider_horizontally(
             event.pos[0]
-        ) if self.slider.horizontal else self.slider.move_slider_vertically(event.pos[1])
+        ) if self.slider.horizontal else self.slider.move_slider_vertically(
+            event.pos[1]
+        )
 
         if current_percentage > self.slider.slider_percentage:
             self.scroll_up()
@@ -103,8 +107,7 @@ class ScrollTextTile(MultilineTextTile):
 
     def resize_slider(self):
         width_slider = (
-            self.image.get_width()
-            * common.get_percentage_multiplier_from_percentage(5)
+            self.image.get_width() * common.get_percentage_multiplier_from_percentage(5)
         )
         self.slider.image = pygame.transform.scale(
             self.slider.image,

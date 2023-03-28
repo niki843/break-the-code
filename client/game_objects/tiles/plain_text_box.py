@@ -5,7 +5,6 @@ from client.utils import common
 
 
 class PlainTextTile(Tile):
-
     def __init__(
         self,
         name,

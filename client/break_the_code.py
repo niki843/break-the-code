@@ -29,9 +29,16 @@ def start_game():
     thumbnail = common.get_image("logo_thumbnail.png")
     pygame.display.set_icon(thumbnail)
 
-    server_communication_manager = ServerCommunicationManager(player_username=username, player_id=player_id)
+    server_communication_manager = ServerCommunicationManager(
+        player_username=username, player_id=player_id
+    )
 
-    event_handler = EventHandler(player_id=player_id, username=username, screen=screen, server_communication_manager=server_communication_manager)
+    event_handler = EventHandler(
+        player_id=player_id,
+        username=username,
+        screen=screen,
+        server_communication_manager=server_communication_manager,
+    )
 
     while client.GAME_RUNNING:
         event_handler.current_window.blit()

@@ -146,7 +146,7 @@ class JoinGame(GameWindow):
             screen=self.event_handler.screen,
             size_percent=25,
             tile_addition_width=0,
-            tile_addition_height=0
+            tile_addition_height=0,
         )
 
         self.set_game_info_label_size()
@@ -174,7 +174,7 @@ class JoinGame(GameWindow):
             0,
             "Player1: hasaaaaan  \n Player2: peshoslepia12 \n Player3: fikret-storaro \n Player4: neadekvaten",
             5.1,
-            0
+            0,
         )
 
         self.set_game_info_size()
@@ -194,17 +194,17 @@ class JoinGame(GameWindow):
         self.game_sessions = game_sessions
         for game_session_id, game_session in game_sessions.items():
             self.game_session_tiles.append(
-               GameSessionTile(
-                   game_session_id,
-                   common.get_image("non_selected_nickname.png"),
-                   self.event_handler.screen,
-                   50,
-                   0,
-                   0,
-                   common.get_image("selected_nickname.png"),
-                   game_session.get("connected_players"),
-                   game_session.get("player_id_name_map").values()
-               )
+                GameSessionTile(
+                    game_session_id,
+                    common.get_image("non_selected_nickname.png"),
+                    self.event_handler.screen,
+                    50,
+                    0,
+                    0,
+                    common.get_image("selected_nickname.png"),
+                    game_session.get("connected_players"),
+                    game_session.get("player_id_name_map").values(),
+                )
             )
 
     def blit(self):
@@ -223,8 +223,7 @@ class JoinGame(GameWindow):
         # self.scroll_text_tile.blit()
 
         self.event_handler.screen.blit(
-            self.game_info_tile.image,
-            self.game_info_tile.rect
+            self.game_info_tile.image, self.game_info_tile.rect
         )
 
         self.event_handler.screen.blit(

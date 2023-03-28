@@ -141,17 +141,23 @@ class Slider(Tile):
         if self.slider_percentage == 0:
             self.slider_handle.rect.top = starting_position + (
                 slider_size
-                * common.get_percentage_multiplier_from_percentage(self.slider_percentage)
+                * common.get_percentage_multiplier_from_percentage(
+                    self.slider_percentage
+                )
             )
         elif self.slider_percentage == 100:
             self.slider_handle.rect.bottom = starting_position + (
                 slider_size
-                * common.get_percentage_multiplier_from_percentage(self.slider_percentage)
+                * common.get_percentage_multiplier_from_percentage(
+                    self.slider_percentage
+                )
             )
         else:
             self.slider_handle.rect.centery = starting_position + (
                 slider_size
-                * common.get_percentage_multiplier_from_percentage(self.slider_percentage)
+                * common.get_percentage_multiplier_from_percentage(
+                    self.slider_percentage
+                )
             )
 
     def setup_percents(self, delimiters_count):

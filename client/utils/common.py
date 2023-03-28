@@ -50,5 +50,7 @@ def change_username(new_username):
 
 def get_image(image_name):
     if image_name not in client.IMAGE_CACHE:
-        client.IMAGE_CACHE[image_name] = pygame.image.load(f"{client.IMG_PATH}{image_name}").convert_alpha()
+        client.IMAGE_CACHE[image_name] = pygame.image.load(
+            f"{client.IMG_PATH}{image_name}"
+        ).convert_alpha()
     return client.IMAGE_CACHE[image_name]

@@ -84,9 +84,9 @@ class EventHandler(Singleton):
             self.handle_server_message(event.message)
             print(event.message)
         elif (
-                (keys[pygame.K_LALT] or keys[pygame.K_RALT])
-                and (keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN])
-                and event.type == pygame.KEYDOWN
+            (keys[pygame.K_LALT] or keys[pygame.K_RALT])
+            and (keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN])
+            and event.type == pygame.KEYDOWN
         ):
             if not client_init.IS_FULLSCREEN_ENABLED:
                 self.open_full_screen()
@@ -147,7 +147,9 @@ class EventHandler(Singleton):
     def handle_server_message(self, message):
         message_type = message.get("type")
         if message_type == "send_game_sessions":
-            self.current_window.add_or_update_game_sessions(message.get("game_sessions"))
+            self.current_window.add_or_update_game_sessions(
+                message.get("game_sessions")
+            )
 
     def open_full_screen(self):
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)

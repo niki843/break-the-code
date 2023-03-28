@@ -2,7 +2,6 @@ from client.game_objects.tiles.toggle_tile import ToggleTile
 
 
 class GameSessionTile(ToggleTile):
-
     def __init__(
         self,
         name_id,

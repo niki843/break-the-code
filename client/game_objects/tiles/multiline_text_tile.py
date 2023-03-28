@@ -38,8 +38,12 @@ class MultilineTextTile(Tile):
 
         character_width, character_height = self.font.size("h")
 
-        self.max_characters_per_line = int(self.image.get_width() / (character_width + character_width * 0.14))
-        self.max_lines_to_display = int(self.image.get_height() / (character_height + self.new_line_space))
+        self.max_characters_per_line = int(
+            self.image.get_width() / (character_width + character_width * 0.14)
+        )
+        self.max_lines_to_display = int(
+            self.image.get_height() / (character_height + self.new_line_space)
+        )
 
     def load_font(self):
         self.text_size = int(
@@ -73,8 +77,8 @@ class MultilineTextTile(Tile):
                 if len(current_word) > self.max_characters_per_line:
                     # if it is too big we split it by the maximum chars per line
                     # and set current_word = the second part of the split word
-                    next_word = current_word[self.max_characters_per_line:]
-                    current_word = current_word[:self.max_characters_per_line]
+                    next_word = current_word[self.max_characters_per_line :]
+                    current_word = current_word[: self.max_characters_per_line]
                     # finally, we subtract the index by one making sure that in the next iteration we will be
                     # considering i to be the same word_index as before
                     i -= 1
@@ -91,14 +95,18 @@ class MultilineTextTile(Tile):
 
     def center_text(self):
         current_top_surface = self.rect.top
-        displayed_surfaces = self.text_surfaces[self.start_line:self.start_line + self.max_lines_to_display]
+        displayed_surfaces = self.text_surfaces[
+            self.start_line : self.start_line + self.max_lines_to_display
+        ]
         for surface, rect in displayed_surfaces:
             rect.left = self.rect.left + self.text_left_spacing
             rect.top = current_top_surface + self.new_line_space
             current_top_surface = rect.bottom
 
     def blit(self):
-        displayed_surfaces = self.text_surfaces[self.start_line:self.start_line + self.max_lines_to_display]
+        displayed_surfaces = self.text_surfaces[
+            self.start_line : self.start_line + self.max_lines_to_display
+        ]
         for surface, rect in displayed_surfaces:
             self.screen.blit(surface, rect)
 
