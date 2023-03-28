@@ -164,7 +164,7 @@ class Menu(GameWindow):
         if tile.name == "new_game" and event.button == client.LEFT_BUTTON_CLICK:
             self.event_handler.change_window(self.event_handler.new_game)
         elif tile.name == "join_game" and event.button == client.LEFT_BUTTON_CLICK:
-            self.event_handler.change_window(self.event_handler.join_game)
+            self.event_handler.join_game.open()
         elif tile.name == "settings" and event.button == client.LEFT_BUTTON_CLICK:
             self.event_handler.change_window(self.event_handler.settings)
         elif tile.name == "quit_game" and event.button == client.LEFT_BUTTON_CLICK:

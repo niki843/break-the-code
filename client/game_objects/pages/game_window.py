@@ -85,6 +85,12 @@ class GameWindow:
             self.background_image.image, self.background_image.rect
         )
 
+    def open(self):
+        self.event_handler.change_window(self)
+
+    def close(self):
+        pass
+
     def delete(self):
         self.background_image.image.fill(pygame.Color(0, 0, 0))
 

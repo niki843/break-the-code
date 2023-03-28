@@ -1,3 +1,5 @@
+import asyncio
+
 import pygame
 import client
 
@@ -16,8 +18,17 @@ class JoinGame(GameWindow):
 
         self.game_info_tile = None
         self.game_info_box = None
+        self.game_sessions_loop = None
 
         self.build()
+
+    async def call_get_game_sessions(self):
+        print("call_get_game_sessions")
+        while True:
+            print("sleeping")
+            await asyncio.sleep(5)
+            print("current_game")
+            self.event_handler.server_communication_manager.get_current_game()
 
     def build(self):
         super().build()
@@ -206,9 +217,18 @@ class JoinGame(GameWindow):
         )
         self.game_info_box.blit()
 
+    def open(self):
+        super().open()
+        self.game_sessions_loop = client.LOOP.create_task(self.call_get_game_sessions())
+
+    def close(self):
+        if not self.game_sessions_loop.cancelled():
+            self.game_sessions_loop.cancel()
+
     def activate_tile(self, tile, event):
         if tile.name == "back":
             self.event_handler.change_window(self.event_handler.menu)
+            self.close()
         if tile.name == "handle" and event.button == client.LEFT_BUTTON_CLICK:
             self.event_handler.handle_slider_clicked(self.scroll_text_tile)
         if tile.name == "scroll_tile" and event.button == client.SCROLL_UP:

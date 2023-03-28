@@ -1,5 +1,3 @@
-import json
-
 import pygame
 import client as client_init
 
