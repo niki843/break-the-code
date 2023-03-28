@@ -303,6 +303,9 @@ class GameSession:
     def get_player_by_id(self, player_id):
         return self.__connected_players.get(player_id)
 
+    def get_player_id_name_map(self):
+        return {player_id: player.get_name() for player_id, player in self.__connected_players.items()}
+
     def player_reconnected_broadcast(self, player_id):
         event = {
             "type": "player_reconnected",

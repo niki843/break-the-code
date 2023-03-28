@@ -7,6 +7,7 @@ from client.game_objects.tiles.tile import Tile
 
 from client.game_objects.pages.game_window import GameWindow
 from client.game_objects.tiles.toggle_tile import ToggleTile
+from client.utils import common
 
 
 class Settings(GameWindow):
@@ -23,8 +24,6 @@ class Settings(GameWindow):
         super().__init__(event_handler)
         self.settings_label_tile = None
 
-        self.tiles_background = None
-
         self.resolution_label_tile = None
         self.resolution_slider = None
 
@@ -35,12 +34,9 @@ class Settings(GameWindow):
 
         self.username_label = None
         self.username_input_box = None
-        # TODO: implement username
-        self.current_username = "test"
+        self.current_username = self.event_handler.player_username
 
         self.apply_button = None
-
-        self.back_tile = None
 
         self.current_resolution = None
 
@@ -85,32 +81,15 @@ class Settings(GameWindow):
         self.set_back_tile()
 
     def build_background(self):
-        surface = pygame.image.load(f"{client.IMG_PATH}clear_bgr.png").convert_alpha()
+        surface = common.get_image("clear_bgr.png")
 
         self.background_image = Tile(
             "background", surface, self.event_handler.screen, 100, 0, 0
         )
         self.set_background_size()
 
-    def build_tiles_background(self):
-        surface = pygame.image.load(f"{client.IMG_PATH}menu_field.png").convert_alpha()
-
-        self.tiles_background = Tile(
-            "tiles_background", surface, self.event_handler.screen, 100, 0, 0
-        )
-        self.set_tiles_background_size()
-
-    def set_tiles_background_size(self):
-        if not self.tiles_background:
-            return
-        self.tiles_background.resize()
-        self.tiles_background.rect.centerx = self.event_handler.screen_rect.centerx
-        self.tiles_background.rect.centery = self.event_handler.screen_rect.centery
-
     def build_settings_label(self):
-        surface = pygame.image.load(
-            f"{client.IMG_PATH}settings_top.png"
-        ).convert_alpha()
+        surface = common.get_image("settings_top.png")
 
         self.settings_label_tile = Tile(
             "settings_label", surface, self.event_handler.screen, 30, 0, 0
@@ -128,9 +107,7 @@ class Settings(GameWindow):
         )
 
     def build_resolution_label(self):
-        surface = pygame.image.load(
-            f"{client.IMG_PATH}res_description.png"
-        ).convert_alpha()
+        surface = common.get_image("res_description.png")
 
         self.resolution_label_tile = Tile(
             "resolution_label", surface, self.event_handler.screen, 21, 0, 0
@@ -143,20 +120,16 @@ class Settings(GameWindow):
 
         self.resolution_label_tile.resize()
         self.resolution_label_tile.rect.top = self.tiles_background.rect.top + (
-            self.event_handler.screen_rect.bottom * 0.22
+            self.event_handler.screen.get_height() * 0.07
         )
         self.resolution_label_tile.rect.left = self.tiles_background.rect.left + (
-            self.event_handler.screen_rect.right * 0.16
+            self.event_handler.screen.get_width() * 0.06
         )
 
     def build_resolution_slider(self):
         self.current_resolution = f"{self.event_handler.screen.get_width()}x{self.event_handler.screen.get_height()}"
-        slider_surface = pygame.image.load(
-            f"{client.IMG_PATH}slider_res_bar.png"
-        ).convert_alpha()
-        slider_handle = pygame.image.load(
-            f"{client.IMG_PATH}slider_button.png"
-        ).convert_alpha()
+        slider_surface = common.get_image("slider_res_bar.png")
+        slider_handle = common.get_image("slider_button.png")
 
         max_desktop_res = pygame.display.get_desktop_sizes()[0]
         # Check if the resolution is in the list of resolutions if not set to fullscreen
@@ -188,15 +161,13 @@ class Settings(GameWindow):
 
         self.resolution_slider.resize()
         self.resolution_slider.rect.top = self.resolution_label_tile.rect.bottom + (
-            self.event_handler.screen.get_height() * 0.05
+            self.event_handler.screen.get_height() * 0.04
         )
         self.resolution_slider.rect.left = self.resolution_label_tile.rect.left
         self.resolution_slider.set_slider_handle_position()
 
     def build_music_label(self):
-        surface = pygame.image.load(
-            f"{client.IMG_PATH}music_description.png"
-        ).convert_alpha()
+        surface = common.get_image("music_description.png")
 
         self.music_label_tile = Tile(
             "music_label", surface, self.event_handler.screen, 11, 0, 0
@@ -209,17 +180,13 @@ class Settings(GameWindow):
 
         self.music_label_tile.resize()
         self.music_label_tile.rect.top = self.resolution_slider.rect.bottom + (
-            self.event_handler.screen_rect.bottom * 0.05
+            self.event_handler.screen.get_height() * 0.05
         )
         self.music_label_tile.rect.left = self.resolution_slider.rect.left
 
     def build_music_slider(self):
-        slider_surface = pygame.image.load(
-            f"{client.IMG_PATH}slider_music_bar.png"
-        ).convert_alpha()
-        slider_handle = pygame.image.load(
-            f"{client.IMG_PATH}slider_button.png"
-        ).convert_alpha()
+        slider_surface = common.get_image("slider_music_bar.png")
+        slider_handle = common.get_image("slider_button.png")
 
         self.music_slider = Slider(
             name="music_slider",
@@ -242,16 +209,14 @@ class Settings(GameWindow):
             return
 
         self.music_slider.resize()
-        self.music_slider.rect.top = self.music_label_tile.rect.top + (
-            self.event_handler.screen_rect.bottom * 0.11
+        self.music_slider.rect.top = self.music_label_tile.rect.bottom + (
+            self.event_handler.screen.get_height() * 0.04
         )
         self.music_slider.rect.left = self.music_label_tile.rect.left
         self.music_slider.set_slider_handle_position()
 
     def build_username_label(self):
-        surface = pygame.image.load(
-            f"{client.IMG_PATH}change_nickname_description.png"
-        ).convert_alpha()
+        surface = common.get_image("change_nickname_description.png")
 
         self.username_label = Tile(
             "username_label", surface, self.event_handler.screen, 33, 0, 0
@@ -264,17 +229,13 @@ class Settings(GameWindow):
 
         self.username_label.resize()
         self.username_label.rect.top = self.music_slider.rect.bottom + (
-            self.event_handler.screen_rect.bottom * 0.05
+            self.event_handler.screen.get_height() * 0.05
         )
         self.username_label.rect.left = self.music_slider.rect.left
 
     def build_username_text_box(self):
-        surface = pygame.image.load(
-            f"{client.IMG_PATH}non_selected_nickname.png"
-        ).convert_alpha()
-        next_surface = pygame.image.load(
-            f"{client.IMG_PATH}selected_nickname.png"
-        ).convert_alpha()
+        surface = common.get_image("non_selected_nickname.png")
+        next_surface = common.get_image("selected_nickname.png")
 
         self.username_input_box = InputBoxTile(
             "name_input",
@@ -298,25 +259,26 @@ class Settings(GameWindow):
 
         self.username_input_box.resize()
         self.username_input_box.rect.top = self.username_label.rect.bottom + (
-            self.event_handler.screen_rect.bottom * 0.02
+            self.event_handler.screen.get_height() * 0.03
         )
         self.username_input_box.rect.left = self.username_label.rect.left
 
         self.username_input_box.center()
 
     def build_apply_button(self):
-        surface = pygame.image.load(f"{client.IMG_PATH}apply.png").convert_alpha()
-        next_surface = pygame.image.load(f"{client.IMG_PATH}add.png").convert_alpha()
+        surface = common.get_image("apply.png")
+        next_surface = common.get_image("apply_pressed.png")
 
         self.apply_button = ToggleTile(
-            "apply_button_on",
-            "apply_button_off",
-            surface,
-            self.event_handler.screen,
-            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
-            0,
-            0,
-            next_surface,
+            name="apply_button_on",
+            next_name="apply_button_off",
+            current_surface=surface,
+            screen=self.event_handler.screen,
+            size_percent=client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
+            tile_addition_width=0,
+            tile_addition_height=0,
+            next_surface=next_surface,
+            shrink_percent=1,
         )
 
         self.set_apply_button_size()
@@ -326,35 +288,10 @@ class Settings(GameWindow):
         if not self.apply_button:
             return
 
+        self.apply_button.resize()
         self.apply_button.rect.centery = self.username_input_box.rect.centery
         self.apply_button.rect.left = self.username_input_box.rect.right + (
-            self.event_handler.screen.get_width() * 0.02
-        )
-
-    def build_back_tile(self):
-        back_surface = pygame.image.load(f"{client.IMG_PATH}back.png")
-        self.back_tile = Tile(
-            "back",
-            back_surface,
-            self.event_handler.screen,
-            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
-            0,
-            0,
-        )
-
-        self.set_back_tile()
-        self.tiles_group.add(self.back_tile)
-
-    def set_back_tile(self):
-        if not self.back_tile:
-            return
-
-        self.back_tile.resize()
-        self.back_tile.rect.left = self.event_handler.screen_rect.left + (
-            self.event_handler.screen.get_width() * 0.03
-        )
-        self.back_tile.rect.top = self.event_handler.screen_rect.top + (
-            self.event_handler.screen.get_height() * 0.03
+            self.event_handler.screen.get_width() * 0.04
         )
 
     def blit(self):
@@ -374,15 +311,14 @@ class Settings(GameWindow):
         self.event_handler.screen.blit(
             self.resolution_slider.image, self.resolution_slider.rect
         )
-
-        self.event_handler.screen.blit(
-            self.music_label_tile.image, self.music_label_tile.rect
-        )
         self.event_handler.screen.blit(
             self.resolution_slider.slider_handle.image,
             self.resolution_slider.slider_handle.rect,
         )
 
+        self.event_handler.screen.blit(
+            self.music_label_tile.image, self.music_label_tile.rect
+        )
         self.event_handler.screen.blit(self.music_slider.image, self.music_slider.rect)
         self.event_handler.screen.blit(
             self.music_slider.slider_handle.image, self.music_slider.slider_handle.rect
@@ -444,16 +380,18 @@ class Settings(GameWindow):
             # Save the username if only it's not empty
             if len(self.username_input_box.text) > 0:
                 self.current_username = self.username_input_box.text
+                self.event_handler.change_player_username(self.username_input_box.text)
             self.event_handler.handle_save_button(self.apply_button)
         if tile.name == "back" and event.button == client.LEFT_BUTTON_CLICK:
-            self.event_handler.change_window(self.event_handler.menu)
             self.username_input_box.text = self.current_username
             self.username_input_box.resize_text()
             self.username_input_box.center()
+            if self.username_input_box.active:
+                self.username_input_box.mark_clicked()
+            self.event_handler.menu.open()
         if tile.name == "name_input" and event.button == client.LEFT_BUTTON_CLICK:
             self.username_input_box.mark_clicked()
-            return self.event_handler.wait_text_input(self.username_input_box)
-        return None, False
+            self.event_handler.wait_text_input(self.username_input_box)
 
     def change_screen_resolution_and_rebuild(self, resolution: str):
         if resolution == "fullscreen":
@@ -472,19 +410,33 @@ class Settings(GameWindow):
     def delete(self):
         # Apparently pygame doesn't have an option to actually delete visual objects
         # instead we should just make them transparent
-        self.background_image.image.fill(pygame.Color(0, 0, 0))
-        self.screen_size_tile.image.fill(pygame.Color(0, 0, 0))
-        self.screen_size_right_arrow.image.fill(pygame.Color(0, 0, 0))
-        self.screen_size_left_arrow.image.fill(pygame.Color(0, 0, 0))
-        self.screen_size_tile.current_text_surface.fill(pygame.Color(0, 0, 0))
-        self.music_toggle.image.fill(pygame.Color(0, 0, 0))
+        super().delete()
+        self.tiles_background.image.fill(pygame.Color(0, 0, 0))
+        self.settings_label_tile.image.fill(pygame.Color(0, 0, 0))
+        self.resolution_label_tile.image.fill(pygame.Color(0, 0, 0))
+        self.resolution_slider.current_text_surface.fill(pygame.Color(0, 0, 0))
+        self.resolution_slider.slider_handle.image.fill(pygame.Color(0, 0, 0))
+        self.music_label_tile.image.fill(pygame.Color(0, 0, 0))
+        self.music_slider.image.fill(pygame.Color(0, 0, 0))
+        self.music_slider.slider_handle.image.fill(pygame.Color(0, 0, 0))
+        self.username_label.image.fill(pygame.Color(0, 0, 0))
+        self.username_input_box.image.fill(pygame.Color(0, 0, 0))
+        self.username_input_box.text_surface.image.fill(pygame.Color(0, 0, 0))
+        self.apply_button.image.fill(pygame.Color(0, 0, 0))
+        self.back_tile.image.fill(pygame.Color(0, 0, 0))
 
         self.blit()
 
         del self.background_image
-        del self.screen_size_right_arrow
-        del self.screen_size_left_arrow
-        del self.screen_size_tile.current_text_surface
-        del self.music_toggle
+        del self.tiles_background
+        del self.settings_label_tile
+        del self.resolution_label_tile.current_text_surface
+        del self.resolution_slider
+        del self.music_label_tile
+        del self.music_slider
+        del self.username_label
+        del self.username_input_box
+        del self.apply_button
+        del self.back_tile
 
         self.tiles_group.empty()
