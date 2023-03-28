@@ -16,11 +16,12 @@ from server.utils.validate import is_valid_uuid
 
 
 class GameSession:
-    def __init__(self, session_id: str, player_id: str, player_name: str, websocket):
+    def __init__(self, session_id: str, player_id: str, player_name: str, websocket, room_name):
         if not is_valid_uuid(player_id):
             raise InvalidPlayerId(player_id)
 
         self.id = session_id
+        self.room_name = room_name
         # Only the host can start the game
         self.__host = Player(player_id, name=player_name)
         # Needed for playing condition cards, maps player_id to the Player object
@@ -283,6 +284,9 @@ class GameSession:
 
     def get_host(self):
         return self.__host
+
+    def get_room_name(self):
+        return self.room_name
 
     def get_current_player(self):
         return copy.deepcopy(self.__connected_players[self.__current_player_at_hand_id])

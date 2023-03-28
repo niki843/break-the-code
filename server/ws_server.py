@@ -37,7 +37,7 @@ CURRENT_WEBSOCKET_CONNECTIONS = []
 CLOSED_CONNECTION_PLAYER_ID_TO_GAME_SESSION_ID = {}
 
 
-async def create_game(websocket, player_id, player_name):
+async def create_game(websocket, player_id, player_name, room_name):
     started_game_session_id = str(uuid.uuid4())
     current_game_session = None
 
@@ -47,6 +47,7 @@ async def create_game(websocket, player_id, player_name):
             player_id=player_id,
             player_name=player_name,
             websocket=websocket,
+            room_name=room_name,
         )
     except InvalidPlayerId:
         await send_message(
@@ -347,6 +348,7 @@ async def handler(websocket):
             for game_session in GAME_SESSIONS.values():
                 if game_session.get_state() == GameState.PENDING:
                     game_sessions[game_session.id] = {
+                                "room_name": game_session.get_room_name(),
                                 "connected_players": game_session.get_players_count(),
                                 "player_id_name_map": game_session.get_player_id_name_map()
                             }
@@ -372,7 +374,7 @@ async def handler(websocket):
     if event_msg and event_msg_type == "new_game":
         print("NEW GAME CREATION")
         await create_game(
-            websocket, event_msg.get("player_id"), event_msg.get("player_name")
+            websocket, event_msg.get("player_id"), event_msg.get("player_name"), event_msg.get("room_name"),
         )
 
     if event_msg and event_msg_type == "close_connection":

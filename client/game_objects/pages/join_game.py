@@ -1,4 +1,5 @@
 import asyncio
+from collections import OrderedDict
 
 import numpy
 import pygame
@@ -24,7 +25,7 @@ class JoinGame(GameWindow):
         self.game_sessions_loop = None
 
         self.game_sessions = {}
-        self.game_session_tiles = {}
+        self.game_session_tiles = OrderedDict()
         self.clicked_game_session_tile = None
 
         self.build()
@@ -194,7 +195,7 @@ class JoinGame(GameWindow):
 
     def build_game_sessions(self, game_sessions):
         self.add_new_game_tiles(game_sessions.items())
-        # self.remove_closed_game_tiles(game_sessions)
+        self.remove_closed_game_tiles(game_sessions)
 
     def add_new_game_tiles(self, game_sessions):
         for game_session_id, game_session in game_sessions:
@@ -212,6 +213,7 @@ class JoinGame(GameWindow):
                     game_session.get("connected_players"),
                     game_session.get("player_id_name_map").values(),
                     game_session_id,
+                    game_session.get("room_name")
                 )
                 self.tiles_group.add(self.game_session_tiles[game_session_id])
             elif self.game_session_tiles.get(
@@ -245,24 +247,17 @@ class JoinGame(GameWindow):
         tiles[-1].rect.left = left
         tiles[-1].rect.top = top
         tiles[-1].center_text()
-    # TODO: Not working yet
-    # def remove_closed_game_tiles(self, game_sessions):
-    #     closed_game_ids = numpy.setdiff1d(list(self.game_session_tiles.keys()), list(game_sessions.keys()))
-    #
-    #     for game_id in closed_game_ids:
-    #         tile_to_remove = self.game_session_tiles[game_id]
-    #         old_tile_position_left = tile_to_remove.rect.left
-    #         old_tile_position_top = tile_to_remove.rect.top
-    #         key_list = sorted(self.game_session_tiles.keys())
-    #         next_tile = self.game_session_tiles.get(key_list[key_list.index(game_id) + 1])
-    #         del self.game_session_tiles[game_id]
-    #
-    #         self.rearrange_tiles(next_tile, old_tile_position_left, old_tile_position_top)
-    #
-    # def rearrange_tiles(self, next_tile, left, top):
-    #     next_tile.rect.left = left
-    #     next_tile.rect.top = top
-    #     next_tile.center_text()
+
+    def remove_closed_game_tiles(self, game_sessions):
+        closed_game_ids = numpy.setdiff1d(list(self.game_session_tiles.keys()), list(game_sessions.keys()))
+
+        for game_id in closed_game_ids:
+            del self.game_session_tiles[game_id]
+
+    def rearrange_tiles(self, next_tile, left, top):
+        next_tile.rect.left = left
+        next_tile.rect.top = top
+        next_tile.center_text()
 
     def blit(self):
         super().blit()
