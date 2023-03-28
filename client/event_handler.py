@@ -1,3 +1,5 @@
+import json
+
 import pygame
 import client as client_init
 
@@ -35,7 +37,6 @@ class EventHandler(Singleton):
         keys = pygame.key.get_pressed()
         if event.type == pygame.QUIT:
             self.server_communication_manager.close_connection()
-            print("closing conneciton")
             return True
         elif event.type == pygame.MOUSEBUTTONDOWN:
             self.handle_mouse_click(event)
@@ -57,24 +58,29 @@ class EventHandler(Singleton):
         return False
 
     # 15/03/2023 NT: An interesting implementation here it turns out that in order to write and not affect anything else
-    # we need to enter another infinite while to wait for text input and exit it on click.
-    # Another interesting thing here, this causes a type of circular recursion
+    # we need to enter another infinite while to wait for text input and exit it on click next click.
+    # Another interesting thing going on here, this causes a type of circular recursion
     # between handle_mouse_click, activate_tile, and wait_text_input which is kind of necessary to be able to
     # click on another tile while writing.
     # 16/03/2023 NT: We need to copy the main game code for async tasks run and display rendering and so on
     # in order to be able to execute other events while still waiting for user input in text box. This will allow us
     # to have a different button binding while not in writing mode, where in writing mode it won't be possible.
     def wait_text_input(self, text_surface):
-        writing = True
-        while writing:
+        while True:
             events = pygame.event.get()
             pygame.display.flip()
             for event in events:
                 keys = pygame.key.get_pressed()
-                if event.type == client.EVENT_TYPE:
+                if event.type == pygame.QUIT:
+                    return True
+                elif event.type == client.EVENT_TYPE:
                     # TODO Implement when a server event happens
                     self.handle_server_message(event.message)
                     print(event.message)
+                elif (keys[pygame.K_LALT] or keys[pygame.K_RALT]) and (
+                    keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]
+                ):
+                    self.open_full_screen()
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         text_surface.new_line()
@@ -83,15 +89,8 @@ class EventHandler(Singleton):
                     else:
                         text_surface.write(event.unicode)
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        text_surface.mark_clicked()
-                        return self.handle_mouse_click(event)
-                elif event.type == pygame.QUIT:
-                    return True
-                elif (keys[pygame.K_LALT] or keys[pygame.K_RALT]) and (
-                    keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]
-                ):
-                    self.open_full_screen()
+                    text_surface.mark_clicked()
+                    return self.handle_mouse_click(event)
 
             text_surface.center()
             self.current_window.blit()

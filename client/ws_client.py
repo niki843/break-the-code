@@ -31,8 +31,8 @@ class WebsocketClient:
             raise Exception("No active connection!")
         async for message in self.websocket:
             print(f"[Received]: {message}")
-            message_type = json.loads(message).get("type")
-            if message_type == "connection_closed":
+            message = json.loads(message)
+            if message.get("type") == "connection_closed":
                 await self.websocket.close()
                 return
             pygame.fastevent.post(pygame.event.Event(EVENT_TYPE, message=message))
