@@ -3,6 +3,7 @@ import client
 from pygame.sprite import Group
 
 from client.game_objects.tiles.tile import Tile
+from client.utils import common
 
 
 class GameWindow:
@@ -27,7 +28,7 @@ class GameWindow:
         self.set_background_size()
 
     def build_background(self):
-        surface = pygame.image.load(f"{client.IMG_PATH}background.png").convert_alpha()
+        surface = common.get_image("background.png")
 
         self.background_image = Tile(
             "background", surface, self.event_handler.screen, 100, 0, 0
@@ -40,7 +41,7 @@ class GameWindow:
         self.background_image.rect.centery = self.event_handler.screen_rect.centery
 
     def build_back_tile(self):
-        back_surface = pygame.image.load(f"{client.IMG_PATH}back.png")
+        back_surface = common.get_image("back.png")
         self.back_tile = Tile(
             "back",
             back_surface,
@@ -66,7 +67,7 @@ class GameWindow:
         )
 
     def build_tiles_background(self):
-        surface = pygame.image.load(f"{client.IMG_PATH}menu_field_cropped.png").convert_alpha()
+        surface = common.get_image("menu_field_cropped.png")
 
         self.tiles_background = Tile(
             "tiles_background", surface, self.event_handler.screen, 80, 0, 0

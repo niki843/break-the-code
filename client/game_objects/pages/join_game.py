@@ -2,6 +2,7 @@ import asyncio
 
 import pygame
 import client
+from client.utils import common
 
 from client.game_objects.pages.game_window import GameWindow
 from client.game_objects.tiles.multiline_text_tile import MultilineTextTile
@@ -21,6 +22,7 @@ class JoinGame(GameWindow):
         self.game_sessions_loop = None
 
         self.game_sessions = {}
+        self.game_session_tiles = []
 
         self.build()
 
@@ -56,7 +58,7 @@ class JoinGame(GameWindow):
         self.set_join_game_button_size()
 
     def build_background(self):
-        surface = pygame.image.load(f"{client.IMG_PATH}clear_bgr.png").convert_alpha()
+        surface = common.get_image("clear_bgr.png")
 
         self.background_image = Tile(
             "background", surface, self.event_handler.screen, 100, 0, 0
@@ -64,7 +66,7 @@ class JoinGame(GameWindow):
         self.set_background_size()
 
     def build_join_game_button(self):
-        surface = pygame.image.load(f"{client.IMG_PATH}join_game.png").convert_alpha()
+        surface = common.get_image("join_game.png")
 
         self.join_game_tile = Tile(
             "join_game_button",
@@ -136,9 +138,7 @@ class JoinGame(GameWindow):
     #     self.tiles_group.add(self.scroll_text_tile)
 
     def build_game_info_label(self):
-        surface = pygame.image.load(
-            f"{client.IMG_PATH}game_info.png"
-        ).convert_alpha()
+        surface = common.get_image("game_info.png")
         self.game_info_tile = Tile(
             name="game_info",
             surface=surface,
@@ -163,9 +163,7 @@ class JoinGame(GameWindow):
         )
 
     def build_game_info_box(self):
-        surface = pygame.image.load(
-            f"{client.IMG_PATH}game_info_menu.png"
-        ).convert_alpha()
+        surface = common.get_image("game_info_menu.png")
         self.game_info_box = MultilineTextTile(
             "test_text",
             surface,
@@ -192,8 +190,11 @@ class JoinGame(GameWindow):
         self.game_info_box.center_text()
 
     def add_or_update_game_sessions(self, game_sessions):
-        for game_session in game_sessions:
-            print(game_session)
+        self.game_sessions = game_sessions
+        for game_session_id, game_session in game_sessions.items():
+            self.game_session_tiles.append(
+
+            )
 
     def blit(self):
         super().blit()

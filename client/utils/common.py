@@ -46,3 +46,9 @@ def change_username(new_username):
 
     with open("player_id.txt", "w+") as f:
         f.writelines(player_details)
+
+
+def get_image(image_name):
+    if image_name not in client.IMAGE_CACHE:
+        client.IMAGE_CACHE[image_name] = pygame.image.load(f"{client.IMG_PATH}{image_name}").convert_alpha()
+    return client.IMAGE_CACHE[image_name]

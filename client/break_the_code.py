@@ -26,7 +26,7 @@ def start_game():
     screen = pygame.display.set_mode((1280, 720), pygame.HWSURFACE | pygame.DOUBLEBUF)
     pygame.display.set_caption("Break The Code")
 
-    thumbnail = pygame.image.load(f"{client.IMG_PATH}logo_thumbnail.png")
+    thumbnail = common.get_image("logo_thumbnail.png")
     pygame.display.set_icon(thumbnail)
 
     server_communication_manager = ServerCommunicationManager(player_username=username, player_id=player_id)

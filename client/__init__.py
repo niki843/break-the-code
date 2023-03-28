@@ -33,5 +33,7 @@ LEFT_BUTTON_CLICK = 1
 SCROLL_UP = 4
 SCROLL_DOWN = 5
 
+IMAGE_CACHE = {}
+
 # IMPORTANT!!! This is how the game will know if the game should stop running
 GAME_RUNNING = True
