@@ -35,4 +35,3 @@ SCROLL_DOWN = 5
 
 # IMPORTANT!!! This is how the game will know if the game should stop running
 GAME_RUNNING = True
-WAITING_TEXT_INPUT = False

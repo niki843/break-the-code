@@ -43,14 +43,14 @@ class EventHandler(Singleton):
     # in order to be able to execute other events while still waiting for user input in text box. This will allow us
     # to have a different button binding while not in writing mode, where in writing mode it won't be possible.
     def wait_text_input(self, text_surface):
-        client_init.WAITING_TEXT_INPUT = True
-        while client_init.WAITING_TEXT_INPUT:
+        waiting_text_input = True
+        while waiting_text_input:
             events = pygame.event.get()
             pygame.display.flip()
             for event in events:
                 keys = pygame.key.get_pressed()
 
-                self.check_common_events(event, keys)
+                waiting_text_input = self.check_common_events(event, keys)
 
                 if (keys[pygame.K_LALT] or keys[pygame.K_RALT]) and (
                     keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]
@@ -66,7 +66,7 @@ class EventHandler(Singleton):
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     text_surface.mark_clicked()
                     self.handle_mouse_click(event)
-                    client_init.waiting_text_input = False
+                    return
 
             text_surface.center()
             self.current_window.blit()
@@ -78,7 +78,7 @@ class EventHandler(Singleton):
             self.current_window.close()
             self.server_communication_manager.close_connection()
             client_init.GAME_RUNNING = False
-            client_init.WAITING_TEXT_INPUT = False
+            return False
         elif event.type == client.EVENT_TYPE:
             # TODO Implement when a server event happens
             self.handle_server_message(event.message)
