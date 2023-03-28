@@ -3,7 +3,6 @@ import client
 
 from client.game_objects.pages.game_window import GameWindow
 from client.game_objects.tiles.multiline_text_tile import MultilineTextTile
-from client.game_objects.tiles.scroll_text_tile import ScrollTextTile
 from client.game_objects.tiles.tile import Tile
 
 
@@ -218,3 +217,21 @@ class JoinGame(GameWindow):
         if tile.name == "scroll_tile" and event.button == client.SCROLL_DOWN:
             self.scroll_text_tile.scroll_down()
             self.scroll_text_tile.slider.next_handle_position()
+
+    def delete(self):
+        super().delete()
+        self.join_game_tile.image.fill(pygame.Color(0, 0, 0))
+        self.scroll_text_tile.image.fill(pygame.Color(0, 0, 0))
+        self.tiles_background.image.fill(pygame.Color(0, 0, 0))
+        self.back_tile.image.fill(pygame.Color(0, 0, 0))
+        self.game_info_tile.image.fill(pygame.Color(0, 0, 0))
+        self.game_info_box.image.fill(pygame.Color(0, 0, 0))
+
+        self.blit()
+
+        del self.join_game_tile
+        del self.scroll_text_tile
+        del self.tiles_background
+        del self.back_tile
+        del self.game_info_tile
+        del self.game_info_box

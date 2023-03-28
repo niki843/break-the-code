@@ -330,15 +330,14 @@ class Settings(GameWindow):
         self.event_handler.screen.blit(
             self.resolution_slider.image, self.resolution_slider.rect
         )
-
-        self.event_handler.screen.blit(
-            self.music_label_tile.image, self.music_label_tile.rect
-        )
         self.event_handler.screen.blit(
             self.resolution_slider.slider_handle.image,
             self.resolution_slider.slider_handle.rect,
         )
 
+        self.event_handler.screen.blit(
+            self.music_label_tile.image, self.music_label_tile.rect
+        )
         self.event_handler.screen.blit(self.music_slider.image, self.music_slider.rect)
         self.event_handler.screen.blit(
             self.music_slider.slider_handle.image, self.music_slider.slider_handle.rect
@@ -428,19 +427,33 @@ class Settings(GameWindow):
     def delete(self):
         # Apparently pygame doesn't have an option to actually delete visual objects
         # instead we should just make them transparent
-        self.background_image.image.fill(pygame.Color(0, 0, 0))
-        self.screen_size_tile.image.fill(pygame.Color(0, 0, 0))
-        self.screen_size_right_arrow.image.fill(pygame.Color(0, 0, 0))
-        self.screen_size_left_arrow.image.fill(pygame.Color(0, 0, 0))
-        self.screen_size_tile.current_text_surface.fill(pygame.Color(0, 0, 0))
-        self.music_toggle.image.fill(pygame.Color(0, 0, 0))
+        super().delete()
+        self.tiles_background.image.fill(pygame.Color(0, 0, 0))
+        self.settings_label_tile.image.fill(pygame.Color(0, 0, 0))
+        self.resolution_label_tile.image.fill(pygame.Color(0, 0, 0))
+        self.resolution_slider.current_text_surface.fill(pygame.Color(0, 0, 0))
+        self.resolution_slider.slider_handle.image.fill(pygame.Color(0, 0, 0))
+        self.music_label_tile.image.fill(pygame.Color(0, 0, 0))
+        self.music_slider.image.fill(pygame.Color(0, 0, 0))
+        self.music_slider.slider_handle.image.fill(pygame.Color(0, 0, 0))
+        self.username_label.image.fill(pygame.Color(0, 0, 0))
+        self.username_input_box.image.fill(pygame.Color(0, 0, 0))
+        self.username_input_box.text_surface.image.fill(pygame.Color(0, 0, 0))
+        self.apply_button.image.fill(pygame.Color(0, 0, 0))
+        self.back_tile.image.fill(pygame.Color(0, 0, 0))
 
         self.blit()
 
         del self.background_image
-        del self.screen_size_right_arrow
-        del self.screen_size_left_arrow
-        del self.screen_size_tile.current_text_surface
-        del self.music_toggle
+        del self.tiles_background
+        del self.settings_label_tile
+        del self.resolution_label_tile.current_text_surface
+        del self.resolution_slider
+        del self.music_label_tile
+        del self.music_slider
+        del self.username_label
+        del self.username_input_box
+        del self.apply_button
+        del self.back_tile
 
         self.tiles_group.empty()

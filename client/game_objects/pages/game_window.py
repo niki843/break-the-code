@@ -86,4 +86,8 @@ class GameWindow:
         )
 
     def delete(self):
-        pass
+        self.background_image.image.fill(pygame.Color(0, 0, 0))
+
+        self.blit()
+
+        del self.background_image

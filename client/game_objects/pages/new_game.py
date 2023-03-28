@@ -25,3 +25,6 @@ class NewGame(GameWindow):
 
     def blit(self):
         super().blit()
+
+    def delete(self):
+        super().delete()
