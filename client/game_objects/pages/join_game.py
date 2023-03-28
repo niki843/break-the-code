@@ -1,5 +1,6 @@
 import asyncio
 
+import numpy
 import pygame
 import client
 from client.game_objects.tiles.game_session_tile import GameSessionTile
@@ -192,8 +193,11 @@ class JoinGame(GameWindow):
         self.game_info_box.center_text()
 
     def build_game_sessions(self, game_sessions):
-        self.game_sessions = game_sessions
-        for game_session_id, game_session in game_sessions.items():
+        self.add_new_game_tiles(game_sessions.items())
+        # self.remove_closed_game_tiles(game_sessions)
+
+    def add_new_game_tiles(self, game_sessions):
+        for game_session_id, game_session in game_sessions:
             if game_session_id not in self.game_session_tiles:
                 self.game_session_tiles[game_session_id] = GameSessionTile(
                     "game_session_not_marked",
@@ -241,6 +245,24 @@ class JoinGame(GameWindow):
         tiles[-1].rect.left = left
         tiles[-1].rect.top = top
         tiles[-1].center_text()
+    # TODO: Not working yet
+    # def remove_closed_game_tiles(self, game_sessions):
+    #     closed_game_ids = numpy.setdiff1d(list(self.game_session_tiles.keys()), list(game_sessions.keys()))
+    #
+    #     for game_id in closed_game_ids:
+    #         tile_to_remove = self.game_session_tiles[game_id]
+    #         old_tile_position_left = tile_to_remove.rect.left
+    #         old_tile_position_top = tile_to_remove.rect.top
+    #         key_list = sorted(self.game_session_tiles.keys())
+    #         next_tile = self.game_session_tiles.get(key_list[key_list.index(game_id) + 1])
+    #         del self.game_session_tiles[game_id]
+    #
+    #         self.rearrange_tiles(next_tile, old_tile_position_left, old_tile_position_top)
+    #
+    # def rearrange_tiles(self, next_tile, left, top):
+    #     next_tile.rect.left = left
+    #     next_tile.rect.top = top
+    #     next_tile.center_text()
 
     def blit(self):
         super().blit()

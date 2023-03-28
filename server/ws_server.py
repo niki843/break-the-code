@@ -345,10 +345,11 @@ async def handler(websocket):
         if event_msg_type == "get_current_games":
             game_sessions = {}
             for game_session in GAME_SESSIONS.values():
-                game_sessions[game_session.id] = {
-                            "connected_players": game_session.get_players_count(),
-                            "player_id_name_map": game_session.get_player_id_name_map()
-                        }
+                if game_session.get_state() == GameState.PENDING:
+                    game_sessions[game_session.id] = {
+                                "connected_players": game_session.get_players_count(),
+                                "player_id_name_map": game_session.get_player_id_name_map()
+                            }
             print("SENDING OUT GAME SESSIONS")
             await send_message(
                 websocket,
