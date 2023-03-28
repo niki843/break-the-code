@@ -33,49 +33,26 @@ class EventHandler(Singleton):
 
     def handle_event(self, event):
         keys = pygame.key.get_pressed()
-        if event.type == pygame.QUIT:
-            self.server_communication_manager.close_connection()
-            return True
-        elif event.type == pygame.MOUSEBUTTONDOWN:
+        self.check_common_events(event, keys)
+        if event.type == pygame.MOUSEBUTTONDOWN:
             self.handle_mouse_click(event)
-        elif event.type == client.EVENT_TYPE:
-            # TODO Implement when a server event happens
-            self.handle_server_message(event.message)
-            print(event.message)
-        elif (
-            (keys[pygame.K_LALT] or keys[pygame.K_RALT])
-            and (keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN])
-            and event.type == pygame.KEYDOWN
-        ):
-            if not client_init.IS_FULLSCREEN_ENABLED:
-                print("opening full screen")
-                self.open_full_screen()
-            elif client_init.IS_FULLSCREEN_ENABLED:
-                print("closing_fullscreen")
-                self.open_windowed_screen()
-        return False
 
     # 15/03/2023 NT: An interesting implementation here it turns out that in order to write and not affect anything else
     # we need to enter another infinite while to wait for text input and exit it on click next click.
-    # Another interesting thing going on here, this causes a type of circular recursion
-    # between handle_mouse_click, activate_tile, and wait_text_input which is kind of necessary to be able to
-    # click on another tile while writing.
     # 16/03/2023 NT: We need to copy the main game code for async tasks run and display rendering and so on
     # in order to be able to execute other events while still waiting for user input in text box. This will allow us
     # to have a different button binding while not in writing mode, where in writing mode it won't be possible.
     def wait_text_input(self, text_surface):
-        while True:
+        client_init.WAITING_TEXT_INPUT = True
+        while client_init.WAITING_TEXT_INPUT:
             events = pygame.event.get()
             pygame.display.flip()
             for event in events:
                 keys = pygame.key.get_pressed()
-                if event.type == pygame.QUIT:
-                    return True
-                elif event.type == client.EVENT_TYPE:
-                    # TODO Implement when a server event happens
-                    self.handle_server_message(event.message)
-                    print(event.message)
-                elif (keys[pygame.K_LALT] or keys[pygame.K_RALT]) and (
+
+                self.check_common_events(event, keys)
+
+                if (keys[pygame.K_LALT] or keys[pygame.K_RALT]) and (
                     keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]
                 ):
                     self.open_full_screen()
@@ -88,12 +65,35 @@ class EventHandler(Singleton):
                         text_surface.write(event.unicode)
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     text_surface.mark_clicked()
-                    return self.handle_mouse_click(event)
+                    self.handle_mouse_click(event)
+                    client_init.waiting_text_input = False
 
             text_surface.center()
             self.current_window.blit()
 
             common.run_once(LOOP)
+
+    def check_common_events(self, event, keys):
+        if event.type == pygame.QUIT:
+            self.current_window.close()
+            self.server_communication_manager.close_connection()
+            client_init.GAME_RUNNING = False
+            client_init.WAITING_TEXT_INPUT = False
+        elif event.type == client.EVENT_TYPE:
+            # TODO Implement when a server event happens
+            self.handle_server_message(event.message)
+            print(event.message)
+        elif (
+                (keys[pygame.K_LALT] or keys[pygame.K_RALT])
+                and (keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN])
+                and event.type == pygame.KEYDOWN
+        ):
+            if not client_init.IS_FULLSCREEN_ENABLED:
+                print("opening full screen")
+                self.open_full_screen()
+            elif client_init.IS_FULLSCREEN_ENABLED:
+                print("closing_fullscreen")
+                self.open_windowed_screen()
 
     def handle_slider_clicked(self, slider):
         clicked = True
@@ -143,7 +143,6 @@ class EventHandler(Singleton):
         tiles_copy = self.current_window.tiles_group.copy()
         for tile in tiles_copy:
             if tile.rect.collidepoint(pygame.mouse.get_pos()):
-                print(tile.name)
                 return self.current_window.scroll_tile(tile, scrolled_up)
 
     def handle_server_message(self, message):
@@ -157,7 +156,6 @@ class EventHandler(Singleton):
         )
         self.settings.resolution_slider.set_slider_handle_position()
         client_init.IS_FULLSCREEN_ENABLED = True
-        return None, False
 
     def open_windowed_screen(self):
         self.screen = pygame.display.set_mode((1280, 720), pygame.HWSURFACE)
@@ -167,4 +165,3 @@ class EventHandler(Singleton):
         )
         self.settings.resolution_slider.set_slider_handle_position()
         client_init.IS_FULLSCREEN_ENABLED = False
-        return None, False

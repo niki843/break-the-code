@@ -402,10 +402,12 @@ class Settings(GameWindow):
                 self.event_handler.change_player_username(self.username_input_box.text)
             self.event_handler.handle_save_button(self.apply_button)
         if tile.name == "back" and event.button == client.LEFT_BUTTON_CLICK:
-            self.event_handler.menu.open()
             self.username_input_box.text = self.current_username
             self.username_input_box.resize_text()
             self.username_input_box.center()
+            if self.username_input_box.active:
+                self.username_input_box.mark_clicked()
+            self.event_handler.menu.open()
         if tile.name == "name_input" and event.button == client.LEFT_BUTTON_CLICK:
             self.username_input_box.mark_clicked()
             self.event_handler.wait_text_input(self.username_input_box)

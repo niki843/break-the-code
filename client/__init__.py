@@ -32,3 +32,7 @@ IS_FULLSCREEN_ENABLED = False
 LEFT_BUTTON_CLICK = 1
 SCROLL_UP = 4
 SCROLL_DOWN = 5
+
+# IMPORTANT!!! This is how the game will know if the game should stop running
+GAME_RUNNING = True
+WAITING_TEXT_INPUT = False

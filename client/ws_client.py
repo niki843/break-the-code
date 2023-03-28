@@ -3,10 +3,6 @@ import json
 import websockets
 import pygame
 
-
-# Initial connection to server throw exception if an error occurs
-from websockets.exceptions import ConnectionClosed
-
 IPADDRESS = "localhost"
 PORT = "8765"
 
