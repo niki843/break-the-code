@@ -23,7 +23,7 @@ class JoinGame(GameWindow):
         self.game_sessions_loop = None
 
         self.game_sessions = {}
-        self.game_session_tiles = []
+        self.game_session_tiles = {}
 
         self.build()
 
@@ -190,22 +190,49 @@ class JoinGame(GameWindow):
         self.game_info_box.rect.centerx = self.game_info_tile.rect.centerx
         self.game_info_box.center_text()
 
-    def add_or_update_game_sessions(self, game_sessions):
+    def build_game_sessions(self, game_sessions):
         self.game_sessions = game_sessions
         for game_session_id, game_session in game_sessions.items():
-            self.game_session_tiles.append(
-                GameSessionTile(
-                    game_session_id,
+            if game_session_id not in self.game_session_tiles:
+                self.game_session_tiles[game_session_id] = GameSessionTile(
+                    "game_session",
                     common.get_image("non_selected_nickname.png"),
                     self.event_handler.screen,
                     50,
-                    0,
+                    -60,
                     0,
                     common.get_image("selected_nickname.png"),
                     game_session.get("connected_players"),
                     game_session.get("player_id_name_map").values(),
+                    game_session_id,
                 )
+                self.tiles_group.add(self.game_session_tiles[game_session_id])
+            elif self.game_session_tiles.get(game_session_id).active_players != game_session.get("connected_players"):
+                self.game_session_tiles.update_players(game_session.get("player_id_name_map"))
+
+            self.set_game_sessions_size()
+
+    def set_game_sessions_size(self):
+        if not self.game_session_tiles:
+            return
+
+        left = self.tiles_background.rect.left + (
+                self.event_handler.screen.get_width() * 0.02
             )
+        top = self.tiles_background.rect.top + (
+                self.event_handler.screen.get_height() * 0.03
+            )
+
+        tiles = list(self.game_session_tiles.values())
+
+        if len(tiles) > 1:
+            left = tiles[-2].rect.left
+            top = tiles[-2].rect.bottom + (
+                self.event_handler.screen.get_height() * 0.01
+            )
+
+        tiles[-1].rect.left = left
+        tiles[-1].rect.top = top
 
     def blit(self):
         super().blit()
@@ -231,6 +258,9 @@ class JoinGame(GameWindow):
         )
         self.game_info_box.blit()
 
+        for tile in self.game_session_tiles.values():
+            self.event_handler.screen.blit(tile.image, tile.rect)
+
     def open(self):
         super().open()
         self.game_sessions_loop = client.LOOP.create_task(self.call_get_game_sessions())
@@ -251,6 +281,8 @@ class JoinGame(GameWindow):
         if tile.name == "scroll_tile" and event.button == client.SCROLL_DOWN:
             self.scroll_text_tile.scroll_down()
             self.scroll_text_tile.slider.next_handle_position()
+        if tile.name == "game_session":
+            print("game_session")
 
     def delete(self):
         super().delete()

@@ -4,7 +4,7 @@ from client.game_objects.tiles.toggle_tile import ToggleTile
 class GameSessionTile(ToggleTile):
     def __init__(
         self,
-        name_id,
+        name,
         surface,
         screen,
         size_percent,
@@ -13,11 +13,12 @@ class GameSessionTile(ToggleTile):
         next_surface,
         active_players,
         player_usernames,
+        id,
     ):
         ToggleTile.__init__(
             self,
-            name_id,
-            name_id,
+            name,
+            name,
             surface,
             screen,
             size_percent,
@@ -26,5 +27,10 @@ class GameSessionTile(ToggleTile):
             next_surface,
         )
 
+        self.id = id
         self.active_players = active_players
         self.player_usernames = player_usernames
+
+    def update_players(self, players_id_name_map):
+        self.active_players = len(players_id_name_map.keys())
+        self.player_usernames = players_id_name_map.values()

@@ -147,7 +147,7 @@ class EventHandler(Singleton):
     def handle_server_message(self, message):
         message_type = message.get("type")
         if message_type == "send_game_sessions":
-            self.current_window.add_or_update_game_sessions(
+            self.current_window.build_game_sessions(
                 message.get("game_sessions")
             )
 
