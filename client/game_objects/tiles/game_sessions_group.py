@@ -1,6 +1,8 @@
 from collections import OrderedDict
 
 from client.game_objects.tiles.game_session_tile import GameSessionTile
+from client.game_objects.tiles.slider import Slider
+from client.utils import common
 
 
 class GameSessionsGroup:
@@ -37,6 +39,21 @@ class GameSessionsGroup:
         self.game_sessions_by_id = OrderedDict()
         self.game_sessions = []
 
+        self.slider = Slider(
+            "game_sessions_slider",
+            common.get_image("slider_vertical.png"),
+            screen,
+            size_percent,
+            0,
+            0,
+            "game_session_slider_handle",
+            common.get_image("slider_button.png"),
+            size_percent,
+            0,
+            0,
+            False,
+        )
+
     def add_game_session(
         self, active_players, player_usernames, game_id, game_session_name
     ):
@@ -58,6 +75,7 @@ class GameSessionsGroup:
 
         self.game_sessions[game_id] = game_session
         self.game_sessions.append(game_session)
+        self.center_last_element()
 
     def delete_game_session(self, game_session_id):
         del self.game_sessions_by_id[game_session_id]
@@ -79,7 +97,16 @@ class GameSessionsGroup:
             )
 
     def center_last_element(self):
-        pass
+        left = self.first_element_left_location
+        top = self.first_element_top_location
+        if len(self.game_sessions) > 1:
+            left = self.game_sessions[len(self.game_sessions) - 3].rect.left
+            top = self.game_sessions[len(self.game_sessions) - 3].rect.bottom + (
+                self.screen.get_height() * 0.01
+            )
+
+        self.game_sessions[len(self.game_sessions) - 2].rect.left = left
+        self.game_sessions[len(self.game_sessions) - 2].rect.top = top
 
     def update_players_count(self, game_session_id, count):
         self.game_sessions_by_id.get(game_session_id).active_players = count
@@ -107,3 +134,6 @@ class GameSessionsGroup:
             if i >= len(self.game_sessions):
                 return
             self.screen.blit(self.game_sessions[i].image, self.game_sessions[i].rect)
+
+        self.screen.blit(self.slider.image, self.slider.rect)
+        self.screen.blit(self.slider.slider_handle.image, self.slider.slider_handle.rect)
