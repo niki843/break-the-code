@@ -1,3 +1,5 @@
+from typing import Any
+
 import pygame
 
 from client.game_objects.tiles.tile import Tile
@@ -65,13 +67,17 @@ class Slider(Tile):
 
         self.actual_percentage = []
         self.pivot_values = []
-        self.setup_percents(delimiters_count)
+        self.delimiters = delimiters_count
+        self.setup_percents()
         self.horizontal = horizontal
 
         self.handle_position = handle_position
 
         self.slider_percentage = 0
-        self.delimiters = delimiters_count
+
+    def update(self, *args: Any, **kwargs: Any) -> None:
+        self.setup_percents()
+        self.set_slider_handle_position()
 
     def move_slider(self, event):
         self.move_slider_horizontally(
@@ -160,15 +166,15 @@ class Slider(Tile):
                 )
             )
 
-    def setup_percents(self, delimiters_count):
+    def setup_percents(self):
         # -1 to compensate for the 0 value that will be first
-        reference_value = 100 / (delimiters_count - 1)
+        reference_value = 100 / (self.delimiters - 1)
         self.actual_percentage.append(0)
         self.pivot_values.append(-(reference_value / 2))
         # points of interests first element will be half of the reference value
         # this will allow the slider handle to move to the lower value if it's under
         # half of the slider's separation area and to the upper value if it's over
-        for i in range(1, delimiters_count):
+        for i in range(1, self.delimiters):
             self.actual_percentage.append(
                 self.actual_percentage[i - 1] + reference_value
             )

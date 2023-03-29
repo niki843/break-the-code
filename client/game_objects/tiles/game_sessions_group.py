@@ -1,5 +1,7 @@
 from collections import OrderedDict
 
+import pygame
+
 from client.game_objects.tiles.game_session_tile import GameSessionTile
 from client.game_objects.tiles.slider import Slider
 from client.utils import common
@@ -20,21 +22,23 @@ class GameSessionsGroup:
         max_game_sessions_to_display: int,
         first_element_left_location,
         first_element_top_location,
+        slider_position_right,
     ):
         self.tile_name = tile_name
         self.next_tile_name = next_tile_name
-        self.surface = surface
-        self.screen = screen
-        self.size_percent = size_percent
-        self.text_size_percent = text_size_percent
         self.tile_addition_width = tile_addition_width
         self.tile_addition_height = tile_addition_height
+        self.size_percent = size_percent
+        self.screen = screen
+        self.text_size_percent = text_size_percent
+        self.game_session_tile_surface = surface
         self.next_surface = next_surface
         self.max_game_sessions_to_display = max_game_sessions_to_display
         self.start_line = 0
 
         self.first_element_left_location = first_element_left_location
         self.first_element_top_location = first_element_top_location
+        self.slider_position_right = slider_position_right
 
         self.game_sessions_by_id = OrderedDict()
         self.game_sessions = []
@@ -43,24 +47,26 @@ class GameSessionsGroup:
             "game_sessions_slider",
             common.get_image("slider_vertical.png"),
             screen,
-            size_percent,
+            1.4,
             0,
-            0,
+            -300,
             "game_session_slider_handle",
             common.get_image("slider_button.png"),
-            size_percent,
+            1.4,
             0,
             0,
             False,
         )
+        self.position_slider()
+        self.slider.update()
 
     def add_game_session(
         self, active_players, player_usernames, game_id, game_session_name
     ):
         game_session = GameSessionTile(
             self.tile_name,
-            self.next_surface,
-            self.surface,
+            self.next_tile_name,
+            self.game_session_tile_surface,
             self.screen,
             self.size_percent,
             self.text_size_percent,
@@ -73,13 +79,18 @@ class GameSessionsGroup:
             game_session_name,
         )
 
-        self.game_sessions[game_id] = game_session
+        self.game_sessions_by_id[game_id] = game_session
         self.game_sessions.append(game_session)
         self.center_last_element()
+        self.slider.update()
+
+        return game_session
 
     def delete_game_session(self, game_session_id):
+        self.game_sessions.pop(list(self.game_sessions_by_id.keys()).index(game_session_id))
         del self.game_sessions_by_id[game_session_id]
         self.center_elements()
+        self.slider.update()
 
     def center_elements(self):
         for i in range(self.start_line, self.start_line + self.max_game_sessions_to_display):
@@ -89,24 +100,34 @@ class GameSessionsGroup:
             if i == self.start_line:
                 self.game_sessions[i].rect.left = self.first_element_left_location
                 self.game_sessions[i].rect.top = self.first_element_top_location
+                self.game_sessions[i].center_text()
                 continue
 
             self. game_sessions[i].rect.left = self.game_sessions[i-1].rect.left
             self.game_sessions[i].rect.top = self.game_sessions[i-1].rect.bottom + (
                 self.screen.get_height() * 0.01
             )
+            self.game_sessions[i].center_text()
 
     def center_last_element(self):
+        if not self.game_sessions:
+            return
+
         left = self.first_element_left_location
         top = self.first_element_top_location
         if len(self.game_sessions) > 1:
-            left = self.game_sessions[len(self.game_sessions) - 3].rect.left
-            top = self.game_sessions[len(self.game_sessions) - 3].rect.bottom + (
+            left = self.game_sessions[len(self.game_sessions) - 2].rect.left
+            top = self.game_sessions[len(self.game_sessions) - 2].rect.bottom + (
                 self.screen.get_height() * 0.01
             )
 
-        self.game_sessions[len(self.game_sessions) - 2].rect.left = left
-        self.game_sessions[len(self.game_sessions) - 2].rect.top = top
+        self.game_sessions[len(self.game_sessions) - 1].rect.left = left
+        self.game_sessions[len(self.game_sessions) - 1].rect.top = top
+        self.game_sessions[len(self.game_sessions) - 1].center_text()
+
+    def position_slider(self):
+        self.slider.rect.left = self.slider_position_right
+        self.slider.rect.top = self.first_element_top_location
 
     def update_players_count(self, game_session_id, count):
         self.game_sessions_by_id.get(game_session_id).active_players = count
@@ -129,11 +150,17 @@ class GameSessionsGroup:
 
         self.center_elements()
 
+    def tile_exists(self, game_session_id):
+        return game_session_id in self.game_sessions_by_id
+
     def blit(self):
         for i in range(self.start_line, self.start_line + self.max_game_sessions_to_display):
             if i >= len(self.game_sessions):
-                return
+                # TODO: Or not TODO that is the question, aka should we replace this with return and
+                #  not have a scroll when the items are bellow max_game_sessions_to_display
+                continue
             self.screen.blit(self.game_sessions[i].image, self.game_sessions[i].rect)
+            self.screen.blit(self.game_sessions[i].text_box.text_surface, self.game_sessions[i].text_box.text_rect)
 
         self.screen.blit(self.slider.image, self.slider.rect)
         self.screen.blit(self.slider.slider_handle.image, self.slider.slider_handle.rect)

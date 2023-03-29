@@ -5,6 +5,7 @@ import numpy
 import pygame
 import client
 from client.game_objects.tiles.game_session_tile import GameSessionTile
+from client.game_objects.tiles.game_sessions_group import GameSessionsGroup
 from client.utils import common
 
 from client.game_objects.pages.game_window import GameWindow
@@ -27,6 +28,7 @@ class JoinGame(GameWindow):
         self.game_sessions = {}
         self.game_session_tiles = OrderedDict()
         self.clicked_game_session_tile = None
+        self.game_session_group = None
 
         self.build()
 
@@ -45,6 +47,8 @@ class JoinGame(GameWindow):
 
         self.build_game_info_label()
         self.build_game_info_box()
+
+        self.build_game_sessions_group()
 
         self.build_join_game_button()
 
@@ -193,71 +197,52 @@ class JoinGame(GameWindow):
         self.game_info_box.rect.centerx = self.game_info_tile.rect.centerx
         self.game_info_box.center_text()
 
-    def build_game_sessions(self, game_sessions):
-        self.add_new_game_tiles(game_sessions.items())
-        self.remove_closed_game_tiles(game_sessions)
-
-    def add_new_game_tiles(self, game_sessions):
-        for game_session_id, game_session in game_sessions:
-            if game_session_id not in self.game_session_tiles:
-                self.game_session_tiles[game_session_id] = GameSessionTile(
-                    "game_session_not_marked",
-                    "game_session_marked",
-                    common.get_image("non_selected_nickname.png"),
-                    self.event_handler.screen,
-                    50,
-                    50,
-                    -60,
-                    0,
-                    common.get_image("selected_nickname.png"),
-                    game_session.get("connected_players"),
-                    game_session.get("player_id_name_map").values(),
-                    game_session_id,
-                    game_session.get("room_name")
-                )
-                self.tiles_group.add(self.game_session_tiles[game_session_id])
-            elif self.game_session_tiles.get(
-                game_session_id
-            ).active_players != game_session.get("connected_players"):
-                self.game_session_tiles.get(game_session_id).update_players(
-                    game_session.get("player_id_name_map")
-                )
-
-            self.set_game_sessions_size()
-
-    def set_game_sessions_size(self):
-        if not self.game_session_tiles:
-            return
-
+    def build_game_sessions_group(self):
         left = self.tiles_background.rect.left + (
             self.event_handler.screen.get_width() * 0.02
         )
         top = self.tiles_background.rect.top + (
             self.event_handler.screen.get_height() * 0.03
         )
+        right = self.game_info_box.rect.left - (
+            self.event_handler.screen.get_width() * 0.016
+        )
 
-        tiles = list(self.game_session_tiles.values())
+        self.game_session_group = GameSessionsGroup(
+            "game_session_not_marked",
+            "game_session_marked",
+            common.get_image("non_selected_nickname.png"),
+            self.event_handler.screen,
+            50,
+            50,
+            -60,
+            0,
+            common.get_image("selected_nickname.png"),
+            6,
+            left,
+            top,
+            right,
+        )
 
-        if len(tiles) > 1:
-            left = tiles[-2].rect.left
-            top = tiles[-2].rect.bottom + (
-                self.event_handler.screen.get_height() * 0.01
-            )
+        self.tiles_group.add(self.game_session_group.slider.slider_handle)
 
-        tiles[-1].rect.left = left
-        tiles[-1].rect.top = top
-        tiles[-1].center_text()
+    def add_or_remove_game_sessions(self, game_sessions_response):
+        removed_game_sessions = self.game_session_group.game_sessions_by_id.copy()
+        for game_session_id, game_session in game_sessions_response.items():
+            if not self.game_session_group.tile_exists(game_session_id):
+                game_session = self.game_session_group.add_game_session(
+                    active_players=game_session.get("connected_players"),
+                    player_usernames=game_session.get("player_id_name_map").values(),
+                    game_id=game_session_id,
+                    game_session_name=game_session.get("room_name"),
+                )
+                self.tiles_group.add(game_session)
+                continue
+            removed_game_sessions.pop(game_session_id)
 
-    def remove_closed_game_tiles(self, game_sessions):
-        closed_game_ids = numpy.setdiff1d(list(self.game_session_tiles.keys()), list(game_sessions.keys()))
-
-        for game_id in closed_game_ids:
-            del self.game_session_tiles[game_id]
-
-    def rearrange_tiles(self, next_tile, left, top):
-        next_tile.rect.left = left
-        next_tile.rect.top = top
-        next_tile.center_text()
+        for removed_game_session_id in removed_game_sessions.keys():
+            self.tiles_group.remove(self.game_session_group.game_sessions_by_id.get(removed_game_session_id))
+            self.game_session_group.delete_game_session(removed_game_session_id)
 
     def blit(self):
         super().blit()
@@ -283,11 +268,13 @@ class JoinGame(GameWindow):
         )
         self.game_info_box.blit()
 
-        for tile in self.game_session_tiles.values():
-            self.event_handler.screen.blit(tile.image, tile.rect)
-            self.event_handler.screen.blit(
-                tile.text_box.text_surface, tile.text_box.text_rect
-            )
+        self.game_session_group.blit()
+
+        # for tile in self.game_session_tiles.values():
+        #     self.event_handler.screen.blit(tile.image, tile.rect)
+        #     self.event_handler.screen.blit(
+        #         tile.text_box.text_surface, tile.text_box.text_rect
+        #     )
 
     def open(self):
         super().open()
@@ -309,15 +296,23 @@ class JoinGame(GameWindow):
         if tile.name == "scroll_tile" and event.button == client.SCROLL_DOWN:
             self.scroll_text_tile.scroll_down()
             self.scroll_text_tile.slider.next_handle_position()
+
         if tile.name == "game_session_marked" and event.button == client.LEFT_BUTTON_CLICK:
             tile.next_value()
             self.clicked_game_session_tile = None
-        if tile.name == "game_session_not_marked" and event.button == client.LEFT_BUTTON_CLICK:
+        elif tile.name == "game_session_not_marked" and event.button == client.LEFT_BUTTON_CLICK:
             tile.next_value()
 
             if self.clicked_game_session_tile:
                 self.clicked_game_session_tile.next_value()
             self.clicked_game_session_tile = tile
+
+        if tile.name in ("game_sessions_group", "game_session_marked", "game_session_not_marked") and event.button == client.SCROLL_UP:
+            self.game_session_group.slider.previous_handle_position()
+            self.game_session_group.scroll_up()
+        if tile.name in ("game_sessions_group", "game_session_marked", "game_session_not_marked") and event.button == client.SCROLL_DOWN:
+            self.game_session_group.slider.next_handle_position()
+            self.game_session_group.scroll_down()
 
     def delete(self):
         super().delete()
