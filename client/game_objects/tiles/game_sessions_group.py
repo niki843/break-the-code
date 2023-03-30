@@ -141,7 +141,6 @@ class GameSessionsGroup(Tile):
             except IndexError:
                 pass
 
-
     def center_last_element(self):
         if not self.game_sessions:
             return

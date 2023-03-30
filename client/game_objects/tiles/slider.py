@@ -173,6 +173,8 @@ class Slider(Tile):
     def setup_percents(self):
         if self.delimiters <= 1:
             return
+        self.actual_percentage = []
+        self.pivot_values = []
 
         # -1 to compensate for the 0 value that will be first
         reference_value = 100 / (self.delimiters - 1)
