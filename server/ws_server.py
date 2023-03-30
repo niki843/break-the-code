@@ -98,7 +98,7 @@ async def join_game(websocket, game_session_id, player_id, player_name):
         )
 
     # Notify all players of new player joining
-    await current_game_session.send_joined_message(player_id)
+    await current_game_session.send_joined_message(player_id, player_name)
 
     await handle_user_input(player_id, websocket, current_game_session)
 

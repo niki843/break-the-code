@@ -16,7 +16,7 @@ class GameSessionTile(ToggleTile):
         next_surface,
         active_players,
         player_usernames,
-        id,
+        game_session_id,
         game_session_name="Unknown",
     ):
         ToggleTile.__init__(
@@ -35,6 +35,7 @@ class GameSessionTile(ToggleTile):
         self.active_players = active_players
         self.player_usernames = player_usernames
         self.game_session_name = game_session_name
+        self.game_session_id = game_session_id
 
         self.text_box = PlainTextTile(
             "game_session_name",

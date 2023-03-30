@@ -218,7 +218,7 @@ class JoinGame(GameWindow):
             common.get_image("game_session.png"),
             self.event_handler.screen,
             50,
-            50,
+            45,
             -60,
             0,
             common.get_image("game_session_selected.png"),
@@ -322,6 +322,13 @@ class JoinGame(GameWindow):
             if self.clicked_game_session_tile:
                 self.clicked_game_session_tile.next_value()
             self.clicked_game_session_tile = tile
+        if (
+            tile.name == self.join_game_tile.name
+            and event.button == client.LEFT_BUTTON_CLICK
+        ):
+            if self.clicked_game_session_tile:
+                self.close()
+                self.event_handler.lobby.open()
 
         if (
             tile.name

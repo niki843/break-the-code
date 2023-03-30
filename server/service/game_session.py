@@ -67,9 +67,10 @@ class GameSession:
         self.__connected_player_connections[player] = websocket
         self.__connected_players_status[player_id] = PlayerStatus.ONLINE
 
-    async def send_joined_message(self, player_id):
+    async def send_joined_message(self, player_id, player_name):
         event = {
-            "type": "info",
+            "type": "player_joined",
+            "player_name": player_name,
             "player_id": player_id,
             "message": f"Player {player_id[:7]} has joined",
         }

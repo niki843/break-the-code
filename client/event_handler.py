@@ -3,6 +3,7 @@ import client as client_init
 
 from client import ws_client as client, LOOP
 from client.game_objects.pages.join_game import JoinGame
+from client.game_objects.pages.lobby import Lobby
 from client.game_objects.pages.menu import Menu
 from client.game_objects.pages.new_game import NewGame
 from client.game_objects.pages.settings import Settings
@@ -25,11 +26,13 @@ class EventHandler(Singleton):
         self.settings = Settings(self)
         self.new_game = NewGame(self)
         self.join_game = JoinGame(self)
+        self.lobby = Lobby(self)
 
         self.game_windows.append(self.menu)
         self.game_windows.append(self.settings)
         self.game_windows.append(self.new_game)
         self.game_windows.append(self.join_game)
+        self.game_windows.append(self.lobby)
 
     def handle_event(self, event):
         keys = pygame.key.get_pressed()
@@ -82,7 +85,6 @@ class EventHandler(Singleton):
             return False
         elif event.type == client.EVENT_TYPE:
             self.handle_server_message(event.message)
-            print(event.message)
         elif (
             (keys[pygame.K_LALT] or keys[pygame.K_RALT])
             and (keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN])
@@ -148,6 +150,8 @@ class EventHandler(Singleton):
             self.current_window.add_or_remove_game_sessions(
                 message.get("game_sessions")
             )
+        if message_type == "player_joined":
+            self.current_window.add_player(message.get("player_id"), message.get("player_name"))
 
     def open_full_screen(self):
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
