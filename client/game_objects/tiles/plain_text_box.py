@@ -34,7 +34,7 @@ class PlainTextTile(Tile):
         self.max_characters_on_line = max_characters_on_line
 
         if len(self.text) > self.max_characters_on_line:
-            self.text = self.text[:12]
+            self.text = self.text[:self.max_characters_on_line-3]
             self.text += "..."
 
         self.load_text()
