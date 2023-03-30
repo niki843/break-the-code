@@ -133,10 +133,14 @@ class EventHandler(Singleton):
 
     def handle_mouse_click(self, event):
         tiles_copy = self.current_window.tiles_group.copy()
-        for tile in tiles_copy:
-            if tile.rect.collidepoint(pygame.mouse.get_pos()):
-                print(tile.name)
-                return self.current_window.activate_tile(tile, event)
+        clicked_sprites = tiles_copy.get_sprites_at(pygame.mouse.get_pos())
+        if tiles_copy.get_sprites_at(pygame.mouse.get_pos()):
+            # !!!! Important if two sprites have the same priority and are overlapping this will return
+            # the on that was added second from both !!!!!!!!!!!!!
+            clicked_tiles_priority = {tile.priority: tile for tile in clicked_sprites}
+            max_priority_tile = clicked_tiles_priority.get(max(clicked_tiles_priority.keys()))
+            print(f"Maximum priority tile: {max_priority_tile.name}")
+            return self.current_window.activate_tile(max_priority_tile, event)
 
     def handle_scroll(self, scrolled_up):
         tiles_copy = self.current_window.tiles_group.copy()

@@ -207,23 +207,30 @@ class JoinGame(GameWindow):
         right = self.game_info_box.rect.left - (
             self.event_handler.screen.get_width() * 0.016
         )
+        bottom = self.game_info_box.rect.bottom - (
+            self.event_handler.screen.get_height() * 0.03
+        )
 
         self.game_session_group = GameSessionsGroup(
+            "game_session_group",
             "game_session_not_marked",
             "game_session_marked",
-            common.get_image("non_selected_nickname.png"),
+            common.get_image("game_session.png"),
             self.event_handler.screen,
             50,
             50,
             -60,
             0,
-            common.get_image("selected_nickname.png"),
+            common.get_image("game_session_selected.png"),
             6,
             left,
             top,
             right,
+            bottom,
         )
 
+        self.tiles_group.add(self.game_session_group)
+        self.tiles_group.add(self.game_session_group.slider)
         self.tiles_group.add(self.game_session_group.slider.slider_handle)
 
     def add_or_remove_game_sessions(self, game_sessions_response):
@@ -236,6 +243,7 @@ class JoinGame(GameWindow):
                     game_id=game_session_id,
                     game_session_name=game_session.get("room_name"),
                 )
+                game_session.priority = 1
                 self.tiles_group.add(game_session)
                 continue
             removed_game_sessions.pop(game_session_id)

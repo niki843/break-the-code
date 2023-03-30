@@ -1,6 +1,6 @@
 import pygame
 import client
-from pygame.sprite import Group
+from pygame.sprite import LayeredUpdates
 
 from client.game_objects.tiles.tile import Tile
 from client.utils import common
@@ -8,7 +8,7 @@ from client.utils import common
 
 class GameWindow:
     def __init__(self, event_handler):
-        self.tiles_group = Group()
+        self.tiles_group = LayeredUpdates()
 
         self.event_handler = event_handler
 
