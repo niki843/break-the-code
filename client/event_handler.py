@@ -142,12 +142,6 @@ class EventHandler(Singleton):
             print(f"Maximum priority tile: {max_priority_tile.name}")
             return self.current_window.activate_tile(max_priority_tile, event)
 
-    def handle_scroll(self, scrolled_up):
-        tiles_copy = self.current_window.tiles_group.copy()
-        for tile in tiles_copy:
-            if tile.rect.collidepoint(pygame.mouse.get_pos()):
-                return self.current_window.scroll_tile(tile, scrolled_up)
-
     def handle_server_message(self, message):
         message_type = message.get("type")
         if message_type == "send_game_sessions":

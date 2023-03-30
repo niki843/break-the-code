@@ -106,7 +106,7 @@ class GameSessionsGroup(Tile):
         self.game_sessions_by_id[game_id] = game_session
         self.game_sessions.append(game_session)
         self.center_last_element()
-        self.slider.update()
+        self.slider.update(delimiters=len(self.game_sessions) - self.max_game_sessions_to_display + 1)
 
         return game_session
 
@@ -116,7 +116,7 @@ class GameSessionsGroup(Tile):
         )
         del self.game_sessions_by_id[game_session_id]
         self.center_elements()
-        self.slider.update()
+        self.slider.update(delimiters=len(self.game_sessions) - self.max_game_sessions_to_display + 1)
 
     def center_elements(self):
         for i in range(
@@ -134,6 +134,13 @@ class GameSessionsGroup(Tile):
             self.game_sessions[i].rect.left = self.game_sessions[i - 1].rect.left
             self.game_sessions[i].rect.top = self.game_sessions[i - 1].rect.bottom
             self.game_sessions[i].center_text()
+
+            # Try to move the last element out of screen to remove collision issues
+            try:
+                self.game_sessions[i+1].rect.top = self.screen.get_rect().bottom
+            except IndexError:
+                pass
+
 
     def center_last_element(self):
         if not self.game_sessions:
@@ -160,7 +167,7 @@ class GameSessionsGroup(Tile):
         self.change_line(1)
 
     def scroll_up(self):
-        self.change_line(2)
+        self.change_line(-1)
 
     def change_line(self, index):
         self.start_line += index

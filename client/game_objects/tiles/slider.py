@@ -76,6 +76,7 @@ class Slider(Tile):
         self.slider_percentage = 0
 
     def update(self, *args: Any, **kwargs: Any) -> None:
+        self.delimiters = kwargs.get("delimiters") or self.delimiters
         self.setup_percents()
         self.set_slider_handle_position()
 
@@ -129,6 +130,9 @@ class Slider(Tile):
         self.update_slider_handle_by_position()
 
     def update_slider_handle_by_position(self):
+        if self.delimiters <= 1:
+            return
+
         self.slider_percentage = self.actual_percentage[self.handle_position]
         slider_size = (
             self.image.get_width() if self.horizontal else self.image.get_height()
@@ -167,6 +171,9 @@ class Slider(Tile):
             )
 
     def setup_percents(self):
+        if self.delimiters <= 1:
+            return
+
         # -1 to compensate for the 0 value that will be first
         reference_value = 100 / (self.delimiters - 1)
         self.actual_percentage.append(0)
@@ -184,6 +191,11 @@ class Slider(Tile):
         self.actual_percentage[len(self.actual_percentage) - 1] = 100
 
     def set_slider_handle_position(self):
+        if self.delimiters <= 1:
+            self.slider_handle.rect.top = self.rect.top
+            self.slider_handle.rect.left = self.rect.left
+            return
+
         if self.horizontal:
             self.slider_handle.rect.centery = self.rect.centery
             self.slider_handle.rect.centerx = self.rect.left + (
