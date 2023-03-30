@@ -73,12 +73,12 @@ class Slider(Tile):
 
         self.handle_position = handle_position
 
-        self.slider_percentage = 0
+        self.slider_percentage = self.actual_percentage[self.handle_position] if self.delimiters >= 2 else 0
 
     def update(self, *args: Any, **kwargs: Any) -> None:
         self.delimiters = kwargs.get("delimiters") or self.delimiters
         self.setup_percents()
-        self.set_slider_handle_position()
+        self.update_slider_handle_by_position()
 
     def move_slider(self, event):
         self.move_slider_horizontally(
@@ -148,6 +148,8 @@ class Slider(Tile):
             )
             return
 
+
+        self.slider_handle.rect.centerx = self.rect.centerx
         if self.slider_percentage == 0:
             self.slider_handle.rect.top = starting_position + (
                 slider_size
@@ -205,9 +207,20 @@ class Slider(Tile):
             )
         else:
             self.slider_handle.rect.centerx = self.rect.centerx
-            self.slider_handle.rect.top = self.rect.top + (
-                (self.image.get_height() / (self.delimiters - 1)) * self.handle_position
-            )
+            if self.handle_position == len(self.actual_percentage) - 1:
+                self.slider_handle.rect.bottom = self.rect.bottom
+                return
+            elif self.slider_percentage == 0:
+                self.slider_handle.rect.top = self.rect.top + (
+                    (self.image.get_height() / (self.delimiters - 1)) * self.handle_position
+                )
+            else:
+                self.slider_handle.rect.centery = self.rect.top + (
+                        (self.image.get_width() / (self.delimiters - 1)) * self.handle_position
+                )
+
+    def get_max_handle_position(self):
+        return len(self.actual_percentage) - 1
 
     def resize(self):
         super().resize()
