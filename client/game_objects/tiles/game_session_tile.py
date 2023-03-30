@@ -46,6 +46,7 @@ class GameSessionTile(ToggleTile):
             tile_addition_height,
             game_session_name,
             text_size_percent,
+            20,
         )
 
     def update_players(self, players_id_name_map):

@@ -15,6 +15,7 @@ class PlainTextTile(Tile):
         tile_addition_height,
         text_to_display: str,
         text_size_percent: int,
+        max_characters_on_line: int,
     ):
         super().__init__(
             name,
@@ -30,6 +31,11 @@ class PlainTextTile(Tile):
         self.text_rect = None
         self.text_size_percent = text_size_percent
         self.font = None
+        self.max_characters_on_line = max_characters_on_line
+
+        if len(self.text) > self.max_characters_on_line:
+            self.text = self.text[:12]
+            self.text += "..."
 
         self.load_text()
 

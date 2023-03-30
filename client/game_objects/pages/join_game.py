@@ -269,8 +269,9 @@ class JoinGame(GameWindow):
             22,
             0,
             0,
-            "pesho",
-            50,
+            "peshoslepia-i-kolio-qkiq-v-edno",
+            40,
+            15,
         )
 
         self.set_player_one_text()
@@ -319,8 +320,9 @@ class JoinGame(GameWindow):
             22,
             0,
             0,
-            "pesho",
-            50,
+            "peshoslepia-i-kolio-qkiq-v-edno",
+            40,
+            15,
         )
 
         self.set_player_two_text()
@@ -367,8 +369,9 @@ class JoinGame(GameWindow):
             22,
             0,
             0,
-            "pesho",
-            50,
+            "peshoslepia-i-kolio-qkiq-v-edno",
+            40,
+            15,
         )
 
         self.set_player_three_text()
@@ -415,8 +418,9 @@ class JoinGame(GameWindow):
             22,
             0,
             0,
-            "pesho",
-            50,
+            "peshoslepia-i-kolio-qkiq-v-edno",
+            40,
+            15,
         )
 
         self.set_player_four_text()
