@@ -42,6 +42,10 @@ class PlainTextTile(Tile):
         self.text_surface = self.font.render(self.text, True, client.GAME_BASE_COLOR)
         self.text_rect = self.text_surface.get_rect()
 
+    def center(self):
+        self.text_rect.centery = self.rect.centery
+        self.text_rect.left = self.rect.left
+
     def resize(self):
         super().resize()
         if hasattr(self, "font"):

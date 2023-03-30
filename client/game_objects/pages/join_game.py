@@ -6,6 +6,7 @@ import pygame
 import client
 from client.game_objects.tiles.game_session_tile import GameSessionTile
 from client.game_objects.tiles.game_sessions_group import GameSessionsGroup
+from client.game_objects.tiles.plain_text_box import PlainTextTile
 from client.utils import common
 
 from client.game_objects.pages.game_window import GameWindow
@@ -24,6 +25,18 @@ class JoinGame(GameWindow):
         self.game_info_tile = None
         self.game_info_box = None
         self.game_sessions_loop = None
+
+        self.player_one_image_tile = None
+        self.player_one_text_tile = None
+
+        self.player_two_image_tile = None
+        self.player_two_text_tile = None
+
+        self.player_three_image_tile = None
+        self.player_three_text_tile = None
+
+        self.player_four_image_tile = None
+        self.player_four_text_tile = None
 
         self.game_sessions = {}
         self.game_session_tiles = OrderedDict()
@@ -48,6 +61,18 @@ class JoinGame(GameWindow):
         self.build_game_info_label()
         self.build_game_info_box()
 
+        self.build_player_one_image_tile()
+        self.build_player_one_text()
+
+        self.build_player_two_image_tile()
+        self.build_player_two_text()
+
+        self.build_player_three_image_tile()
+        self.build_player_three_text()
+
+        self.build_player_four_image_tile()
+        self.build_player_four_text()
+
         self.build_game_sessions_group()
 
         self.build_join_game_button()
@@ -62,6 +87,18 @@ class JoinGame(GameWindow):
 
         self.set_game_info_label_size()
         self.set_game_info_size()
+
+        self.set_player_one_image()
+        self.set_player_one_text()
+
+        self.set_player_two_image()
+        self.set_player_two_text()
+
+        self.set_player_three_image()
+        self.set_player_three_text()
+
+        self.set_player_four_image()
+        self.set_player_four_text()
 
         self.set_join_game_button_size()
 
@@ -178,8 +215,8 @@ class JoinGame(GameWindow):
             self.event_handler.screen,
             30,
             0,
-            0,
-            "Player1: hasaaaaan  \n Player2: peshoslepia12 \n Player3: fikret-storaro \n Player4: neadekvaten",
+            20,
+            "",
             6,
             0,
         )
@@ -196,6 +233,202 @@ class JoinGame(GameWindow):
         )
         self.game_info_box.rect.centerx = self.game_info_tile.rect.centerx
         self.game_info_box.center_text()
+
+    def build_player_one_image_tile(self):
+        surface = common.get_image("user1_1.png")
+        self.player_one_image_tile = Tile(
+            "player_one_image",
+            surface,
+            self.event_handler.screen,
+            5,
+            0,
+            0,
+        )
+
+        self.set_player_one_image()
+
+    def set_player_one_image(self):
+        if not self.player_one_image_tile:
+            return
+
+        self.player_one_image_tile.resize()
+        self.player_one_image_tile.rect.top = self.game_info_box.rect.top + (
+            self.event_handler.screen.get_height() * 0.02
+        )
+        self.player_one_image_tile.rect.left = self. game_info_box.rect.left + (
+            self.event_handler.screen.get_width() * 0.02
+        )
+
+    def build_player_one_text(self):
+        surface = pygame.Surface([50, 12], pygame.SRCALPHA, 32)
+        surface = surface.convert_alpha()
+        self.player_one_text_tile = PlainTextTile(
+            "player_one_image",
+            surface,
+            self.event_handler.screen,
+            22,
+            0,
+            0,
+            "pesho",
+            50,
+        )
+
+        self.set_player_one_text()
+
+    def set_player_one_text(self):
+        if not self.player_one_text_tile:
+            return
+
+        self.player_one_text_tile.resize()
+        self.player_one_text_tile.rect.centery = self.player_one_image_tile.rect.centery
+        self.player_one_text_tile.rect.left = self.player_one_image_tile.rect.right + (
+            self.event_handler.screen.get_width() * 0.007
+        )
+        self.player_one_text_tile.center()
+
+    def build_player_two_image_tile(self):
+        surface = common.get_image("user2_1.png")
+        self.player_two_image_tile = Tile(
+            "player_two_image",
+            surface,
+            self.event_handler.screen,
+            5,
+            0,
+            0,
+        )
+
+        self.set_player_two_image()
+
+    def set_player_two_image(self):
+        if not self.player_two_image_tile:
+            return
+
+        self.player_two_image_tile.resize()
+        self.player_two_image_tile.rect.top = self.player_one_image_tile.rect.bottom + (
+            self.event_handler.screen.get_height() * 0.02
+        )
+        self.player_two_image_tile.rect.left = self. player_one_image_tile.rect.left
+
+    def build_player_two_text(self):
+        surface = pygame.Surface([50, 12], pygame.SRCALPHA, 32)
+        surface = surface.convert_alpha()
+        self.player_two_text_tile = PlainTextTile(
+            "player_two_image",
+            surface,
+            self.event_handler.screen,
+            22,
+            0,
+            0,
+            "pesho",
+            50,
+        )
+
+        self.set_player_two_text()
+
+    def set_player_two_text(self):
+        if not self.player_two_text_tile:
+            return
+
+        self.player_two_text_tile.resize()
+        self.player_two_text_tile.rect.centery = self.player_two_image_tile.rect.centery
+        self.player_two_text_tile.rect.left = self.player_one_text_tile.rect.left
+        self.player_two_text_tile.center()
+
+    def build_player_three_image_tile(self):
+        surface = common.get_image("user3_1.png")
+        self.player_three_image_tile = Tile(
+            "player_three_image",
+            surface,
+            self.event_handler.screen,
+            5,
+            0,
+            0,
+        )
+
+        self.set_player_three_image()
+
+    def set_player_three_image(self):
+        if not self.player_three_image_tile:
+            return
+
+        self.player_three_image_tile.resize()
+        self.player_three_image_tile.rect.top = self.player_two_image_tile.rect.bottom + (
+            self.event_handler.screen.get_height() * 0.02
+        )
+        self.player_three_image_tile.rect.left = self. player_one_image_tile.rect.left
+
+    def build_player_three_text(self):
+        surface = pygame.Surface([50, 12], pygame.SRCALPHA, 32)
+        surface = surface.convert_alpha()
+        self.player_three_text_tile = PlainTextTile(
+            "player_three_image",
+            surface,
+            self.event_handler.screen,
+            22,
+            0,
+            0,
+            "pesho",
+            50,
+        )
+
+        self.set_player_three_text()
+
+    def set_player_three_text(self):
+        if not self.player_three_text_tile:
+            return
+
+        self.player_three_text_tile.resize()
+        self.player_three_text_tile.rect.centery = self.player_three_image_tile.rect.centery
+        self.player_three_text_tile.rect.left = self.player_one_text_tile.rect.left
+        self.player_three_text_tile.center()
+
+    def build_player_four_image_tile(self):
+        surface = common.get_image("user4_1.png")
+        self.player_four_image_tile = Tile(
+            "player_three_image",
+            surface,
+            self.event_handler.screen,
+            5,
+            0,
+            0,
+        )
+
+        self.set_player_four_image()
+
+    def set_player_four_image(self):
+        if not self.player_four_image_tile:
+            return
+
+        self.player_four_image_tile.resize()
+        self.player_four_image_tile.rect.top = self.player_three_image_tile.rect.bottom + (
+            self.event_handler.screen.get_height() * 0.02
+        )
+        self.player_four_image_tile.rect.left = self. player_one_image_tile.rect.left
+
+    def build_player_four_text(self):
+        surface = pygame.Surface([50, 12], pygame.SRCALPHA, 32)
+        surface = surface.convert_alpha()
+        self.player_four_text_tile = PlainTextTile(
+            "player_four_text",
+            surface,
+            self.event_handler.screen,
+            22,
+            0,
+            0,
+            "pesho",
+            50,
+        )
+
+        self.set_player_four_text()
+
+    def set_player_four_text(self):
+        if not self.player_four_text_tile:
+            return
+
+        self.player_four_text_tile.resize()
+        self.player_four_text_tile.rect.centery = self.player_four_image_tile.rect.centery
+        self.player_four_text_tile.rect.left = self.player_one_text_tile.rect.left
+        self.player_four_text_tile.center()
 
     def build_game_sessions_group(self):
         left = self.tiles_background.rect.left + (
@@ -277,6 +510,46 @@ class JoinGame(GameWindow):
             self.game_info_box.image, self.game_info_box.rect
         )
         self.game_info_box.blit()
+
+        self.event_handler.screen.blit(
+            self.player_one_image_tile.image, self.player_one_image_tile.rect
+        )
+        self.event_handler.screen.blit(
+            self.player_one_text_tile.image, self.player_one_text_tile.rect
+        )
+        self.event_handler.screen.blit(
+            self.player_one_text_tile.text_surface, self.player_one_text_tile.text_rect
+        )
+
+        self.event_handler.screen.blit(
+            self.player_two_image_tile.image, self.player_two_image_tile.rect
+        )
+        self.event_handler.screen.blit(
+            self.player_two_text_tile.image, self.player_two_text_tile.rect
+        )
+        self.event_handler.screen.blit(
+            self.player_two_text_tile.text_surface, self.player_two_text_tile.text_rect
+        )
+
+        self.event_handler.screen.blit(
+            self.player_three_image_tile.image, self.player_three_image_tile.rect
+        )
+        self.event_handler.screen.blit(
+            self.player_three_text_tile.image, self.player_three_text_tile.rect
+        )
+        self.event_handler.screen.blit(
+            self.player_three_text_tile.text_surface, self.player_three_text_tile.text_rect
+        )
+
+        self.event_handler.screen.blit(
+            self.player_four_image_tile.image, self.player_four_image_tile.rect
+        )
+        self.event_handler.screen.blit(
+            self.player_four_text_tile.image, self.player_four_text_tile.rect
+        )
+        self.event_handler.screen.blit(
+            self.player_four_text_tile.text_surface, self.player_four_text_tile.text_rect
+        )
 
         self.game_session_group.blit()
 
