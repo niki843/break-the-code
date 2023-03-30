@@ -249,7 +249,9 @@ class JoinGame(GameWindow):
             removed_game_sessions.pop(game_session_id)
 
         for removed_game_session_id in removed_game_sessions.keys():
-            self.tiles_group.remove(self.game_session_group.game_sessions_by_id.get(removed_game_session_id))
+            self.tiles_group.remove(
+                self.game_session_group.game_sessions_by_id.get(removed_game_session_id)
+            )
             self.game_session_group.delete_game_session(removed_game_session_id)
 
     def blit(self):
@@ -305,20 +307,46 @@ class JoinGame(GameWindow):
             self.scroll_text_tile.scroll_down()
             self.scroll_text_tile.slider.next_handle_position()
 
-        if tile.name == "game_session_marked" and event.button == client.LEFT_BUTTON_CLICK:
+        if (
+            tile.name == "game_session_marked"
+            and event.button == client.LEFT_BUTTON_CLICK
+        ):
             tile.next_value()
             self.clicked_game_session_tile = None
-        elif tile.name == "game_session_not_marked" and event.button == client.LEFT_BUTTON_CLICK:
+        elif (
+            tile.name == "game_session_not_marked"
+            and event.button == client.LEFT_BUTTON_CLICK
+        ):
             tile.next_value()
 
             if self.clicked_game_session_tile:
                 self.clicked_game_session_tile.next_value()
             self.clicked_game_session_tile = tile
 
-        if tile.name in ("game_sessions_group", "game_session_marked", "game_session_not_marked") and event.button == client.SCROLL_UP:
+        if (
+            tile.name
+            in (
+                self.game_session_group.name,
+                self.game_session_group.tile_name,
+                self.game_session_group.next_tile_name,
+                self.game_session_group.slider.name,
+                self.game_session_group.slider.slider_handle.name,
+            )
+            and event.button == client.SCROLL_UP
+        ):
             self.game_session_group.slider.previous_handle_position()
             self.game_session_group.scroll_up()
-        if tile.name in ("game_sessions_group", "game_session_marked", "game_session_not_marked") and event.button == client.SCROLL_DOWN:
+        if (
+            tile.name
+            in (
+                self.game_session_group.name,
+                self.game_session_group.tile_name,
+                self.game_session_group.next_tile_name,
+                self.game_session_group.slider.name,
+                self.game_session_group.slider.slider_handle.name,
+            )
+            and event.button == client.SCROLL_DOWN
+        ):
             self.game_session_group.slider.next_handle_position()
             self.game_session_group.scroll_down()
 
