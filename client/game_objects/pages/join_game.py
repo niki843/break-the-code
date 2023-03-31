@@ -62,6 +62,7 @@ class JoinGame(GameWindow):
         self.set_game_info_label_size()
         self.set_game_info_size()
 
+        self.set_game_sessions_group_size()
         self.set_player_info_group_size()
 
         self.set_join_game_button_size()
@@ -154,18 +155,7 @@ class JoinGame(GameWindow):
         self.game_info_box.center_text()
 
     def build_game_sessions_group(self):
-        left = self.tiles_background.rect.left + (
-            self.event_handler.screen.get_width() * 0.02
-        )
-        top = self.tiles_background.rect.top + (
-            self.event_handler.screen.get_height() * 0.03
-        )
-        right = self.game_info_box.rect.left - (
-            self.event_handler.screen.get_width() * 0.016
-        )
-        bottom = self.game_info_box.rect.bottom - (
-            self.event_handler.screen.get_height() * 0.03
-        )
+        left, top, right = self.get_game_sessions_group_position()
 
         self.game_session_group = GameSessionsGroup(
             "game_session_group",
@@ -173,16 +163,15 @@ class JoinGame(GameWindow):
             "game_session_marked",
             common.get_image("game_session.png"),
             self.event_handler.screen,
-            50,
+            48,
             45,
-            -60,
+            -50,
             0,
             common.get_image("game_session_selected.png"),
             6,
             left,
             top,
             right,
-            bottom,
         )
 
         self.tiles_group.add(self.game_session_group)
@@ -219,8 +208,25 @@ class JoinGame(GameWindow):
         self.tiles_group.add(self.game_session_group.shown_game_sessions)
 
     def set_game_sessions_group_size(self):
-        # TODO: Add this to resize game_sessions with screen change
-        pass
+        self.game_session_group.resize()
+        left, top, right = self.get_game_sessions_group_position()
+        self.game_session_group.update_initial_position(left, top, right)
+        self.game_session_group.center_elements()
+        self.game_session_group.rect.left = left
+        self.game_session_group.rect.top = top
+        self.game_session_group.position_slider()
+
+    def get_game_sessions_group_position(self):
+        left = self.tiles_background.rect.left + (
+            self.event_handler.screen.get_width() * 0.02
+        )
+        top = self.tiles_background.rect.top + (
+            self.event_handler.screen.get_height() * 0.03
+        )
+        right = self.game_info_box.rect.left - (
+            self.event_handler.screen.get_width() * 0.016
+        )
+        return left, top, right
 
     def build_player_info_group(self):
         self.player_info_group = PlayerInfoGroup(
@@ -241,6 +247,12 @@ class JoinGame(GameWindow):
         if not self.player_info_group:
             return
 
+        self.player_info_group.first_element_left_position = self.game_info_box.rect.left + (
+                self.event_handler.screen.get_width() * 0.02
+        )
+        self.player_info_group.first_element_top_position = self.game_info_box.rect.top + (
+                self.event_handler.screen.get_height() * 0.02
+        )
         self.player_info_group.resize()
 
     def blit(self):

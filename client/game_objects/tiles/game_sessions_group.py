@@ -25,12 +25,11 @@ class GameSessionsGroup(Tile):
         first_element_left_location,
         first_element_top_location,
         slider_position_right,
-        last_element_bottom_position,
     ):
         transparent_background = pygame.Surface(
             [
-                slider_position_right - first_element_left_location,
-                last_element_bottom_position - first_element_top_location,
+                1720,
+                1300,
             ],
             pygame.SRCALPHA,
             32,
@@ -42,20 +41,21 @@ class GameSessionsGroup(Tile):
             transparent_background,
             screen,
             47.4,
-            0,
+            -10,
             0,
         )
         self.rect.left = first_element_left_location
         self.rect.top = first_element_top_location
 
+        self.game_session_tile_addition_width = tile_addition_width
+        self.game_session_tile_addition_height = tile_addition_height
+        self.game_session_size_percent = size_percent
+        self.game_session_tile_surface = surface
+
         self.tile_name = tile_name
         self.next_tile_name = next_tile_name
-        self.tile_addition_width = tile_addition_width
-        self.tile_addition_height = tile_addition_height
-        self.size_percent = size_percent
-        self.screen = screen
+
         self.text_size_percent = text_size_percent
-        self.game_session_tile_surface = surface
         self.next_surface = next_surface
         self.max_game_sessions_to_display = max_game_sessions_to_display
         self.start_line = 0
@@ -72,12 +72,12 @@ class GameSessionsGroup(Tile):
             "game_sessions_slider",
             common.get_image("slider_vertical.png"),
             screen,
-            1.4,
+            0.85,
+            3,
             0,
-            -300,
             "game_session_slider_handle",
             common.get_image("slider_button.png"),
-            1.4,
+            1,
             0,
             0,
             False,
@@ -93,10 +93,10 @@ class GameSessionsGroup(Tile):
             self.next_tile_name,
             self.game_session_tile_surface,
             self.screen,
-            self.size_percent,
+            self.game_session_size_percent,
             self.text_size_percent,
-            self.tile_addition_width,
-            self.tile_addition_height,
+            self.game_session_tile_addition_width,
+            self.game_session_tile_addition_height,
             self.next_surface,
             active_players,
             player_usernames,
@@ -165,12 +165,17 @@ class GameSessionsGroup(Tile):
         self.game_sessions[len(self.game_sessions) - 1].center_text()
 
     def position_slider(self):
-        self.slider.rect.left = self.slider_position_right
+        self.slider.rect.right = self.rect.right
         self.slider.rect.top = self.first_element_top_location
         self.slider.set_slider_handle_position()
 
     def update_players_count(self, game_session_id, count):
         self.game_sessions_by_id.get(game_session_id).active_players = count
+
+    def update_initial_position(self, left, top, right):
+        self.first_element_left_location = left
+        self.first_element_top_location = top
+        self.slider_position_right = right
 
     def scroll_down(self):
         self.change_line(1)
@@ -210,3 +215,11 @@ class GameSessionsGroup(Tile):
         self.screen.blit(
             self.slider.slider_handle.image, self.slider.slider_handle.rect
         )
+
+    def resize(self):
+        super().resize()
+        if hasattr(self, "game_sessions"):
+            for game_session in self.game_sessions:
+                game_session.resize()
+        if hasattr(self, "slider"):
+            self.slider.resize()
