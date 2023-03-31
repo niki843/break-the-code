@@ -30,10 +30,8 @@ class GameSessionTile(ToggleTile):
             tile_addition_height,
             next_surface,
         )
-
-        self.id = id
-        self.active_players = active_players
         self.player_usernames = player_usernames
+        self.active_players = active_players
         self.game_session_name = game_session_name
         self.game_session_id = game_session_id
 

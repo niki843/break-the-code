@@ -190,7 +190,10 @@ async def handle_user_input(player_id, websocket, game_session):
                 return
 
             game_session.player_disconnected_broadcast(player_id)
-            game_session.set_player_disconnected(player_id)
+            if game_session.get_state() == GameState.IN_PROGRESS:
+                game_session.set_player_disconnected(player_id)
+            else:
+                game_session.remove_player(player_id)
 
             print(f"Waiting 30 seconds for player {player_id} to reconnect.")
             await asyncio.sleep(30)

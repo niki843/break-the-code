@@ -203,6 +203,13 @@ class JoinGame(GameWindow):
                 self.tiles_group.add(game_session)
                 continue
             removed_game_sessions.pop(game_session_id)
+            self.game_session_group.update_players(game_session_id, game_session.get("player_id_name_map"))
+
+            # Refresh players if the count is not the same and the game_session tile is clicked
+            if game_session_id == self.clicked_game_session_tile.game_session_id:
+                self.player_info_group.clear_players()
+                for player_name in self.clicked_game_session_tile.player_usernames:
+                    self.player_info_group.add_player_tile(player_name)
 
         for removed_game_session_id in removed_game_sessions.keys():
             self.tiles_group.remove(

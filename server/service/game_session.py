@@ -367,6 +367,11 @@ class GameSession:
 
         return True
 
+    def remove_player(self, player_id):
+        player = self.__connected_players.pop(player_id)
+        self.__connected_player_connections.pop(player)
+        self.__connected_players_status.pop(player_id)
+
     def have_all_players_disconnected(self):
         return not any(
             player_status == PlayerStatus.ONLINE

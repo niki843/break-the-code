@@ -186,6 +186,9 @@ class GameSessionsGroup(Tile):
     def tile_exists(self, game_session_id):
         return game_session_id in self.game_sessions_by_id
 
+    def update_players(self, game_session_id, players):
+        self.game_sessions_by_id.get(game_session_id).update_players(players)
+
     def blit(self):
         self.screen.blit(self.image, self.rect)
         for i in range(
