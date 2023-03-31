@@ -227,15 +227,12 @@ class JoinGame(GameWindow):
         return left, top, right
 
     def build_player_info_group(self):
+        left, top = self.get_player_info_initial_position()
         self.player_info_group = PlayerInfoGroup(
             "player_info_group",
             0,
-            self.game_info_box.rect.left + (
-                    self.event_handler.screen.get_width() * 0.02
-            ),
-            self.game_info_box.rect.top + (
-                    self.event_handler.screen.get_height() * 0.02
-            ),
+            left,
+            top,
             self.event_handler.screen,
         )
 
@@ -245,13 +242,20 @@ class JoinGame(GameWindow):
         if not self.player_info_group:
             return
 
-        self.player_info_group.first_element_left_position = self.game_info_box.rect.left + (
+        left, top = self.get_player_info_initial_position()
+
+        self.player_info_group.first_element_left_position = left
+        self.player_info_group.first_element_top_position = top
+        self.player_info_group.resize()
+
+    def get_player_info_initial_position(self):
+        left = self.game_info_box.rect.left + (
                 self.event_handler.screen.get_width() * 0.02
         )
-        self.player_info_group.first_element_top_position = self.game_info_box.rect.top + (
+        top = self.game_info_box.rect.top + (
                 self.event_handler.screen.get_height() * 0.02
         )
-        self.player_info_group.resize()
+        return left, top
 
     def blit(self):
         super().blit()
@@ -289,13 +293,12 @@ class JoinGame(GameWindow):
         if tile.name == "back":
             if self.clicked_game_session_tile:
                 self.clicked_game_session_tile.next_value()
-                self.clicked_game_session_tile = None
-                self.player_info_group.clear_players()
+                self.reset_selected_game_session()
             self.event_handler.menu.open()
             self.close()
         if tile.name == "handle" and event.button == client.LEFT_BUTTON_CLICK:
             self.event_handler.handle_slider_clicked(self.scroll_text_tile)
-        elif (
+        if (
             tile.name == "game_session_tile"
             and event.button == client.LEFT_BUTTON_CLICK
         ):
@@ -352,6 +355,11 @@ class JoinGame(GameWindow):
             self.tiles_group.remove(self.game_session_group.shown_game_sessions[0])
             self.game_session_group.scroll_down()
             self.tiles_group.add(self.game_session_group.shown_game_sessions[-1])
+
+    def reset_selected_game_session(self):
+        if self.clicked_game_session_tile:
+            self.clicked_game_session_tile = None
+            self.player_info_group.clear_players()
 
     def delete(self):
         super().delete()

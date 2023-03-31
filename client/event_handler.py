@@ -160,6 +160,7 @@ class EventHandler(Singleton):
             self.settings.SCREEN_SIZE_CAPTIONS.index("fullscreen")
         )
         self.settings.resolution_slider.set_slider_handle_position()
+        self.join_game.reset_selected_game_session()
         client_init.IS_FULLSCREEN_ENABLED = True
 
     def open_windowed_screen(self):
@@ -169,4 +170,5 @@ class EventHandler(Singleton):
             self.settings.SCREEN_SIZE_CAPTIONS.index("1280x720")
         )
         self.settings.resolution_slider.set_slider_handle_position()
+        self.join_game.reset_selected_game_session()
         client_init.IS_FULLSCREEN_ENABLED = False
