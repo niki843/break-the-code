@@ -28,20 +28,21 @@ class GameSessionsGroup(Tile):
     ):
         transparent_background = pygame.Surface(
             [
-                1720,
+                1700,
                 1300,
             ],
             pygame.SRCALPHA,
             32,
         )
         transparent_background = transparent_background.convert_alpha()
+        # transparent_background.fill((0, 0, 1))
 
         super().__init__(
             group_name,
             transparent_background,
             screen,
-            47.4,
-            -10,
+            46,
+            0,
             0,
         )
         self.rect.left = first_element_left_location
