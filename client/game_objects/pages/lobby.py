@@ -13,6 +13,9 @@ class Lobby(GameWindow):
 
     def open(self):
         super().open()
+        if not self.event_handler.join_game.clicked_game_session_tile:
+            return
+
         game_session_tile = self.event_handler.join_game.clicked_game_session_tile
         self.game_session_name = game_session_tile.game_session_name
         self.game_session_id = game_session_tile.game_session_id
