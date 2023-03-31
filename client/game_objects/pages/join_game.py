@@ -300,7 +300,7 @@ class JoinGame(GameWindow):
             tile.next_value()
             self.clicked_game_session_tile = None
             self.player_info_group.clear_players()
-        if (
+        elif (
             tile.name == "game_session_not_marked"
             and event.button == client.LEFT_BUTTON_CLICK
         ):
