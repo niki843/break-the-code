@@ -200,13 +200,12 @@ class JoinGame(GameWindow):
                     game_session_name=game_session.get("room_name"),
                 )
                 game_session.priority = 1
-                self.tiles_group.add(game_session)
                 continue
             removed_game_sessions.pop(game_session_id)
             self.game_session_group.update_players(game_session_id, game_session.get("player_id_name_map"))
 
             # Refresh players if the count is not the same and the game_session tile is clicked
-            if game_session_id == self.clicked_game_session_tile.game_session_id:
+            if self.clicked_game_session_tile and game_session_id == self.clicked_game_session_tile.game_session_id:
                 self.player_info_group.clear_players()
                 for player_name in self.clicked_game_session_tile.player_usernames:
                     self.player_info_group.add_player_tile(player_name)
@@ -216,6 +215,8 @@ class JoinGame(GameWindow):
                 self.game_session_group.game_sessions_by_id.get(removed_game_session_id)
             )
             self.game_session_group.delete_game_session(removed_game_session_id)
+
+        self.tiles_group.add(self.game_session_group.shown_game_sessions)
 
     def set_game_sessions_group_size(self):
         # TODO: Add this to resize game_sessions with screen change
@@ -280,13 +281,6 @@ class JoinGame(GameWindow):
             self.close()
         if tile.name == "handle" and event.button == client.LEFT_BUTTON_CLICK:
             self.event_handler.handle_slider_clicked(self.scroll_text_tile)
-        if tile.name == "scroll_tile" and event.button == client.SCROLL_UP:
-            self.scroll_text_tile.scroll_up()
-            self.scroll_text_tile.slider.previous_handle_position()
-        if tile.name == "scroll_tile" and event.button == client.SCROLL_DOWN:
-            self.scroll_text_tile.scroll_down()
-            self.scroll_text_tile.slider.next_handle_position()
-
         if (
             tile.name == "game_session_marked"
             and event.button == client.LEFT_BUTTON_CLICK
@@ -294,7 +288,7 @@ class JoinGame(GameWindow):
             tile.next_value()
             self.clicked_game_session_tile = None
             self.player_info_group.clear_players()
-        elif (
+        if (
             tile.name == "game_session_not_marked"
             and event.button == client.LEFT_BUTTON_CLICK
         ):
@@ -329,7 +323,9 @@ class JoinGame(GameWindow):
             and event.button == client.SCROLL_UP
         ):
             self.game_session_group.slider.previous_handle_position()
+            self.tiles_group.remove(self.game_session_group.shown_game_sessions[-1])
             self.game_session_group.scroll_up()
+            self.tiles_group.add(self.game_session_group.shown_game_sessions[0])
         if (
             tile.name
             in (
@@ -342,7 +338,9 @@ class JoinGame(GameWindow):
             and event.button == client.SCROLL_DOWN
         ):
             self.game_session_group.slider.next_handle_position()
+            self.tiles_group.remove(self.game_session_group.shown_game_sessions[0])
             self.game_session_group.scroll_down()
+            self.tiles_group.add(self.game_session_group.shown_game_sessions[-1])
 
     def delete(self):
         super().delete()

@@ -66,6 +66,7 @@ class GameSessionsGroup(Tile):
 
         self.game_sessions_by_id = OrderedDict()
         self.game_sessions = []
+        self.shown_game_sessions = []
 
         self.slider = Slider(
             "game_sessions_slider",
@@ -105,7 +106,11 @@ class GameSessionsGroup(Tile):
 
         self.game_sessions_by_id[game_id] = game_session
         self.game_sessions.append(game_session)
-        self.center_last_element()
+
+        if len(self.shown_game_sessions) < self.max_game_sessions_to_display:
+            self.shown_game_sessions.append(game_session)
+            self.center_last_element()
+
         self.slider.update(delimiters=len(self.game_sessions) - self.max_game_sessions_to_display + 1)
 
         return game_session
@@ -120,6 +125,7 @@ class GameSessionsGroup(Tile):
         self.slider.update(delimiters=len(self.game_sessions) - self.max_game_sessions_to_display + 1)
 
     def center_elements(self):
+        self.shown_game_sessions = []
         for i in range(
             self.start_line, self.start_line + self.max_game_sessions_to_display
         ):
@@ -130,11 +136,13 @@ class GameSessionsGroup(Tile):
                 self.game_sessions[i].rect.left = self.first_element_left_location
                 self.game_sessions[i].rect.top = self.first_element_top_location
                 self.game_sessions[i].center_text()
+                self.shown_game_sessions.append(self.game_sessions[i])
                 continue
 
             self.game_sessions[i].rect.left = self.game_sessions[i - 1].rect.left
             self.game_sessions[i].rect.top = self.game_sessions[i - 1].rect.bottom
             self.game_sessions[i].center_text()
+            self.shown_game_sessions.append(self.game_sessions[i])
 
             # Try to move the last element out of screen to remove collision issues
             try:
@@ -191,17 +199,11 @@ class GameSessionsGroup(Tile):
 
     def blit(self):
         self.screen.blit(self.image, self.rect)
-        for i in range(
-            self.start_line, self.start_line + self.max_game_sessions_to_display
-        ):
-            if i >= len(self.game_sessions):
-                # TODO: Or not TODO that is the question, aka should we replace this with return and
-                #  not have a scroll when the items are bellow max_game_sessions_to_display
-                continue
-            self.screen.blit(self.game_sessions[i].image, self.game_sessions[i].rect)
+        for tile in self.shown_game_sessions:
+            self.screen.blit(tile.image, tile.rect)
             self.screen.blit(
-                self.game_sessions[i].text_box.text_surface,
-                self.game_sessions[i].text_box.text_rect,
+                tile.text_box.text_surface,
+                tile.text_box.text_rect,
             )
 
         self.screen.blit(self.slider.image, self.slider.rect)
