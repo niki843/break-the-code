@@ -53,13 +53,17 @@ class EventHandler(Singleton):
             for event in events:
                 keys = pygame.key.get_pressed()
 
+                if keys[pygame.K_LALT] or keys[pygame.K_RALT]:
+                    text_surface.mark_clicked()
+                    return
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    self.handle_mouse_click(event)
+                    text_surface.mark_clicked()
+                    return
+
                 waiting_text_input = self.check_common_events(event, keys)
 
-                if (keys[pygame.K_LALT] or keys[pygame.K_RALT]) and (
-                    keys[pygame.K_KP_ENTER] or keys[pygame.K_RETURN]
-                ):
-                    self.open_full_screen()
-                elif event.type == pygame.KEYDOWN:
+                if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
                         text_surface.new_line()
                     elif event.key == pygame.K_BACKSPACE:
