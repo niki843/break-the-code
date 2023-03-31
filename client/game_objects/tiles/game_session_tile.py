@@ -54,3 +54,8 @@ class GameSessionTile(ToggleTile):
     def center_text(self):
         self.text_box.text_rect.left = self.rect.left + (self.screen.get_width() * 0.01)
         self.text_box.text_rect.centery = self.rect.centery
+
+    def resize(self):
+        super().resize()
+        if hasattr(self, "text_box"):
+            self.text_box.resize()

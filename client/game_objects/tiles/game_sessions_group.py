@@ -72,9 +72,9 @@ class GameSessionsGroup(Tile):
             "game_sessions_slider",
             common.get_image("slider_vertical.png"),
             screen,
-            0.85,
+            0.9,
             3,
-            0,
+            -25,
             "game_session_slider_handle",
             common.get_image("slider_button.png"),
             1,
@@ -176,6 +176,8 @@ class GameSessionsGroup(Tile):
         self.first_element_left_location = left
         self.first_element_top_location = top
         self.slider_position_right = right
+        self.rect.left = left
+        self.rect.top = top
 
     def scroll_down(self):
         self.change_line(1)

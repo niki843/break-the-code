@@ -159,8 +159,8 @@ class JoinGame(GameWindow):
 
         self.game_session_group = GameSessionsGroup(
             "game_session_group",
-            "game_session_not_marked",
-            "game_session_marked",
+            "game_session_tile",
+            "game_session_tile",
             common.get_image("game_session.png"),
             self.event_handler.screen,
             48,
@@ -212,8 +212,6 @@ class JoinGame(GameWindow):
         left, top, right = self.get_game_sessions_group_position()
         self.game_session_group.update_initial_position(left, top, right)
         self.game_session_group.center_elements()
-        self.game_session_group.rect.left = left
-        self.game_session_group.rect.top = top
         self.game_session_group.position_slider()
 
     def get_game_sessions_group_position(self):
@@ -289,28 +287,29 @@ class JoinGame(GameWindow):
 
     def activate_tile(self, tile, event):
         if tile.name == "back":
+            if self.clicked_game_session_tile:
+                self.clicked_game_session_tile.next_value()
+                self.clicked_game_session_tile = None
+                self.player_info_group.clear_players()
             self.event_handler.menu.open()
             self.close()
         if tile.name == "handle" and event.button == client.LEFT_BUTTON_CLICK:
             self.event_handler.handle_slider_clicked(self.scroll_text_tile)
-        if (
-            tile.name == "game_session_marked"
-            and event.button == client.LEFT_BUTTON_CLICK
-        ):
-            tile.next_value()
-            self.clicked_game_session_tile = None
-            self.player_info_group.clear_players()
         elif (
-            tile.name == "game_session_not_marked"
+            tile.name == "game_session_tile"
             and event.button == client.LEFT_BUTTON_CLICK
         ):
-            tile.next_value()
+            self.player_info_group.clear_players()
 
             if self.clicked_game_session_tile:
                 self.clicked_game_session_tile.next_value()
-                self.player_info_group.clear_players()
-            self.clicked_game_session_tile = tile
 
+            if self.clicked_game_session_tile == tile:
+                self.clicked_game_session_tile = None
+                return
+
+            self.clicked_game_session_tile = tile
+            tile.next_value()
             for player_name in tile.player_usernames:
                 self.player_info_group.add_player_tile(player_name)
 
