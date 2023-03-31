@@ -312,8 +312,9 @@ class JoinGame(GameWindow):
             tile.name == self.join_game_tile.name
             and event.button == client.LEFT_BUTTON_CLICK
         ):
-            if self.clicked_game_session_tile:
+            if self.clicked_game_session_tile and self.clicked_game_session_tile.active_players < 4:
                 self.close()
+                self.event_handler.server_communication_manager.send_join_game_message(self.clicked_game_session_tile.game_session_id)
                 self.event_handler.lobby.open()
 
         if (
