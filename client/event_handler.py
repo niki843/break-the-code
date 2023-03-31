@@ -58,7 +58,8 @@ class EventHandler(Singleton):
                     return
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     self.handle_mouse_click(event)
-                    text_surface.mark_clicked()
+                    if text_surface.active:
+                        text_surface.mark_clicked()
                     return
 
                 waiting_text_input = self.check_common_events(event, keys)
