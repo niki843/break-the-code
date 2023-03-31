@@ -159,6 +159,7 @@ class GameSessionsGroup(Tile):
     def position_slider(self):
         self.slider.rect.left = self.slider_position_right
         self.slider.rect.top = self.first_element_top_location
+        self.slider.set_slider_handle_position()
 
     def update_players_count(self, game_session_id, count):
         self.game_sessions_by_id.get(game_session_id).active_players = count
