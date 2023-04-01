@@ -1,5 +1,3 @@
-import pygame
-
 import client
 from client.utils import common
 
@@ -26,10 +24,6 @@ class InputBox:
 
     def mark_clicked(self):
         self.active = not self.active
-        self.color = client.GAME_BASE_COLOR if self.active else client.NEUTRAL_COLOR
-
-        if self.active:
-            self.highlight()
 
     def write(self, text):
         if len(self.text) < self.max_char:
@@ -47,10 +41,6 @@ class InputBox:
         self.text_surface = self.font.render(self.text, True, self.color)
         self.text_rect = self.text_surface.get_rect()
 
-    def highlight(self):
-        # Draw the highlight.
-        pygame.draw.rect(self.screen, self.color, self.text_rect, 10)
-
     def resize_text(self):
         text_size = int(
             self.screen.get_height()
@@ -61,4 +51,3 @@ class InputBox:
         self.font = common.load_font(text_size)
         self.text_surface = self.font.render(self.text, True, client.GAME_BASE_COLOR)
         self.text_rect = self.text_surface.get_rect()
-        # self.screen.blit(self.text_surface, self.text_rect)

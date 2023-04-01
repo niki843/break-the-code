@@ -26,6 +26,10 @@ class Menu(GameWindow):
         self.create_button = None
         self.private_game_toggle_button = None
 
+        self.is_private_game = False
+        self.game_session_name = ""
+        self.players_count = 4
+
         self.build()
 
     def build(self):
@@ -259,8 +263,8 @@ class Menu(GameWindow):
         next_surface = common.get_image("cancel_button_pressed.png")
 
         self.cancel_button = ToggleTile(
-            name="cancel_button_on",
-            next_name="cancel_button_off",
+            name="cancel_button",
+            next_name="cancel_button",
             current_surface=surface,
             screen=self.event_handler.screen,
             size_percent=client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
@@ -311,12 +315,12 @@ class Menu(GameWindow):
         self.create_button.rect.right = self.game_session_name_text.rect.right
 
     def build_private_game_toggle(self):
-        surface = common.get_image("toggle_on.png")
-        next_surface = common.get_image("toggle_off.png")
+        surface = common.get_image("toggle_off.png")
+        next_surface = common.get_image("toggle_on.png")
 
         self.private_game_toggle_button = ToggleTile(
-            name="toggle_button_on",
-            next_name="toggle_button_off",
+            name="toggle_button_off",
+            next_name="toggle_button_on",
             current_surface=surface,
             screen=self.event_handler.screen,
             size_percent=client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
@@ -404,12 +408,11 @@ class Menu(GameWindow):
         self.cancel_button = None
         self.create_button = None
         self.private_game_toggle_button = None
+        self.is_private_game = False
 
     def activate_tile(self, tile, event):
         if tile.name == "new_game" and event.button == client.LEFT_BUTTON_CLICK:
             self.open_game_name_popup()
-        elif tile.name == "cancel" and event.button == client.LEFT_BUTTON_CLICK:
-            self.close_game_name_popup()
         elif tile.name == "join_game" and event.button == client.LEFT_BUTTON_CLICK:
             self.event_handler.join_game.open()
         elif tile.name == "settings" and event.button == client.LEFT_BUTTON_CLICK:
@@ -417,8 +420,31 @@ class Menu(GameWindow):
         elif tile.name == "quit_game" and event.button == client.LEFT_BUTTON_CLICK:
             pygame.event.post(pygame.event.Event(pygame.QUIT))
         elif tile.name == "game_name_input" and event.button == client.LEFT_BUTTON_CLICK:
+            if self.game_session_name_text.text == "Game-Name":
+                self.game_session_name_text.new_line()
             self.game_session_name_text.mark_clicked()
             self.event_handler.wait_text_input(self.game_session_name_text)
+            self.game_session_name = self.game_session_name_text.text
         elif tile.name == "players_count_input" and event.button == client.LEFT_BUTTON_CLICK:
             self.number_players_text.mark_clicked()
             self.event_handler.wait_text_input(self.number_players_text)
+            if not self.number_players_text.text.isnumeric() or (int(self.number_players_text.text) > 4 or int(self.number_players_text.text) < 3):
+                self.number_players_text.new_line()
+                self.number_players_text.write("4")
+                self.number_players_text.center()
+            self.players_count = int(self.number_players_text.text)
+        elif tile.name == "toggle_button_on" and event.button == client.LEFT_BUTTON_CLICK:
+            self.is_private_game = True
+            self.private_game_toggle_button.next_value()
+        elif tile.name == "toggle_button_off" and event.button == client.LEFT_BUTTON_CLICK:
+            self.is_private_game = False
+            self.private_game_toggle_button.next_value()
+        elif tile.name == "cancel_button" and event.button == client.LEFT_BUTTON_CLICK:
+            self.cancel_button.next_value()
+            self.event_handler.handle_save_button(self.cancel_button)
+            self.close_game_name_popup()
+        elif tile.name == "create_button" and event.button == client.LEFT_BUTTON_CLICK:
+            self.create_button.next_value()
+            self.event_handler.handle_save_button(self.create_button)
+            self.close_game_name_popup()
+            self.event_handler.lobby.open()
