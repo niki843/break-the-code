@@ -231,3 +231,10 @@ class GameSessionsGroup(Tile):
                 game_session.resize()
         if hasattr(self, "slider"):
             self.slider.resize()
+
+    def clear(self):
+        self.start_line = 0
+        self.game_sessions_by_id = OrderedDict()
+        self.game_sessions = []
+        self.shown_game_sessions = []
+        self.slider.reset()

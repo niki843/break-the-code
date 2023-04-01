@@ -286,6 +286,9 @@ class JoinGame(GameWindow):
         self.game_sessions_loop = client.LOOP.create_task(self.call_get_game_sessions())
 
     def close(self):
+        for game_session in self.game_session_group.game_sessions:
+            self.tiles_group.remove(game_session)
+        self.game_session_group.clear()
         if not self.game_sessions_loop.cancelled():
             self.game_sessions_loop.cancel()
 

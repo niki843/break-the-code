@@ -229,3 +229,10 @@ class Slider(Tile):
     def get_index(self):
         """Returns the index of the percentage that the tile is currently on"""
         return self.handle_position
+
+    def reset(self):
+        self.handle_position = 0
+        self.actual_percentage = []
+        self.pivot_values = []
+        self.setup_percents()
+        self.slider_percentage = self.actual_percentage[self.handle_position] if self.delimiters >= 2 else 0
