@@ -1,6 +1,8 @@
 import pygame
 
-from client.game_objects.custom_exceptions.player_limit_exceeded_exception import PlayerLimitExceededException
+from client.game_objects.custom_exceptions.player_limit_exceeded_exception import (
+    PlayerLimitExceededException,
+)
 from client.game_objects.tiles.plain_text_box import PlainTextTile
 from client.game_objects.tiles.tile import Tile
 from client.utils import common
@@ -42,7 +44,7 @@ class PlayerInfoGroup:
             self.screen,
             5,
             0,
-            0
+            0,
         )
 
         self.player_image_tiles.append(image_tile)
@@ -77,7 +79,9 @@ class PlayerInfoGroup:
         image_top = self.first_element_top_position
         if index > 0:
             image_left = self.player_image_tiles[index - 1].rect.left
-            image_top = self.player_image_tiles[index - 1].rect.bottom + (self.screen.get_height() * 0.02)
+            image_top = self.player_image_tiles[index - 1].rect.bottom + (
+                self.screen.get_height() * 0.02
+            )
 
         last_player_image_tile = self.player_image_tiles[index]
 
@@ -102,9 +106,16 @@ class PlayerInfoGroup:
 
     def blit(self):
         for i in range(0, self.connected_players):
-            self.screen.blit(self.player_image_tiles[i].image, self.player_image_tiles[i].rect)
-            self.screen.blit(self.player_name_tiles[i].image, self.player_name_tiles[i].rect)
-            self.screen.blit(self.player_name_tiles[i].text_surface, self.player_name_tiles[i].text_rect)
+            self.screen.blit(
+                self.player_image_tiles[i].image, self.player_image_tiles[i].rect
+            )
+            self.screen.blit(
+                self.player_name_tiles[i].image, self.player_name_tiles[i].rect
+            )
+            self.screen.blit(
+                self.player_name_tiles[i].text_surface,
+                self.player_name_tiles[i].text_rect,
+            )
 
     def clear_players(self):
         self.player_image_tiles = []

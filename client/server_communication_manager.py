@@ -37,4 +37,10 @@ class ServerCommunicationManager(Singleton):
         client.LOOP.create_task(send_message(self.CLOSE_CONNECTION_MESSAGE))
 
     def send_join_game_message(self, game_session_id):
-        client.LOOP.create_task(send_message(self.JOIN_GAME.format(self.player_id, self.player_username, game_session_id)))
+        client.LOOP.create_task(
+            send_message(
+                self.JOIN_GAME.format(
+                    self.player_id, self.player_username, game_session_id
+                )
+            )
+        )

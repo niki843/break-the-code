@@ -147,7 +147,9 @@ class EventHandler(Singleton):
             # !!!! Important if two sprites have the same priority and are overlapping this will return
             # the on that was added second from both !!!!!!!!!!!!!
             clicked_tiles_priority = {tile.priority: tile for tile in clicked_sprites}
-            max_priority_tile = clicked_tiles_priority.get(max(clicked_tiles_priority.keys()))
+            max_priority_tile = clicked_tiles_priority.get(
+                max(clicked_tiles_priority.keys())
+            )
             print(f"Maximum priority tile: {max_priority_tile.name}")
             return self.current_window.activate_tile(max_priority_tile, event)
 

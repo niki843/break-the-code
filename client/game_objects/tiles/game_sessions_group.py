@@ -114,19 +114,27 @@ class GameSessionsGroup(Tile):
 
         # Only modify the scroll when there are more than shown game sessions
         if len(self.game_sessions) > self.max_game_sessions_to_display:
-            self.slider.update(delimiters=len(self.game_sessions) - self.max_game_sessions_to_display + 1)
+            self.slider.update(
+                delimiters=len(self.game_sessions)
+                - self.max_game_sessions_to_display
+                + 1
+            )
 
         return game_session
 
     def delete_game_session(self, game_session_id):
-        current_game_session_index = list(self.game_sessions_by_id.keys()).index(game_session_id)
+        current_game_session_index = list(self.game_sessions_by_id.keys()).index(
+            game_session_id
+        )
         self.game_sessions.pop(current_game_session_index)
         del self.game_sessions_by_id[game_session_id]
         self.start_line -= 1 if self.start_line > 0 else 0
         self.center_elements()
         if self.slider.slider_percentage == 100:
             self.slider.previous_handle_position()
-        self.slider.update(delimiters=len(self.game_sessions) - self.max_game_sessions_to_display + 1)
+        self.slider.update(
+            delimiters=len(self.game_sessions) - self.max_game_sessions_to_display + 1
+        )
 
     def center_elements(self):
         self.shown_game_sessions = []
@@ -150,7 +158,7 @@ class GameSessionsGroup(Tile):
 
             # Try to move the last element out of screen to remove collision issues
             try:
-                self.game_sessions[i+1].rect.top = self.screen.get_rect().bottom
+                self.game_sessions[i + 1].rect.top = self.screen.get_rect().bottom
             except IndexError:
                 pass
 

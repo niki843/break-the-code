@@ -191,10 +191,15 @@ class JoinGame(GameWindow):
                 game_session.priority = 1
                 continue
             removed_game_sessions.pop(game_session_id)
-            self.game_session_group.update_players(game_session_id, game_session.get("player_id_name_map"))
+            self.game_session_group.update_players(
+                game_session_id, game_session.get("player_id_name_map")
+            )
 
             # Refresh players if the count is not the same and the game_session tile is clicked
-            if self.clicked_game_session_tile and game_session_id == self.clicked_game_session_tile.game_session_id:
+            if (
+                self.clicked_game_session_tile
+                and game_session_id == self.clicked_game_session_tile.game_session_id
+            ):
                 self.player_info_group.clear_players()
                 for player_name in self.clicked_game_session_tile.player_usernames:
                     self.player_info_group.add_player_tile(player_name)
@@ -250,10 +255,10 @@ class JoinGame(GameWindow):
 
     def get_player_info_initial_position(self):
         left = self.game_info_box.rect.left + (
-                self.event_handler.screen.get_width() * 0.02
+            self.event_handler.screen.get_width() * 0.02
         )
         top = self.game_info_box.rect.top + (
-                self.event_handler.screen.get_height() * 0.02
+            self.event_handler.screen.get_height() * 0.02
         )
         return left, top
 
@@ -323,9 +328,14 @@ class JoinGame(GameWindow):
             tile.name == self.join_game_tile.name
             and event.button == client.LEFT_BUTTON_CLICK
         ):
-            if self.clicked_game_session_tile and self.clicked_game_session_tile.active_players < 4:
+            if (
+                self.clicked_game_session_tile
+                and self.clicked_game_session_tile.active_players < 4
+            ):
                 self.close()
-                self.event_handler.server_communication_manager.send_join_game_message(self.clicked_game_session_tile.game_session_id)
+                self.event_handler.server_communication_manager.send_join_game_message(
+                    self.clicked_game_session_tile.game_session_id
+                )
                 self.event_handler.lobby.open()
 
         if (

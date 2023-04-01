@@ -73,7 +73,9 @@ class Slider(Tile):
 
         self.handle_position = handle_position
 
-        self.slider_percentage = self.actual_percentage[self.handle_position] if self.delimiters >= 2 else 0
+        self.slider_percentage = (
+            self.actual_percentage[self.handle_position] if self.delimiters >= 2 else 0
+        )
 
     def update(self, *args: Any, **kwargs: Any) -> None:
         self.delimiters = kwargs.get("delimiters") or self.delimiters
@@ -211,11 +213,13 @@ class Slider(Tile):
                 return
             elif self.slider_percentage == 0:
                 self.slider_handle.rect.top = self.rect.top + (
-                    (self.image.get_height() / (self.delimiters - 1)) * self.handle_position
+                    (self.image.get_height() / (self.delimiters - 1))
+                    * self.handle_position
                 )
             else:
                 self.slider_handle.rect.centery = self.rect.top + (
-                        (self.image.get_width() / (self.delimiters - 1)) * self.handle_position
+                    (self.image.get_width() / (self.delimiters - 1))
+                    * self.handle_position
                 )
 
     def get_max_handle_position(self):
@@ -235,4 +239,6 @@ class Slider(Tile):
         self.actual_percentage = []
         self.pivot_values = []
         self.setup_percents()
-        self.slider_percentage = self.actual_percentage[self.handle_position] if self.delimiters >= 2 else 0
+        self.slider_percentage = (
+            self.actual_percentage[self.handle_position] if self.delimiters >= 2 else 0
+        )

@@ -55,9 +55,5 @@ class InputBoxTile(ToggleTile, InputBox):
             self.resize_text()
 
     def blit(self):
-        self.screen.blit(
-            self.image, self.rect
-        )
-        self.screen.blit(
-            self.text_surface, self.text_rect
-        )
+        self.screen.blit(self.image, self.rect)
+        self.screen.blit(self.text_surface, self.text_rect)

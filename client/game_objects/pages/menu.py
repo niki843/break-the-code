@@ -192,8 +192,12 @@ class Menu(GameWindow):
             return
 
         self.game_session_name_box.resize()
-        self.game_session_name_box.rect.centerx = self.event_handler.screen.get_rect().centerx
-        self.game_session_name_box.rect.centery = self.event_handler.screen.get_rect().centery
+        self.game_session_name_box.rect.centerx = (
+            self.event_handler.screen.get_rect().centerx
+        )
+        self.game_session_name_box.rect.centery = (
+            self.event_handler.screen.get_rect().centery
+        )
 
     def build_game_name_text_box(self):
         surface = common.get_image("non_selected_nickname.png")
@@ -220,7 +224,9 @@ class Menu(GameWindow):
             return
 
         self.game_session_name_text.resize()
-        self.game_session_name_text.rect.centerx = self.game_session_name_box.rect.centerx
+        self.game_session_name_text.rect.centerx = (
+            self.game_session_name_box.rect.centerx
+        )
         self.game_session_name_text.rect.top = self.game_session_name_box.rect.top + (
             self.event_handler.screen.get_height() * 0.1
         )
@@ -241,7 +247,7 @@ class Menu(GameWindow):
             next_surface,
             "4",
             text_size_percentage_from_screen_height=5,
-            max_char=1
+            max_char=1,
         )
 
         self.set_number_players_text_size()
@@ -338,9 +344,12 @@ class Menu(GameWindow):
             return
 
         self.private_game_toggle_button.resize()
-        self.private_game_toggle_button.rect.right = self.game_session_name_text.rect.right
-        self.private_game_toggle_button.rect.top = self.number_players_text.rect.bottom + (
-            self.event_handler.screen.get_height() * 0.04
+        self.private_game_toggle_button.rect.right = (
+            self.game_session_name_text.rect.right
+        )
+        self.private_game_toggle_button.rect.top = (
+            self.number_players_text.rect.bottom
+            + (self.event_handler.screen.get_height() * 0.04)
         )
 
     def blit(self):
@@ -358,13 +367,24 @@ class Menu(GameWindow):
         self.event_handler.screen.blit(self.quit_tile.image, self.quit_tile.rect)
 
         if self.blured_tile:
-            self.event_handler.screen.blit(self.blured_tile.image, self.blured_tile.rect)
-            self.event_handler.screen.blit(self.game_session_name_box.image, self.game_session_name_box.rect)
+            self.event_handler.screen.blit(
+                self.blured_tile.image, self.blured_tile.rect
+            )
+            self.event_handler.screen.blit(
+                self.game_session_name_box.image, self.game_session_name_box.rect
+            )
             self.game_session_name_text.blit()
             self.number_players_text.blit()
-            self.event_handler.screen.blit(self.cancel_button.image, self.cancel_button.rect)
-            self.event_handler.screen.blit(self.create_button.image, self.create_button.rect)
-            self.event_handler.screen.blit(self.private_game_toggle_button.image, self.private_game_toggle_button.rect)
+            self.event_handler.screen.blit(
+                self.cancel_button.image, self.cancel_button.rect
+            )
+            self.event_handler.screen.blit(
+                self.create_button.image, self.create_button.rect
+            )
+            self.event_handler.screen.blit(
+                self.private_game_toggle_button.image,
+                self.private_game_toggle_button.rect,
+            )
 
     def delete(self):
         # Apparently pygame doesn't have an option to actually delete visual objects
@@ -419,24 +439,37 @@ class Menu(GameWindow):
             self.event_handler.settings.open()
         elif tile.name == "quit_game" and event.button == client.LEFT_BUTTON_CLICK:
             pygame.event.post(pygame.event.Event(pygame.QUIT))
-        elif tile.name == "game_name_input" and event.button == client.LEFT_BUTTON_CLICK:
+        elif (
+            tile.name == "game_name_input" and event.button == client.LEFT_BUTTON_CLICK
+        ):
             if self.game_session_name_text.text == "Game-Name":
                 self.game_session_name_text.new_line()
             self.game_session_name_text.mark_clicked()
             self.event_handler.wait_text_input(self.game_session_name_text)
             self.game_session_name = self.game_session_name_text.text
-        elif tile.name == "players_count_input" and event.button == client.LEFT_BUTTON_CLICK:
+        elif (
+            tile.name == "players_count_input"
+            and event.button == client.LEFT_BUTTON_CLICK
+        ):
             self.number_players_text.mark_clicked()
             self.event_handler.wait_text_input(self.number_players_text)
-            if not self.number_players_text.text.isnumeric() or (int(self.number_players_text.text) > 4 or int(self.number_players_text.text) < 3):
+            if not self.number_players_text.text.isnumeric() or (
+                int(self.number_players_text.text) > 4
+                or int(self.number_players_text.text) < 3
+            ):
                 self.number_players_text.new_line()
                 self.number_players_text.write("4")
                 self.number_players_text.center()
             self.players_count = int(self.number_players_text.text)
-        elif tile.name == "toggle_button_on" and event.button == client.LEFT_BUTTON_CLICK:
+        elif (
+            tile.name == "toggle_button_on" and event.button == client.LEFT_BUTTON_CLICK
+        ):
             self.is_private_game = True
             self.private_game_toggle_button.next_value()
-        elif tile.name == "toggle_button_off" and event.button == client.LEFT_BUTTON_CLICK:
+        elif (
+            tile.name == "toggle_button_off"
+            and event.button == client.LEFT_BUTTON_CLICK
+        ):
             self.is_private_game = False
             self.private_game_toggle_button.next_value()
         elif tile.name == "cancel_button" and event.button == client.LEFT_BUTTON_CLICK:
