@@ -4,7 +4,9 @@ import client
 import pygame
 
 from client.game_objects.pages.game_window import GameWindow
+from client.game_objects.tiles.input_box_tile import InputBoxTile
 from client.game_objects.tiles.tile import Tile
+from client.game_objects.tiles.toggle_tile import ToggleTile
 from client.utils import common
 
 
@@ -15,6 +17,13 @@ class Menu(GameWindow):
         self.join_game_tile = None
         self.settings_tile = None
         self.quit_tile = None
+
+        self.blured_tile = None
+        self.game_session_name_box = None
+        self.game_session_name_text = None
+        self.number_players_text = None
+        self.cancel_button = None
+        self.create_button = None
 
         self.build()
 
@@ -32,6 +41,12 @@ class Menu(GameWindow):
         self.set_new_game_size()
         self.set_settings_size()
         self.set_quit_game_size()
+
+        self.set_blurred_background_size()
+        self.set_game_session_name_box_size()
+        self.set_game_name_text_size()
+        self.set_cancel_button_size()
+        self.set_create_button_size()
 
     def build_join_game(self):
         surface = common.get_image("join_game.png")
@@ -128,6 +143,170 @@ class Menu(GameWindow):
         )
         self.tiles_group.add(self.quit_tile)
 
+    def build_blurred_background(self):
+        blurr = common.get_image("blur_bgr.png")
+        self.blured_tile = Tile(
+            "blurr",
+            blurr,
+            self.event_handler.screen,
+            100,
+            0,
+            0,
+        )
+
+        self.tiles_group.add(self.blured_tile)
+
+        self.set_blurred_background_size()
+
+    def set_blurred_background_size(self):
+        if not self.blured_tile:
+            return
+
+        self.blured_tile.resize()
+        self.blured_tile.rect.centerx = self.event_handler.screen.get_rect().centerx
+        self.blured_tile.rect.centery = self.event_handler.screen.get_rect().centery
+
+    def build_game_session_name_box(self):
+        surface = common.get_image("create_game_window.png")
+        self.game_session_name_box = Tile(
+            "game_session_name_box",
+            surface,
+            self.event_handler.screen,
+            55,
+            0,
+            0,
+        )
+        # Set it as a higher priority than anything behind
+        self.game_session_name_box.priority = 1
+
+        self.set_game_session_name_box_size()
+
+    def set_game_session_name_box_size(self):
+        if not self.game_session_name_box:
+            return
+
+        self.game_session_name_box.resize()
+        self.game_session_name_box.rect.centerx = self.event_handler.screen.get_rect().centerx
+        self.game_session_name_box.rect.centery = self.event_handler.screen.get_rect().centery
+
+    def build_game_name_text_box(self):
+        surface = common.get_image("non_selected_nickname.png")
+        next_surface = common.get_image("selected_nickname.png")
+
+        self.game_session_name_text = InputBoxTile(
+            "game_name_input",
+            "game_name_input",
+            surface,
+            self.event_handler.screen,
+            43,
+            0,
+            0,
+            next_surface,
+            "Game-Name",
+            text_size_percentage_from_screen_height=5,
+        )
+
+        self.set_game_name_text_size()
+        self.tiles_group.add(self.game_session_name_text)
+
+    def set_game_name_text_size(self):
+        if not self.game_session_name_text:
+            return
+
+        self.game_session_name_text.resize()
+        self.game_session_name_text.rect.centerx = self.game_session_name_box.rect.centerx
+        self.game_session_name_text.rect.top = self.game_session_name_box.rect.top + (
+            self.event_handler.screen.get_height() * 0.1
+        )
+        self.game_session_name_text.center()
+
+    def build_number_players_text_box(self):
+        surface = common.get_image("non_selected_nickname.png")
+        next_surface = common.get_image("selected_nickname.png")
+
+        self.number_players_text = InputBoxTile(
+            "players_count_input",
+            "players_count_input",
+            surface,
+            self.event_handler.screen,
+            43,
+            0,
+            0,
+            next_surface,
+            "4",
+            text_size_percentage_from_screen_height=5,
+        )
+
+        self.set_number_players_text_size()
+        self.tiles_group.add(self.number_players_text)
+
+    def set_number_players_text_size(self):
+        if not self.number_players_text:
+            return
+
+        self.number_players_text.resize()
+        self.number_players_text.rect.left = self.game_session_name_text.rect.left
+        self.number_players_text.rect.top = self.game_session_name_text.rect.bottom + (
+            self.event_handler.screen.get_height() * 0.04
+        )
+        self.number_players_text.center()
+
+    def build_cancel_button_tile(self):
+        surface = common.get_image("cancel_button.png")
+        next_surface = common.get_image("cancel_button_pressed.png")
+
+        self.cancel_button = ToggleTile(
+            name="cancel_button_on",
+            next_name="cancel_button_off",
+            current_surface=surface,
+            screen=self.event_handler.screen,
+            size_percent=client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
+            tile_addition_width=0,
+            tile_addition_height=0,
+            next_surface=next_surface,
+            shrink_percent=1,
+        )
+
+        self.set_cancel_button_size()
+        self.tiles_group.add(self.cancel_button)
+
+    def set_cancel_button_size(self):
+        if not self.cancel_button:
+            return
+
+        self.cancel_button.resize()
+        self.cancel_button.rect.bottom = self.game_session_name_box.rect.bottom - (
+            self.event_handler.screen.get_height() * 0.05
+        )
+        self.cancel_button.rect.left = self.game_session_name_text.rect.left
+
+    def build_create_button_tile(self):
+        surface = common.get_image("create_game.png")
+        next_surface = common.get_image("create_game_pressed.png")
+
+        self.create_button = ToggleTile(
+            name="apply_button_on",
+            next_name="apply_button_off",
+            current_surface=surface,
+            screen=self.event_handler.screen,
+            size_percent=client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
+            tile_addition_width=0,
+            tile_addition_height=0,
+            next_surface=next_surface,
+            shrink_percent=1,
+        )
+
+        self.set_create_button_size()
+        self.tiles_group.add(self.create_button)
+
+    def set_create_button_size(self):
+        if not self.create_button:
+            return
+
+        self.create_button.resize()
+        self.create_button.rect.bottom = self.cancel_button.rect.bottom
+        self.create_button.rect.right = self.game_session_name_text.rect.right
+
     def blit(self):
         # Refresh the object on the screen so any runtime changes will be reflected
         super().blit()
@@ -141,6 +320,14 @@ class Menu(GameWindow):
             self.settings_tile.image, self.settings_tile.rect
         )
         self.event_handler.screen.blit(self.quit_tile.image, self.quit_tile.rect)
+
+        if self.blured_tile:
+            self.event_handler.screen.blit(self.blured_tile.image, self.blured_tile.rect)
+            self.event_handler.screen.blit(self.game_session_name_box.image, self.game_session_name_box.rect)
+            self.game_session_name_text.blit()
+            self.number_players_text.blit()
+            self.event_handler.screen.blit(self.cancel_button.image, self.cancel_button.rect)
+            self.event_handler.screen.blit(self.create_button.image, self.create_button.rect)
 
     def delete(self):
         # Apparently pygame doesn't have an option to actually delete visual objects
@@ -161,9 +348,32 @@ class Menu(GameWindow):
 
         self.tiles_group.empty()
 
+    def open_game_name_popup(self):
+        self.build_blurred_background()
+        self.build_game_session_name_box()
+        self.build_game_name_text_box()
+        self.build_number_players_text_box()
+        self.build_cancel_button_tile()
+        self.build_create_button_tile()
+
+    def close_game_name_popup(self):
+        self.tiles_group.remove(self.blured_tile)
+        self.tiles_group.remove(self.game_session_name_box)
+        self.tiles_group.remove(self.game_session_name_text)
+        self.tiles_group.remove(self.number_players_text)
+        self.tiles_group.remove(self.cancel_button)
+        self.tiles_group.remove(self.create_button)
+        self.blured_tile = None
+        self.game_session_name_box = None
+        self.game_session_name_text = None
+        self.cancel_button = None
+        self.create_button = None
+
     def activate_tile(self, tile, event):
         if tile.name == "new_game" and event.button == client.LEFT_BUTTON_CLICK:
-            self.event_handler.lobby.open()
+            self.open_game_name_popup()
+        if tile.name == "cancel" and event.button == client.LEFT_BUTTON_CLICK:
+            self.close_game_name_popup()
         elif tile.name == "join_game" and event.button == client.LEFT_BUTTON_CLICK:
             self.event_handler.join_game.open()
         elif tile.name == "settings" and event.button == client.LEFT_BUTTON_CLICK:
