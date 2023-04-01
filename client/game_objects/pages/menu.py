@@ -5,6 +5,7 @@ import pygame
 
 from client.game_objects.pages.game_window import GameWindow
 from client.game_objects.tiles.tile import Tile
+from client.utils import common
 
 
 class Menu(GameWindow):
@@ -33,7 +34,7 @@ class Menu(GameWindow):
         self.set_quit_game_size()
 
     def build_join_game(self):
-        surface = pygame.image.load(f"{client.IMG_PATH}join_game.png").convert_alpha()
+        surface = common.get_image("join_game.png")
         self.join_game_tile = Tile(
             "join_game",
             surface,
@@ -54,7 +55,7 @@ class Menu(GameWindow):
         self.tiles_group.add(self.join_game_tile)
 
     def build_new_game(self):
-        surface = pygame.image.load(f"{client.IMG_PATH}new_game.png").convert_alpha()
+        surface = common.get_image("new_game.png")
         self.new_game_tile = Tile(
             "new_game",
             surface,
@@ -77,7 +78,7 @@ class Menu(GameWindow):
         self.tiles_group.add(self.new_game_tile)
 
     def build_settings(self):
-        surface = pygame.image.load(f"{client.IMG_PATH}settings.png").convert_alpha()
+        surface = common.get_image("settings.png")
         self.settings_tile = Tile(
             "settings",
             surface,
@@ -100,7 +101,7 @@ class Menu(GameWindow):
         self.tiles_group.add(self.settings_tile)
 
     def build_quit_game(self):
-        surface = pygame.image.load(f"{client.IMG_PATH}quit.png").convert_alpha()
+        surface = common.get_image("quit.png").convert_alpha()
         self.quit_tile = Tile(
             "quit_game",
             surface,
@@ -162,13 +163,10 @@ class Menu(GameWindow):
 
     def activate_tile(self, tile, event):
         if tile.name == "new_game" and event.button == client.LEFT_BUTTON_CLICK:
-            self.event_handler.change_window(self.event_handler.new_game)
+            self.event_handler.lobby.open()
         elif tile.name == "join_game" and event.button == client.LEFT_BUTTON_CLICK:
-            self.event_handler.change_window(self.event_handler.join_game)
+            self.event_handler.join_game.open()
         elif tile.name == "settings" and event.button == client.LEFT_BUTTON_CLICK:
-            self.event_handler.change_window(self.event_handler.settings)
+            self.event_handler.settings.open()
         elif tile.name == "quit_game" and event.button == client.LEFT_BUTTON_CLICK:
-            print("Closing the game")
-            return '{"type": "close_connection"}', True
-
-        return None, False
+            pygame.event.post(pygame.event.Event(pygame.QUIT))

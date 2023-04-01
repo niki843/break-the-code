@@ -16,11 +16,12 @@ from server.utils.validate import is_valid_uuid
 
 
 class GameSession:
-    def __init__(self, session_id: str, player_id: str, player_name: str, websocket):
+    def __init__(self, session_id: str, player_id: str, player_name: str, websocket, room_name):
         if not is_valid_uuid(player_id):
             raise InvalidPlayerId(player_id)
 
         self.id = session_id
+        self.room_name = room_name
         # Only the host can start the game
         self.__host = Player(player_id, name=player_name)
         # Needed for playing condition cards, maps player_id to the Player object
@@ -66,9 +67,10 @@ class GameSession:
         self.__connected_player_connections[player] = websocket
         self.__connected_players_status[player_id] = PlayerStatus.ONLINE
 
-    async def send_joined_message(self, player_id):
+    async def send_joined_message(self, player_id, player_name):
         event = {
-            "type": "info",
+            "type": "player_joined",
+            "player_name": player_name,
             "player_id": player_id,
             "message": f"Player {player_id[:7]} has joined",
         }
@@ -284,6 +286,9 @@ class GameSession:
     def get_host(self):
         return self.__host
 
+    def get_room_name(self):
+        return self.room_name
+
     def get_current_player(self):
         return copy.deepcopy(self.__connected_players[self.__current_player_at_hand_id])
 
@@ -302,6 +307,9 @@ class GameSession:
 
     def get_player_by_id(self, player_id):
         return self.__connected_players.get(player_id)
+
+    def get_player_id_name_map(self):
+        return {player_id: player.get_name() for player_id, player in self.__connected_players.items()}
 
     def player_reconnected_broadcast(self, player_id):
         event = {
@@ -358,6 +366,11 @@ class GameSession:
             return False
 
         return True
+
+    def remove_player(self, player_id):
+        player = self.__connected_players.pop(player_id)
+        self.__connected_player_connections.pop(player)
+        self.__connected_players_status.pop(player_id)
 
     def have_all_players_disconnected(self):
         return not any(

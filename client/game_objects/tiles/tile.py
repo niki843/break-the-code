@@ -40,6 +40,8 @@ class Tile(sprite.Sprite):
 
         self.original_image = surface
         self.image = surface
+        self.rect = None
+        self.priority = 0
 
         self.screen = screen
         self.size_percent = size_percent

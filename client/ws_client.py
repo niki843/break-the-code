@@ -3,10 +3,6 @@ import json
 import websockets
 import pygame
 
-
-# Initial connection to server throw exception if an error occurs
-from websockets.exceptions import ConnectionClosed
-
 IPADDRESS = "localhost"
 PORT = "8765"
 
@@ -31,8 +27,8 @@ class WebsocketClient:
             raise Exception("No active connection!")
         async for message in self.websocket:
             print(f"[Received]: {message}")
-            message_type = json.loads(message).get("type")
-            if message_type == "connection_closed":
+            message = json.loads(message)
+            if message.get("type") == "connection_closed":
                 await self.websocket.close()
                 return
             pygame.fastevent.post(pygame.event.Event(EVENT_TYPE, message=message))
@@ -41,8 +37,3 @@ class WebsocketClient:
         print("SENDING MESSAGE")
         await self.websocket.send(message)
         print("Message sent")
-
-
-# if __name__ == "__main__":
-#     ws_client = WebsocketClient()
-#     asyncio.run(ws_client.connect_to_server())

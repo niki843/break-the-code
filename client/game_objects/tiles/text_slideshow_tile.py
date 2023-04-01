@@ -67,12 +67,9 @@ class TextSlideshowTile(Tile):
         self.left_arrow = None
 
         self.font = None
+        self.load_font()
 
         self.horizontal = horizontal
-
-        self.resize()
-
-        self.load_text()
 
         self.load_arrows(left_arrow_name, right_arrow_name)
 
@@ -90,6 +87,14 @@ class TextSlideshowTile(Tile):
     def update_text_position(self):
         self.current_text_rect.centerx = self.rect.centerx
         self.current_text_rect.centery = self.rect.centery
+
+    def load_font(self):
+        self.font = common.load_font(
+            self.image.get_width()
+            * common.get_percentage_multiplier_from_percentage(
+                client.TEXT_SIZE_PERCENTAGE_FROM_BOX
+            )
+        )
 
     def load_text(self):
         # Starting screen size will be the surfaces list mid element
@@ -160,10 +165,4 @@ class TextSlideshowTile(Tile):
     def resize(self):
         super().resize()
         if hasattr(self, "font"):
-            self.font = common.load_font(
-                self.image.get_width()
-                * common.get_percentage_multiplier_from_percentage(
-                    client.TEXT_SIZE_PERCENTAGE_FROM_BOX
-                )
-            )
             self.load_text()

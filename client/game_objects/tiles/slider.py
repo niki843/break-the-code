@@ -1,3 +1,5 @@
+from typing import Any
+
 import pygame
 
 from client.game_objects.tiles.tile import Tile
@@ -65,13 +67,18 @@ class Slider(Tile):
 
         self.actual_percentage = []
         self.pivot_values = []
-        self.setup_percents(delimiters_count)
+        self.delimiters = delimiters_count
+        self.setup_percents()
         self.horizontal = horizontal
 
         self.handle_position = handle_position
 
-        self.slider_percentage = 0
-        self.delimiters = delimiters_count
+        self.slider_percentage = self.actual_percentage[self.handle_position] if self.delimiters >= 2 else 0
+
+    def update(self, *args: Any, **kwargs: Any) -> None:
+        self.delimiters = kwargs.get("delimiters") or self.delimiters
+        self.setup_percents()
+        self.update_slider_handle_by_position()
 
     def move_slider(self, event):
         self.move_slider_horizontally(
@@ -123,6 +130,9 @@ class Slider(Tile):
         self.update_slider_handle_by_position()
 
     def update_slider_handle_by_position(self):
+        if self.delimiters <= 1:
+            return
+
         self.slider_percentage = self.actual_percentage[self.handle_position]
         slider_size = (
             self.image.get_width() if self.horizontal else self.image.get_height()
@@ -138,20 +148,43 @@ class Slider(Tile):
             )
             return
 
-        self.slider_handle.rect.centery = starting_position + (
-            slider_size
-            * common.get_percentage_multiplier_from_percentage(self.slider_percentage)
-        )
+        self.slider_handle.rect.centerx = self.rect.centerx
+        if self.slider_percentage == 0:
+            self.slider_handle.rect.top = starting_position + (
+                slider_size
+                * common.get_percentage_multiplier_from_percentage(
+                    self.slider_percentage
+                )
+            )
+        elif self.slider_percentage == 100:
+            self.slider_handle.rect.bottom = starting_position + (
+                slider_size
+                * common.get_percentage_multiplier_from_percentage(
+                    self.slider_percentage
+                )
+            )
+        else:
+            self.slider_handle.rect.centery = starting_position + (
+                slider_size
+                * common.get_percentage_multiplier_from_percentage(
+                    self.slider_percentage
+                )
+            )
 
-    def setup_percents(self, delimiters_count):
+    def setup_percents(self):
+        if self.delimiters <= 1:
+            return
+        self.actual_percentage = []
+        self.pivot_values = []
+
         # -1 to compensate for the 0 value that will be first
-        reference_value = 100 / (delimiters_count - 1)
+        reference_value = 100 / (self.delimiters - 1)
         self.actual_percentage.append(0)
         self.pivot_values.append(-(reference_value / 2))
         # points of interests first element will be half of the reference value
         # this will allow the slider handle to move to the lower value if it's under
         # half of the slider's separation area and to the upper value if it's over
-        for i in range(1, delimiters_count):
+        for i in range(1, self.delimiters):
             self.actual_percentage.append(
                 self.actual_percentage[i - 1] + reference_value
             )
@@ -161,6 +194,11 @@ class Slider(Tile):
         self.actual_percentage[len(self.actual_percentage) - 1] = 100
 
     def set_slider_handle_position(self):
+        if self.delimiters <= 1:
+            self.slider_handle.rect.top = self.rect.top
+            self.slider_handle.rect.left = self.rect.left
+            return
+
         if self.horizontal:
             self.slider_handle.rect.centery = self.rect.centery
             self.slider_handle.rect.centerx = self.rect.left + (
@@ -168,9 +206,20 @@ class Slider(Tile):
             )
         else:
             self.slider_handle.rect.centerx = self.rect.centerx
-            self.slider_handle.rect.centery = self.rect.top + (
-                (self.image.get_height() / (self.delimiters - 1)) * self.handle_position
-            )
+            if self.handle_position == len(self.actual_percentage) - 1:
+                self.slider_handle.rect.bottom = self.rect.bottom
+                return
+            elif self.slider_percentage == 0:
+                self.slider_handle.rect.top = self.rect.top + (
+                    (self.image.get_height() / (self.delimiters - 1)) * self.handle_position
+                )
+            else:
+                self.slider_handle.rect.centery = self.rect.top + (
+                        (self.image.get_width() / (self.delimiters - 1)) * self.handle_position
+                )
+
+    def get_max_handle_position(self):
+        return len(self.actual_percentage) - 1
 
     def resize(self):
         super().resize()
@@ -180,3 +229,10 @@ class Slider(Tile):
     def get_index(self):
         """Returns the index of the percentage that the tile is currently on"""
         return self.handle_position
+
+    def reset(self):
+        self.handle_position = 0
+        self.actual_percentage = []
+        self.pivot_values = []
+        self.setup_percents()
+        self.slider_percentage = self.actual_percentage[self.handle_position] if self.delimiters >= 2 else 0
