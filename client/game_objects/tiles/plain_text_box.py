@@ -52,6 +52,10 @@ class PlainTextTile(Tile):
         self.text_rect.centery = self.rect.centery
         self.text_rect.left = self.rect.left
 
+    def blit(self):
+        self.screen.blit(self.image, self.rect)
+        self.screen.blit(self.text_surface, self.text_rect)
+
     def resize(self):
         super().resize()
         if hasattr(self, "font"):
