@@ -57,9 +57,11 @@ class EventHandler(Singleton):
                     text_surface.mark_clicked()
                     return
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    self.handle_mouse_click(event)
                     if text_surface.active:
                         text_surface.mark_clicked()
+                    # !!!! Recursion !!!
+                    # Doesn't break anything though tested it with about 50 levels
+                    self.handle_mouse_click(event)
                     return
 
                 waiting_text_input = self.check_common_events(event, keys)

@@ -24,6 +24,7 @@ class Menu(GameWindow):
         self.number_players_text = None
         self.cancel_button = None
         self.create_button = None
+        self.private_game_toggle_button = None
 
         self.build()
 
@@ -47,6 +48,7 @@ class Menu(GameWindow):
         self.set_game_name_text_size()
         self.set_cancel_button_size()
         self.set_create_button_size()
+        self.set_toggle_size()
 
     def build_join_game(self):
         surface = common.get_image("join_game.png")
@@ -235,6 +237,7 @@ class Menu(GameWindow):
             next_surface,
             "4",
             text_size_percentage_from_screen_height=5,
+            max_char=1
         )
 
         self.set_number_players_text_size()
@@ -307,6 +310,35 @@ class Menu(GameWindow):
         self.create_button.rect.bottom = self.cancel_button.rect.bottom
         self.create_button.rect.right = self.game_session_name_text.rect.right
 
+    def build_private_game_toggle(self):
+        surface = common.get_image("toggle_on.png")
+        next_surface = common.get_image("toggle_off.png")
+
+        self.private_game_toggle_button = ToggleTile(
+            name="toggle_button_on",
+            next_name="toggle_button_off",
+            current_surface=surface,
+            screen=self.event_handler.screen,
+            size_percent=client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
+            tile_addition_width=0,
+            tile_addition_height=0,
+            next_surface=next_surface,
+            shrink_percent=0,
+        )
+
+        self.set_toggle_size()
+        self.tiles_group.add(self.private_game_toggle_button)
+
+    def set_toggle_size(self):
+        if not self.private_game_toggle_button:
+            return
+
+        self.private_game_toggle_button.resize()
+        self.private_game_toggle_button.rect.right = self.game_session_name_text.rect.right
+        self.private_game_toggle_button.rect.top = self.number_players_text.rect.bottom + (
+            self.event_handler.screen.get_height() * 0.04
+        )
+
     def blit(self):
         # Refresh the object on the screen so any runtime changes will be reflected
         super().blit()
@@ -328,6 +360,7 @@ class Menu(GameWindow):
             self.number_players_text.blit()
             self.event_handler.screen.blit(self.cancel_button.image, self.cancel_button.rect)
             self.event_handler.screen.blit(self.create_button.image, self.create_button.rect)
+            self.event_handler.screen.blit(self.private_game_toggle_button.image, self.private_game_toggle_button.rect)
 
     def delete(self):
         # Apparently pygame doesn't have an option to actually delete visual objects
@@ -355,6 +388,7 @@ class Menu(GameWindow):
         self.build_number_players_text_box()
         self.build_cancel_button_tile()
         self.build_create_button_tile()
+        self.build_private_game_toggle()
 
     def close_game_name_popup(self):
         self.tiles_group.remove(self.blured_tile)
@@ -363,16 +397,18 @@ class Menu(GameWindow):
         self.tiles_group.remove(self.number_players_text)
         self.tiles_group.remove(self.cancel_button)
         self.tiles_group.remove(self.create_button)
+        self.tiles_group.remove(self.private_game_toggle_button)
         self.blured_tile = None
         self.game_session_name_box = None
         self.game_session_name_text = None
         self.cancel_button = None
         self.create_button = None
+        self.private_game_toggle_button = None
 
     def activate_tile(self, tile, event):
         if tile.name == "new_game" and event.button == client.LEFT_BUTTON_CLICK:
             self.open_game_name_popup()
-        if tile.name == "cancel" and event.button == client.LEFT_BUTTON_CLICK:
+        elif tile.name == "cancel" and event.button == client.LEFT_BUTTON_CLICK:
             self.close_game_name_popup()
         elif tile.name == "join_game" and event.button == client.LEFT_BUTTON_CLICK:
             self.event_handler.join_game.open()
@@ -380,3 +416,9 @@ class Menu(GameWindow):
             self.event_handler.settings.open()
         elif tile.name == "quit_game" and event.button == client.LEFT_BUTTON_CLICK:
             pygame.event.post(pygame.event.Event(pygame.QUIT))
+        elif tile.name == "game_name_input" and event.button == client.LEFT_BUTTON_CLICK:
+            self.game_session_name_text.mark_clicked()
+            self.event_handler.wait_text_input(self.game_session_name_text)
+        elif tile.name == "players_count_input" and event.button == client.LEFT_BUTTON_CLICK:
+            self.number_players_text.mark_clicked()
+            self.event_handler.wait_text_input(self.number_players_text)
