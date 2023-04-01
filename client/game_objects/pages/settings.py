@@ -327,12 +327,8 @@ class Settings(GameWindow):
         self.event_handler.screen.blit(
             self.username_label.image, self.username_label.rect
         )
-        self.event_handler.screen.blit(
-            self.username_input_box.image, self.username_input_box.rect
-        )
-        self.event_handler.screen.blit(
-            self.username_input_box.text_surface, self.username_input_box.text_rect
-        )
+
+        self.username_input_box.blit()
 
         self.event_handler.screen.blit(self.apply_button.image, self.apply_button.rect)
 

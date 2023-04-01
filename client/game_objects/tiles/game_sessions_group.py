@@ -71,7 +71,7 @@ class GameSessionsGroup(Tile):
 
         self.slider = Slider(
             "game_sessions_slider",
-            common.get_image("slider_vertical.png"),
+            common.get_image("scroll_bar.png"),
             screen,
             0.9,
             3,
