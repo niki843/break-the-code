@@ -148,7 +148,6 @@ class Slider(Tile):
             )
             return
 
-
         self.slider_handle.rect.centerx = self.rect.centerx
         if self.slider_percentage == 0:
             self.slider_handle.rect.top = starting_position + (
