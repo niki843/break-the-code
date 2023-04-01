@@ -56,7 +56,7 @@ class PlayerInfoGroup:
             22,
             0,
             0,
-            player_name,
+            player_name or "",
             40,
             15,
         )

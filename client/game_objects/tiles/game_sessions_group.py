@@ -112,7 +112,9 @@ class GameSessionsGroup(Tile):
             self.shown_game_sessions.append(game_session)
             self.center_last_element()
 
-        self.slider.update(delimiters=len(self.game_sessions) - self.max_game_sessions_to_display + 1)
+        # Only modify the scroll when there are more than shown game sessions
+        if len(self.game_sessions) > self.max_game_sessions_to_display:
+            self.slider.update(delimiters=len(self.game_sessions) - self.max_game_sessions_to_display + 1)
 
         return game_session
 
@@ -122,7 +124,8 @@ class GameSessionsGroup(Tile):
         del self.game_sessions_by_id[game_session_id]
         self.start_line -= 1 if self.start_line > 0 else 0
         self.center_elements()
-        self.slider.handle_position -= 1
+        if self.slider.slider_percentage == 100:
+            self.slider.handle_position -= 1
         self.slider.update(delimiters=len(self.game_sessions) - self.max_game_sessions_to_display + 1)
 
     def center_elements(self):
@@ -214,10 +217,12 @@ class GameSessionsGroup(Tile):
                 tile.text_box.text_rect,
             )
 
-        self.screen.blit(self.slider.image, self.slider.rect)
-        self.screen.blit(
-            self.slider.slider_handle.image, self.slider.slider_handle.rect
-        )
+        # Only redner slider when there are more than shown game sessions
+        if len(self.game_sessions) > self.max_game_sessions_to_display:
+            self.screen.blit(self.slider.image, self.slider.rect)
+            self.screen.blit(
+                self.slider.slider_handle.image, self.slider.slider_handle.rect
+            )
 
     def resize(self):
         super().resize()
