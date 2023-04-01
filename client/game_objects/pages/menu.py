@@ -4,6 +4,7 @@ import client
 import pygame
 
 from client.game_objects.pages.game_window import GameWindow
+from client.game_objects.tiles.dropdown import Dropdown
 from client.game_objects.tiles.input_box_tile import InputBoxTile
 from client.game_objects.tiles.tile import Tile
 from client.game_objects.tiles.toggle_tile import ToggleTile
@@ -233,36 +234,35 @@ class Menu(GameWindow):
         self.game_session_name_text.center()
 
     def build_number_players_text_box(self):
-        surface = common.get_image("non_selected_nickname.png")
-        next_surface = common.get_image("selected_nickname.png")
+        surface = common.get_image("player_number_menu.png")
+        name_text_map = {
+            "three_players": "3"
+        }
 
-        self.number_players_text = InputBoxTile(
-            "players_count_input",
-            "players_count_input",
-            surface,
-            self.event_handler.screen,
-            43,
-            0,
-            0,
-            next_surface,
-            "4",
-            text_size_percentage_from_screen_height=5,
-            max_char=1,
+        self.number_players_text = Dropdown(
+            first_tile_name="four_players",
+            first_tile_text="4",
+            surface=surface,
+            dropdown_name_text_map=name_text_map,
+            screen=self.event_handler.screen,
+            size_percent=10,
+            tile_addition_width=0,
+            tile_addition_height=0,
         )
 
         self.set_number_players_text_size()
-        self.tiles_group.add(self.number_players_text)
+        self.tiles_group.add(self.number_players_text.first_tile)
 
     def set_number_players_text_size(self):
         if not self.number_players_text:
             return
 
         self.number_players_text.resize()
-        self.number_players_text.rect.left = self.game_session_name_text.rect.left
-        self.number_players_text.rect.top = self.game_session_name_text.rect.bottom + (
+        self.number_players_text.first_tile.rect.right = self.game_session_name_text.rect.right
+        self.number_players_text.first_tile.rect.top = self.game_session_name_text.rect.bottom + (
             self.event_handler.screen.get_height() * 0.04
         )
-        self.number_players_text.center()
+        self.number_players_text.center_dropdown()
 
     def build_cancel_button_tile(self):
         surface = common.get_image("cancel_button.png")
@@ -329,7 +329,7 @@ class Menu(GameWindow):
             next_name="toggle_button_on",
             current_surface=surface,
             screen=self.event_handler.screen,
-            size_percent=client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
+            size_percent=8,
             tile_addition_width=0,
             tile_addition_height=0,
             next_surface=next_surface,
@@ -348,7 +348,7 @@ class Menu(GameWindow):
             self.game_session_name_text.rect.right
         )
         self.private_game_toggle_button.rect.top = (
-            self.number_players_text.rect.bottom
+            self.number_players_text.first_tile.rect.bottom
             + (self.event_handler.screen.get_height() * 0.04)
         )
 
