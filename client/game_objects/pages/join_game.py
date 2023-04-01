@@ -337,9 +337,7 @@ class JoinGame(GameWindow):
             and event.button == client.SCROLL_UP
         ):
             self.game_session_group.slider.previous_handle_position()
-            self.tiles_group.remove(self.game_session_group.shown_game_sessions[-1])
             self.game_session_group.scroll_up()
-            self.tiles_group.add(self.game_session_group.shown_game_sessions[0])
         if (
             tile.name
             in (
@@ -352,7 +350,6 @@ class JoinGame(GameWindow):
             and event.button == client.SCROLL_DOWN
         ):
             self.game_session_group.slider.next_handle_position()
-            self.tiles_group.remove(self.game_session_group.shown_game_sessions[0])
             self.game_session_group.scroll_down()
             self.tiles_group.add(self.game_session_group.shown_game_sessions[-1])
 
