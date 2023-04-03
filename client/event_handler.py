@@ -12,15 +12,12 @@ from client.utils.singelton import Singleton
 
 
 class EventHandler(Singleton):
-    def __init__(self, player_id, username, screen, server_communication_manager):
+    def __init__(self, screen, server_communication_manager):
         self.game_windows = []
         self.screen = screen
         self.screen_rect = screen.get_rect()
         self.server_communication_manager = server_communication_manager
         self.current_window = Menu(self)
-
-        self.player_id = player_id
-        self.player_username = username
 
         self.menu = self.current_window
         self.settings = Settings(self)

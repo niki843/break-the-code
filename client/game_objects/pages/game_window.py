@@ -86,7 +86,7 @@ class GameWindow:
             self.background_image.image, self.background_image.rect
         )
 
-    def open(self):
+    def open(self, **kwargs):
         self.event_handler.change_window(self)
 
     def close(self):

@@ -34,7 +34,7 @@ class Settings(GameWindow):
 
         self.username_label = None
         self.username_input_box = None
-        self.current_username = self.event_handler.player_username
+        self.current_username = self.event_handler.server_communication_manager.player_username
 
         self.apply_button = None
 

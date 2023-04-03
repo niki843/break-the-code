@@ -34,10 +34,7 @@ def start_game():
     )
 
     event_handler = EventHandler(
-        player_id=player_id,
-        username=username,
-        screen=screen,
-        server_communication_manager=server_communication_manager,
+        screen=screen, server_communication_manager=server_communication_manager,
     )
 
     while client.GAME_RUNNING:
