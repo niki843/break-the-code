@@ -181,6 +181,8 @@ class EventHandler(Singleton):
                 self.current_window.add_player(
                     message.get("player_id"), message.get("player_name")
                 )
+        if message_type == "game_created":
+            self.current_window.update_game_session_id(message.get("game_session_id"))
 
     def open_full_screen(self):
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)

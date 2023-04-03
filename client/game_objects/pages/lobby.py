@@ -13,8 +13,8 @@ class Lobby(GameWindow):
 
         self.game_session_id = None
         self.game_session_name = None
-        self.host_name = self.event_handler.server_communication_manager.player_username
-        self.host_id = self.event_handler.server_communication_manager.player_id
+        self.host_name = None
+        self.host_id = None
         self.players_id_username_map = []
 
         self.build()
@@ -45,9 +45,18 @@ class Lobby(GameWindow):
             self.event_handler.server_communication_manager.send_create_game_message(
                 self.game_session_name
             )
+
+            self.host_id = self.event_handler.server_communication_manager.player_id
+            self.host_name = self.event_handler.server_communication_manager.player_username
+
+            self.players_id_username_map[self.host_id] = self.host_name
         else:
             self.players_id_username_map = kwargs.get("player_id_usernames_map")
             self.game_session_id = kwargs.get("game_session_id")
+            self.game_session_name = kwargs.get("game_session_name")
+
+            self.host_id = list(self.players_id_username_map.keys())[0]
+            self.host_name = list(self.players_id_username_map.values())[0]
 
             if not self.game_session_id:
                 raise GameSessionIdNotProvidedException()
@@ -62,6 +71,9 @@ class Lobby(GameWindow):
 
     def add_player(self, player_id, player_name):
         self.players_id_username_map[player_id] = player_name
+
+    def update_game_session_id(self, game_session_id):
+        self.game_session_id = game_session_id
 
     def close(self):
         self.event_handler.server_communication_manager.send_exit_game_message()

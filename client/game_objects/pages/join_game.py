@@ -330,6 +330,7 @@ class JoinGame(GameWindow):
                 self.event_handler.lobby.open(
                     game_session_id=clicked_game_session_tile.game_session_id,
                     player_id_usernames_map=clicked_game_session_tile.player_id_usernames_map,
+                    game_session_name=clicked_game_session_tile.game_session_name,
                 )
 
         if (

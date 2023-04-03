@@ -62,7 +62,7 @@ async def create_game(websocket, player_id, player_name, room_name):
 
     await send_message(
         websocket,
-        message_type="success",
+        message_type="game_created",
         message="Successfully created a new game session.",
         game_session_id=started_game_session_id,
     )
