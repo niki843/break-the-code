@@ -344,12 +344,6 @@ async def handler(websocket):
     async for message in websocket:
         event_msg = json.loads(message)
         event_msg_type = event_msg.get("type")
-        if (
-            event_msg_type == "join_game"
-            or event_msg_type == "new_game"
-            or event_msg_type == "close_connection"
-        ):
-            break
 
         if event_msg_type == "get_current_games":
             game_sessions = {}
