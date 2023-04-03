@@ -541,7 +541,6 @@ class Menu(GameWindow):
             self.create_button.next_value()
             self.event_handler.handle_save_button(self.create_button)
             self.game_session_name = self.game_session_name_text.text
-            print(f"[STARTING GAME] {self.game_session_name}")
             self.close_game_name_popup()
             self.event_handler.lobby.open()
         elif tile.name == "players_count":
