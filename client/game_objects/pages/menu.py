@@ -28,6 +28,7 @@ class Menu(GameWindow):
         self.create_button = None
         self.private_game_toggle_button = None
         self.number_players_label = None
+        self.private_game_label = None
 
         self.is_private_game = False
         self.game_session_name = ""
@@ -58,6 +59,7 @@ class Menu(GameWindow):
         self.set_number_players_label_size()
         self.set_number_players_dropdown_size()
         self.set_toggle_size()
+        self.set_private_game_label_size()
 
     def build_join_game(self):
         surface = common.get_image("join_game.png")
@@ -296,6 +298,33 @@ class Menu(GameWindow):
         )
         self.number_players_dropdown.center_dropdown()
 
+    def build_private_game_label(self):
+        transparent_image = common.generate_transparent_image(self.game_session_name_text.image.get_width() - 100, self.game_session_name_text.image.get_height())
+        self.private_game_label = PlainTextTile(
+            "private_game",
+            transparent_image,
+            self.event_handler.screen,
+            40,
+            0,
+            0,
+            "Private game:",
+            45,
+            20
+        )
+
+        self.set_private_game_label_size()
+
+    def set_private_game_label_size(self):
+        if not self.private_game_label:
+            return
+
+        self.private_game_label.resize()
+        self.private_game_label.rect.left = self.number_players_label.rect.left
+        self.private_game_label.rect.top = self.number_players_label.rect.bottom + (
+            self.event_handler.screen.get_height() * 0.03
+        )
+        self.private_game_label.center()
+
     def build_private_game_toggle(self):
         surface = common.get_image("toggle_off.png")
         next_surface = common.get_image("toggle_on.png")
@@ -412,12 +441,14 @@ class Menu(GameWindow):
             self.event_handler.screen.blit(
                 self.create_button.image, self.create_button.rect
             )
+            self.number_players_label.blit()
+            self.number_players_dropdown.blit()
+
+            self.private_game_label.blit()
             self.event_handler.screen.blit(
                 self.private_game_toggle_button.image,
                 self.private_game_toggle_button.rect,
             )
-            self.number_players_label.blit()
-            self.number_players_dropdown.blit()
 
     def delete(self):
         # Apparently pygame doesn't have an option to actually delete visual objects
@@ -444,9 +475,10 @@ class Menu(GameWindow):
         self.build_game_name_text_box()
         self.build_number_players_label()
         self.build_number_players_dropdown_box()
+        self.build_private_game_label()
+        self.build_private_game_toggle()
         self.build_cancel_button_tile()
         self.build_create_button_tile()
-        self.build_private_game_toggle()
 
     def close_game_name_popup(self):
         self.tiles_group.remove(self.blured_tile)
@@ -465,7 +497,9 @@ class Menu(GameWindow):
         self.private_game_toggle_button = None
         self.number_players_label = None
         self.number_players_dropdown = None
+        self.private_game_label = None
         self.is_private_game = False
+        self.players_count = "4"
 
     def activate_tile(self, tile, event):
         if tile.name == "new_game" and event.button == client.LEFT_BUTTON_CLICK:
