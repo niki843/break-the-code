@@ -29,7 +29,7 @@ class Menu(GameWindow):
 
         self.is_private_game = False
         self.game_session_name = ""
-        self.players_count_tile = None
+        self.players_count = "4"
 
         self.build()
 
@@ -471,4 +471,17 @@ class Menu(GameWindow):
             self.close_game_name_popup()
             self.event_handler.lobby.open()
         elif tile.name == "players_count":
+
+            for surface in self.number_players_dropdown.dropdown_surfaces:
+                self.tiles_group.add(surface)
+
+            if tile.text != self.number_players_dropdown.first_tile.text:
+                self.number_players_dropdown.mark_clicked(tile)
+                self.players_count = int(self.number_players_dropdown.first_tile.text)
+                return
+
             self.number_players_dropdown.drop_elements()
+
+            if not self.number_players_dropdown.active:
+                for surface in self.number_players_dropdown.dropdown_surfaces:
+                    self.tiles_group.remove(surface)

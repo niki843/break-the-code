@@ -26,6 +26,7 @@ class Dropdown:
             tile_addition_height,
             first_tile_text,
         )
+        self.first_tile.priority = 1
 
         self.dropdown_arrow = Tile(
             "dropdown_arrow",
@@ -41,17 +42,17 @@ class Dropdown:
         self.screen = screen
 
         for name, text in dropdown_name_text_map.items():
-            self.dropdown_surfaces.append(
-                self.create_dropdown_tile(
-                    name,
-                    screen,
-                    surface,
-                    size_percent,
-                    tile_addition_width,
-                    tile_addition_height,
-                    text,
-                )
+            tile = self.create_dropdown_tile(
+                name,
+                screen,
+                surface,
+                size_percent,
+                tile_addition_width,
+                tile_addition_height,
+                text,
             )
+            tile.priority = 1
+            self.dropdown_surfaces.append(tile)
 
     def create_dropdown_tile(
         self,
@@ -97,9 +98,12 @@ class Dropdown:
         self.active = not self.active
 
     def mark_clicked(self, clicked_surface):
+        clicked_surface.rect.centerx = self.first_tile.rect.centerx
+        clicked_surface.rect.centery = self.first_tile.rect.centery
         self.dropdown_surfaces.insert(0, self.first_tile)
         self.dropdown_surfaces.pop(self.dropdown_surfaces.index(clicked_surface))
         self.first_tile = clicked_surface
+        self.center_dropdown()
 
     def blit(self):
         self.first_tile.blit()
