@@ -336,9 +336,11 @@ class JoinGame(GameWindow):
                 if (
                     self.clicked_game_session_tile
                     not in self.game_session_group.game_sessions
-                    and self.clicked_game_session_tile.active_players < 4
                 ):
                     self.reset_selected_game_session()
+                    return
+
+                if self.clicked_game_session_tile.active_players > 4:
                     return
 
                 # calling close before anything else to stop the automated server call for refreshing game sessions
