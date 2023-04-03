@@ -6,6 +6,7 @@ import pygame
 from client.game_objects.pages.game_window import GameWindow
 from client.game_objects.tiles.dropdown import Dropdown
 from client.game_objects.tiles.input_box_tile import InputBoxTile
+from client.game_objects.tiles.plain_text_box import PlainTextTile
 from client.game_objects.tiles.tile import Tile
 from client.game_objects.tiles.toggle_tile import ToggleTile
 from client.utils import common
@@ -26,6 +27,7 @@ class Menu(GameWindow):
         self.cancel_button = None
         self.create_button = None
         self.private_game_toggle_button = None
+        self.number_players_label = None
 
         self.is_private_game = False
         self.game_session_name = ""
@@ -53,6 +55,7 @@ class Menu(GameWindow):
         self.set_game_name_text_size()
         self.set_cancel_button_size()
         self.set_create_button_size()
+        self.set_number_players_label_size()
         self.set_number_players_dropdown_size()
         self.set_toggle_size()
 
@@ -234,6 +237,33 @@ class Menu(GameWindow):
         )
         self.game_session_name_text.center()
 
+    def build_number_players_label(self):
+        transparent_image = common.generate_transparent_image(self.game_session_name_text.image.get_width() - 100, self.game_session_name_text.image.get_height())
+        self.number_players_label = PlainTextTile(
+            "number_of_players",
+            transparent_image,
+            self.event_handler.screen,
+            40,
+            0,
+            0,
+            "Number of players:",
+            45,
+            20
+        )
+
+        self.set_number_players_label_size()
+
+    def set_number_players_label_size(self):
+        if not self.number_players_label:
+            return
+
+        self.number_players_label.resize()
+        self.number_players_label.rect.left = self.game_session_name_text.rect.left
+        self.number_players_label.rect.top = self.game_session_name_text.rect.bottom + (
+            self.event_handler.screen.get_height() * 0.03
+        )
+        self.number_players_label.center()
+
     def build_number_players_dropdown_box(self):
         surface = common.get_image("player_number_menu.png")
         name_text_map = {
@@ -265,6 +295,38 @@ class Menu(GameWindow):
             self.event_handler.screen.get_height() * 0.04
         )
         self.number_players_dropdown.center_dropdown()
+
+    def build_private_game_toggle(self):
+        surface = common.get_image("toggle_off.png")
+        next_surface = common.get_image("toggle_on.png")
+
+        self.private_game_toggle_button = ToggleTile(
+            name="toggle_button_off",
+            next_name="toggle_button_on",
+            current_surface=surface,
+            screen=self.event_handler.screen,
+            size_percent=8,
+            tile_addition_width=0,
+            tile_addition_height=0,
+            next_surface=next_surface,
+            shrink_percent=0,
+        )
+
+        self.set_toggle_size()
+        self.tiles_group.add(self.private_game_toggle_button)
+
+    def set_toggle_size(self):
+        if not self.private_game_toggle_button:
+            return
+
+        self.private_game_toggle_button.resize()
+        self.private_game_toggle_button.rect.right = (
+            self.game_session_name_text.rect.right
+        )
+        self.private_game_toggle_button.rect.top = (
+            self.number_players_dropdown.first_tile.rect.bottom
+            + (self.event_handler.screen.get_height() * 0.04)
+        )
 
     def build_cancel_button_tile(self):
         surface = common.get_image("cancel_button.png")
@@ -322,38 +384,6 @@ class Menu(GameWindow):
         self.create_button.rect.bottom = self.cancel_button.rect.bottom
         self.create_button.rect.right = self.game_session_name_text.rect.right
 
-    def build_private_game_toggle(self):
-        surface = common.get_image("toggle_off.png")
-        next_surface = common.get_image("toggle_on.png")
-
-        self.private_game_toggle_button = ToggleTile(
-            name="toggle_button_off",
-            next_name="toggle_button_on",
-            current_surface=surface,
-            screen=self.event_handler.screen,
-            size_percent=8,
-            tile_addition_width=0,
-            tile_addition_height=0,
-            next_surface=next_surface,
-            shrink_percent=0,
-        )
-
-        self.set_toggle_size()
-        self.tiles_group.add(self.private_game_toggle_button)
-
-    def set_toggle_size(self):
-        if not self.private_game_toggle_button:
-            return
-
-        self.private_game_toggle_button.resize()
-        self.private_game_toggle_button.rect.right = (
-            self.game_session_name_text.rect.right
-        )
-        self.private_game_toggle_button.rect.top = (
-            self.number_players_dropdown.first_tile.rect.bottom
-            + (self.event_handler.screen.get_height() * 0.04)
-        )
-
     def blit(self):
         # Refresh the object on the screen so any runtime changes will be reflected
         super().blit()
@@ -386,6 +416,7 @@ class Menu(GameWindow):
                 self.private_game_toggle_button.image,
                 self.private_game_toggle_button.rect,
             )
+            self.number_players_label.blit()
             self.number_players_dropdown.blit()
 
     def delete(self):
@@ -411,6 +442,7 @@ class Menu(GameWindow):
         self.build_blurred_background()
         self.build_game_session_name_box()
         self.build_game_name_text_box()
+        self.build_number_players_label()
         self.build_number_players_dropdown_box()
         self.build_cancel_button_tile()
         self.build_create_button_tile()
@@ -420,6 +452,7 @@ class Menu(GameWindow):
         self.tiles_group.remove(self.blured_tile)
         self.tiles_group.remove(self.game_session_name_box)
         self.tiles_group.remove(self.game_session_name_text)
+        self.tiles_group.remove(self.number_players_label)
         self.tiles_group.remove(self.number_players_dropdown)
         self.tiles_group.remove(self.cancel_button)
         self.tiles_group.remove(self.create_button)
@@ -430,6 +463,7 @@ class Menu(GameWindow):
         self.cancel_button = None
         self.create_button = None
         self.private_game_toggle_button = None
+        self.number_players_label = None
         self.number_players_dropdown = None
         self.is_private_game = False
 

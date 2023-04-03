@@ -54,3 +54,16 @@ def get_image(image_name):
             f"{client.IMG_PATH}{image_name}"
         ).convert_alpha()
     return client.IMAGE_CACHE[image_name]
+
+
+def generate_transparent_image(width, height):
+    transparent_image = pygame.Surface(
+        [
+            width,
+            height,
+        ],
+        pygame.SRCALPHA,
+        32,
+    )
+    transparent_image = transparent_image.convert_alpha()
+    return transparent_image

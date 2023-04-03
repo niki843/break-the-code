@@ -26,16 +26,7 @@ class GameSessionsGroup(Tile):
         first_element_top_location,
         slider_position_right,
     ):
-        transparent_background = pygame.Surface(
-            [
-                1700,
-                1300,
-            ],
-            pygame.SRCALPHA,
-            32,
-        )
-        transparent_background = transparent_background.convert_alpha()
-        # transparent_background.fill((0, 0, 1))
+        transparent_background = common.generate_transparent_image(1700, 1300)
 
         super().__init__(
             group_name,
