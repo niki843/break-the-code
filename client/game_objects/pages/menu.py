@@ -391,8 +391,8 @@ class Menu(GameWindow):
         next_surface = common.get_image("create_game_pressed.png")
 
         self.create_button = ToggleTile(
-            name="apply_button_on",
-            next_name="apply_button_off",
+            name="apply_button",
+            next_name="apply_button",
             current_surface=surface,
             screen=self.event_handler.screen,
             size_percent=client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
@@ -517,7 +517,11 @@ class Menu(GameWindow):
                 self.game_session_name_text.new_line()
             self.game_session_name_text.mark_clicked()
             self.event_handler.wait_text_input(self.game_session_name_text)
-            self.game_session_name = self.game_session_name_text.text
+
+            # so because we have a recursion in event_handler.handle_mouse_click and event_handle.wait_text_input
+            # we need to check if the button that was clicked was cancel or apply if it was we don't need to set
+            # the game_session_name
+            self.game_session_name = self.game_session_name_text.text if self.game_session_name_text else None
         elif (
             tile.name == "toggle_button_on" and event.button == client.LEFT_BUTTON_CLICK
         ):
@@ -533,9 +537,11 @@ class Menu(GameWindow):
             self.cancel_button.next_value()
             self.event_handler.handle_save_button(self.cancel_button)
             self.close_game_name_popup()
-        elif tile.name == "create_button" and event.button == client.LEFT_BUTTON_CLICK:
+        elif tile.name == "apply_button" and event.button == client.LEFT_BUTTON_CLICK:
             self.create_button.next_value()
             self.event_handler.handle_save_button(self.create_button)
+            self.game_session_name = self.game_session_name_text.text
+            print(f"[STARTING GAME] {self.game_session_name}")
             self.close_game_name_popup()
             self.event_handler.lobby.open()
         elif tile.name == "players_count":
