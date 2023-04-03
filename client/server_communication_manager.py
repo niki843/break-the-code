@@ -49,8 +49,6 @@ class ServerCommunicationManager(Singleton):
     def send_create_game_message(self, game_name):
         client.LOOP.create_task(
             send_message(
-                self.CREATE_GAME.format(
-                    self.player_id, self.player_username, game_name
-                )
+                self.CREATE_GAME.format(self.player_id, self.player_username, game_name)
             )
         )

@@ -1,6 +1,3 @@
-# A file used to store common functions used throughout the game
-import fileinput
-
 import pygame
 import client
 import os

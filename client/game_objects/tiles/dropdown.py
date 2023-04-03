@@ -115,4 +115,3 @@ class Dropdown:
         self.dropdown_arrow.resize()
         for surface in self.dropdown_surfaces:
             surface.resize()
-

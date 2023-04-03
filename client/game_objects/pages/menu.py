@@ -1,5 +1,3 @@
-from pygame import Color
-
 import client
 import pygame
 
@@ -240,7 +238,10 @@ class Menu(GameWindow):
         self.game_session_name_text.center()
 
     def build_number_players_label(self):
-        transparent_image = common.generate_transparent_image(self.game_session_name_text.image.get_width() - 100, self.game_session_name_text.image.get_height())
+        transparent_image = common.generate_transparent_image(
+            self.game_session_name_text.image.get_width() - 100,
+            self.game_session_name_text.image.get_height(),
+        )
         self.number_players_label = PlainTextTile(
             "number_of_players",
             transparent_image,
@@ -250,7 +251,7 @@ class Menu(GameWindow):
             0,
             "Number of players:",
             45,
-            20
+            20,
         )
 
         self.set_number_players_label_size()
@@ -268,9 +269,7 @@ class Menu(GameWindow):
 
     def build_number_players_dropdown_box(self):
         surface = common.get_image("player_number_menu.png")
-        name_text_map = {
-            "players_count": "3"
-        }
+        name_text_map = {"players_count": "3"}
 
         self.number_players_dropdown = Dropdown(
             first_tile_name="players_count",
@@ -292,14 +291,20 @@ class Menu(GameWindow):
             return
 
         self.number_players_dropdown.resize()
-        self.number_players_dropdown.first_tile.rect.right = self.game_session_name_text.rect.right
-        self.number_players_dropdown.first_tile.rect.top = self.game_session_name_text.rect.bottom + (
-            self.event_handler.screen.get_height() * 0.04
+        self.number_players_dropdown.first_tile.rect.right = (
+            self.game_session_name_text.rect.right
+        )
+        self.number_players_dropdown.first_tile.rect.top = (
+            self.game_session_name_text.rect.bottom
+            + (self.event_handler.screen.get_height() * 0.04)
         )
         self.number_players_dropdown.center_dropdown()
 
     def build_private_game_label(self):
-        transparent_image = common.generate_transparent_image(self.game_session_name_text.image.get_width() - 100, self.game_session_name_text.image.get_height())
+        transparent_image = common.generate_transparent_image(
+            self.game_session_name_text.image.get_width() - 100,
+            self.game_session_name_text.image.get_height(),
+        )
         self.private_game_label = PlainTextTile(
             "private_game",
             transparent_image,
@@ -309,7 +314,7 @@ class Menu(GameWindow):
             0,
             "Private game:",
             45,
-            20
+            20,
         )
 
         self.set_private_game_label_size()
@@ -502,7 +507,11 @@ class Menu(GameWindow):
             # so because we have a recursion in event_handler.handle_mouse_click and event_handle.wait_text_input
             # we need to check if the button that was clicked was cancel or apply if it was we don't need to set
             # the game_session_name
-            self.game_session_name = self.game_session_name_text.text if self.game_session_name_text else None
+            self.game_session_name = (
+                self.game_session_name_text.text
+                if self.game_session_name_text
+                else None
+            )
         elif (
             tile.name == "toggle_button_on" and event.button == client.LEFT_BUTTON_CLICK
         ):

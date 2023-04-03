@@ -173,12 +173,14 @@ class EventHandler(Singleton):
     def handle_server_message(self, message):
         message_type = message.get("type")
         if message_type == "send_game_sessions":
-            self.current_window.update_game_sessions(
-                message.get("game_sessions")
-            )
+            self.current_window.update_game_sessions(message.get("game_sessions"))
         if message_type == "player_joined":
-            if not self.server_communication_manager.player_id == message.get("player_id"):
-                self.current_window.add_player(message.get("player_id"), message.get("player_name"))
+            if not self.server_communication_manager.player_id == message.get(
+                "player_id"
+            ):
+                self.current_window.add_player(
+                    message.get("player_id"), message.get("player_name")
+                )
 
     def open_full_screen(self):
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)

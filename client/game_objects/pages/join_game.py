@@ -1,11 +1,9 @@
 import asyncio
 from collections import OrderedDict
 
-import pygame
 import client
 from client.game_objects.tiles.game_sessions_group import GameSessionsGroup
 from client.game_objects.tiles.player_info_group import PlayerInfoGroup
-from client.server_communication_manager import ws_client
 from client.utils import common
 
 from client.game_objects.pages.game_window import GameWindow
