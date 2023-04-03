@@ -1,5 +1,3 @@
-import pygame
-
 from client.game_objects.tiles.plain_text_box import PlainTextTile
 from client.game_objects.tiles.tile import Tile
 from client.utils import common
