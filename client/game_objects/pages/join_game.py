@@ -23,7 +23,6 @@ class JoinGame(GameWindow):
         self.game_info_box = None
         self.game_sessions_loop = None
 
-        self.game_sessions = {}
         self.game_session_tiles = OrderedDict()
         self.clicked_game_session_tile = None
 
@@ -193,7 +192,7 @@ class JoinGame(GameWindow):
                 and game_session_id == self.clicked_game_session_tile.game_session_id
             ):
                 self.player_info_group.clear_players()
-                for player_name in self.clicked_game_session_tile.player_usernames:
+                for player_name in self.clicked_game_session_tile.player_id_usernames_map.values():
                     self.player_info_group.add_player_tile(player_name)
 
         for removed_game_session_id in removed_game_sessions.keys():
@@ -283,6 +282,10 @@ class JoinGame(GameWindow):
         self.game_sessions_loop = client.LOOP.create_task(self.call_get_game_sessions())
 
     def close(self):
+        if self.clicked_game_session_tile:
+            self.clicked_game_session_tile.next_value()
+            self.reset_selected_game_session()
+
         for game_session in self.game_session_group.game_sessions:
             self.tiles_group.remove(game_session)
         self.game_session_group.clear()
@@ -291,9 +294,6 @@ class JoinGame(GameWindow):
 
     def activate_tile(self, tile, event):
         if tile.name == "back":
-            if self.clicked_game_session_tile:
-                self.clicked_game_session_tile.next_value()
-                self.reset_selected_game_session()
             self.event_handler.menu.open()
             self.close()
         if tile.name == "handle" and event.button == client.LEFT_BUTTON_CLICK:
@@ -324,15 +324,23 @@ class JoinGame(GameWindow):
                 self.clicked_game_session_tile
                 and self.clicked_game_session_tile.active_players < 4
             ):
-                # calling close before anything else to stop the automated server call for refreshing game sessions
-                self.close()
+                # Keeping it as a different variable because it will get reset when we call the close function
+                clicked_game_session_tile = self.clicked_game_session_tile
 
                 # One last call to server to update the game session players
                 self.event_handler.get_game_sessions()
 
+                # Make sure that the game is actually there
+                if self.clicked_game_session_tile not in self.game_session_group.game_sessions:
+                    self.reset_selected_game_session()
+                    return
+
+                # calling close before anything else to stop the automated server call for refreshing game sessions
+                self.close()
+
                 self.event_handler.lobby.open(
-                    game_session_id=self.clicked_game_session_tile.game_session_id,
-                    player_id_usernames_map=self.clicked_game_session_tile.player_id_usernames_map,
+                    game_session_id=clicked_game_session_tile.game_session_id,
+                    player_id_usernames_map=clicked_game_session_tile.player_id_usernames_map,
                 )
 
         if (

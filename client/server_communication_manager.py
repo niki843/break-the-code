@@ -21,6 +21,7 @@ class ServerCommunicationManager(Singleton):
 
     GET_CURRENT_GAMES_MESSAGE = '{"type": "get_current_games"}'
     CLOSE_CONNECTION_MESSAGE = '{"type": "close_connection"}'
+    EXIT_GAME = '{"type": "exit_game"}'
     JOIN_GAME = '{{"type": "join_game", "player_id": "{0}", "player_name": "{1}", "game_session_id": "{2}"}}'
     CREATE_GAME = '{{"type": "new_game", "player_id": "{0}", "player_name": "{1}", "room_name": "{2}"}}'
 
@@ -52,3 +53,6 @@ class ServerCommunicationManager(Singleton):
                 self.CREATE_GAME.format(self.player_id, self.player_username, game_name)
             )
         )
+
+    def send_exit_game_message(self):
+        client.LOOP.create_task(send_message(self.EXIT_GAME))

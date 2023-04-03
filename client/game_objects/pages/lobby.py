@@ -60,6 +60,14 @@ class Lobby(GameWindow):
     def add_player(self, player_id, player_name):
         self.players_id_username_map[player_id] = player_name
 
+    def close(self):
+        self.event_handler.server_communication_manager.send_exit_game_message()
+
+    def activate_tile(self, tile, event):
+        if tile.name == self.back_tile.name:
+            self.close()
+            self.event_handler.menu.open()
+
     def blit(self):
         super().blit()
         self.event_handler.screen.blit(self.back_tile.image, self.back_tile.rect)

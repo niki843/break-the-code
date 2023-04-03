@@ -105,9 +105,6 @@ async def join_game(websocket, game_session_id, player_id, player_name):
 
 
 async def handle_user_input(player_id, websocket, game_session):
-    # TODO: Create a endpoint that will close the handle_user_input function
-    #  like when a user exits the game or doesn't start the game session
-    #  if it's the host this should again trigger the change host functionality
     while True:
         if game_session.get_state() == GameState.END:
             return

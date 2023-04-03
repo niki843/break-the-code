@@ -7,6 +7,9 @@ JOIN_GAME FIRST PLAYER
 START_GAME:
 {"type": "start_game"}
 
+EXIT_GAME:
+{"type": "exit_game"}
+
 JOIN_GAME
 {"type": "join_game", "player_id": "2c85f2d0-7fd1-4736-9c10-247db035d7f2", "player_name": "second_player", "game_session_id": ""}
 
