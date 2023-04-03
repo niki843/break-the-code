@@ -1,7 +1,5 @@
 from collections import OrderedDict
 
-import pygame
-
 from client.game_objects.tiles.game_session_tile import GameSessionTile
 from client.game_objects.tiles.slider import Slider
 from client.game_objects.tiles.tile import Tile
@@ -78,7 +76,7 @@ class GameSessionsGroup(Tile):
         self.slider.update()
 
     def add_game_session(
-        self, active_players, player_usernames, game_id, game_session_name
+        self, active_players, player_id_usernames_map, game_id, game_session_name
     ):
         game_session = GameSessionTile(
             self.tile_name,
@@ -91,7 +89,7 @@ class GameSessionsGroup(Tile):
             self.game_session_tile_addition_height,
             self.next_surface,
             active_players,
-            player_usernames,
+            player_id_usernames_map,
             game_id,
             game_session_name,
         )

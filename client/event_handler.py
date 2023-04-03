@@ -123,6 +123,23 @@ class EventHandler(Singleton):
                     mouse_clicked = False
             self.current_window.blit()
 
+    def get_game_sessions(self):
+        # This functions calls the server one last time to make sure that the players count is correct
+        self.server_communication_manager.get_current_game()
+
+        waiting_for_server_response = True
+        while waiting_for_server_response:
+            events = pygame.event.get()
+            for event in events:
+                if event.type == client.EVENT_TYPE:
+                    message = event.message
+                    message_type = message.get("type")
+                    if message_type == "send_game_sessions":
+                        self.current_window.update_game_sessions(
+                            message.get("game_sessions")
+                        )
+                        waiting_for_server_response = False
+
     def change_window(self, new_window):
         self.current_window = new_window
 
@@ -153,7 +170,7 @@ class EventHandler(Singleton):
     def handle_server_message(self, message):
         message_type = message.get("type")
         if message_type == "send_game_sessions":
-            self.current_window.add_or_remove_game_sessions(
+            self.current_window.update_game_sessions(
                 message.get("game_sessions")
             )
         if message_type == "player_joined":

@@ -15,7 +15,7 @@ class GameSessionTile(ToggleTile):
         tile_addition_height,
         next_surface,
         active_players,
-        player_usernames,
+        player_id_usernames_map,
         game_session_id,
         game_session_name="Unknown",
     ):
@@ -30,7 +30,7 @@ class GameSessionTile(ToggleTile):
             tile_addition_height,
             next_surface,
         )
-        self.player_usernames = player_usernames
+        self.player_id_usernames_map = player_id_usernames_map
         self.active_players = active_players
         self.game_session_name = game_session_name
         self.game_session_id = game_session_id

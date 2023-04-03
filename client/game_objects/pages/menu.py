@@ -540,9 +540,9 @@ class Menu(GameWindow):
         elif tile.name == "apply_button" and event.button == client.LEFT_BUTTON_CLICK:
             self.create_button.next_value()
             self.event_handler.handle_save_button(self.create_button)
-            self.game_session_name = self.game_session_name_text.text
+            game_session_name = self.game_session_name_text.text
             self.close_game_name_popup()
-            self.event_handler.lobby.open()
+            self.event_handler.lobby.open(game_name=game_session_name, create_game=True)
         elif tile.name == "players_count":
 
             for surface in self.number_players_dropdown.dropdown_surfaces:

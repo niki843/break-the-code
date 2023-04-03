@@ -5,6 +5,7 @@ import pygame
 import client
 from client.game_objects.tiles.game_sessions_group import GameSessionsGroup
 from client.game_objects.tiles.player_info_group import PlayerInfoGroup
+from client.server_communication_manager import ws_client
 from client.utils import common
 
 from client.game_objects.pages.game_window import GameWindow
@@ -178,13 +179,13 @@ class JoinGame(GameWindow):
         self.tiles_group.add(self.game_session_group.slider)
         self.tiles_group.add(self.game_session_group.slider.slider_handle)
 
-    def add_or_remove_game_sessions(self, game_sessions_response):
+    def update_game_sessions(self, game_sessions_response):
         removed_game_sessions = self.game_session_group.game_sessions_by_id.copy()
         for game_session_id, game_session in game_sessions_response.items():
             if not self.game_session_group.tile_exists(game_session_id):
                 game_session = self.game_session_group.add_game_session(
                     active_players=game_session.get("connected_players"),
-                    player_usernames=game_session.get("player_id_name_map").values(),
+                    player_usernames=game_session.get("player_id_name_map"),
                     game_id=game_session_id,
                     game_session_name=game_session.get("room_name"),
                 )
@@ -332,11 +333,16 @@ class JoinGame(GameWindow):
                 self.clicked_game_session_tile
                 and self.clicked_game_session_tile.active_players < 4
             ):
+                # calling close before anything else to stop the automated server call for refreshing game sessions
                 self.close()
-                self.event_handler.server_communication_manager.send_join_game_message(
-                    self.clicked_game_session_tile.game_session_id
+
+                # One last call to server to update the game session players
+                self.event_handler.check_game_sessions_before_join()
+
+                self.event_handler.lobby.open(
+                    game_session_id=self.clicked_game_session_tile.game_session_id,
+                    player_id_usernames_map=self.clicked_game_session_tile.player_id_usernames_map,
                 )
-                self.event_handler.lobby.open()
 
         if (
             tile.name
