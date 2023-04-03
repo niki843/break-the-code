@@ -5,6 +5,8 @@ from client.game_objects.custom_exceptions.player_usernames_not_provided_excepti
     PlayerUsernamesNotProvidedException,
 )
 from client.game_objects.pages.game_window import GameWindow
+from client.game_objects.tiles.tile import Tile
+from client.utils import common
 
 
 class Lobby(GameWindow):
@@ -16,6 +18,16 @@ class Lobby(GameWindow):
         self.host_name = self.event_handler.server_communication_manager.player_username
         self.host_id = self.event_handler.server_communication_manager.player_id
         self.players_id_username_map = []
+
+        self.build()
+
+    def build(self):
+        # This order is important and should not change
+        self.build_clear_background()
+
+    def resize(self):
+        super().resize()
+        self.set_back_tile()
 
     def open(self, **kwargs):
         super().open()
@@ -45,3 +57,7 @@ class Lobby(GameWindow):
 
     def add_player(self, player_id, player_name):
         self.players_id_username_map[player_id] = player_name
+
+    def blit(self):
+        super().blit()
+        # self.event_handler.screen.blit(self.back_tile.image, self.back_tile.rect)

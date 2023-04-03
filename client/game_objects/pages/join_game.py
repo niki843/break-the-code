@@ -38,7 +38,8 @@ class JoinGame(GameWindow):
             await asyncio.sleep(5)
 
     def build(self):
-        super().build()
+        self.build_clear_background()
+
         self.build_tiles_background()
 
         self.build_back_tile()
@@ -65,14 +66,6 @@ class JoinGame(GameWindow):
         self.set_player_info_group_size()
 
         self.set_join_game_button_size()
-
-    def build_background(self):
-        surface = common.get_image("clear_bgr.png")
-
-        self.background_image = Tile(
-            "background", surface, self.event_handler.screen, 100, 0, 0
-        )
-        self.set_background_size()
 
     def build_join_game_button(self):
         surface = common.get_image("join_game.png")

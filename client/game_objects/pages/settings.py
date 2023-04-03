@@ -45,7 +45,8 @@ class Settings(GameWindow):
         self.build()
 
     def build(self):
-        super().build()
+        self.build_clear_background()
+
         self.build_tiles_background()
 
         self.build_settings_label()
@@ -81,14 +82,6 @@ class Settings(GameWindow):
         self.set_apply_button_size()
 
         self.set_back_tile()
-
-    def build_background(self):
-        surface = common.get_image("clear_bgr.png")
-
-        self.background_image = Tile(
-            "background", surface, self.event_handler.screen, 100, 0, 0
-        )
-        self.set_background_size()
 
     def build_settings_label(self):
         surface = common.get_image("settings_top.png")

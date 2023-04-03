@@ -15,8 +15,6 @@ class GameWindow:
         self.back_tile = None
         self.tiles_background = None
 
-        self.build_background()
-
     def activate_tile(self, tile, event):
         pass
 
@@ -28,6 +26,14 @@ class GameWindow:
 
     def build_background(self):
         surface = common.get_image("background.png")
+
+        self.background_image = Tile(
+            "background", surface, self.event_handler.screen, 100, 0, 0
+        )
+        self.set_background_size()
+
+    def build_clear_background(self):
+        surface = common.get_image("clear_bgr.png")
 
         self.background_image = Tile(
             "background", surface, self.event_handler.screen, 100, 0, 0
