@@ -25,6 +25,8 @@ class Lobby(GameWindow):
         # This order is important and should not change
         self.build_clear_background()
 
+        self.build_back_tile()
+
     def resize(self):
         super().resize()
         self.set_back_tile()
@@ -60,4 +62,4 @@ class Lobby(GameWindow):
 
     def blit(self):
         super().blit()
-        # self.event_handler.screen.blit(self.back_tile.image, self.back_tile.rect)
+        self.event_handler.screen.blit(self.back_tile.image, self.back_tile.rect)
