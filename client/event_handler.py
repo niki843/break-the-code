@@ -130,6 +130,7 @@ class EventHandler(Singleton):
         waiting_for_server_response = True
         while waiting_for_server_response:
             events = pygame.event.get()
+            pygame.display.flip()
             for event in events:
                 if event.type == client.EVENT_TYPE:
                     message = event.message
@@ -139,6 +140,8 @@ class EventHandler(Singleton):
                             message.get("game_sessions")
                         )
                         waiting_for_server_response = False
+            self.current_window.blit()
+            common.run_once(LOOP)
 
     def change_window(self, new_window):
         self.current_window = new_window
@@ -174,7 +177,8 @@ class EventHandler(Singleton):
                 message.get("game_sessions")
             )
         if message_type == "player_joined":
-            self.current_window.add_player(message.get("player_name"))
+            if not self.server_communication_manager.player_id == message.get("player_id"):
+                self.current_window.add_player(message.get("player_id"), message.get("player_name"))
 
     def open_full_screen(self):
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)

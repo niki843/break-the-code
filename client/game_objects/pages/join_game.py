@@ -185,7 +185,7 @@ class JoinGame(GameWindow):
             if not self.game_session_group.tile_exists(game_session_id):
                 game_session = self.game_session_group.add_game_session(
                     active_players=game_session.get("connected_players"),
-                    player_usernames=game_session.get("player_id_name_map"),
+                    player_id_usernames_map=game_session.get("player_id_name_map"),
                     game_id=game_session_id,
                     game_session_name=game_session.get("room_name"),
                 )
@@ -322,7 +322,7 @@ class JoinGame(GameWindow):
 
             self.clicked_game_session_tile = tile
             tile.next_value()
-            for player_name in tile.player_usernames:
+            for player_name in tile.player_id_usernames_map.values():
                 self.player_info_group.add_player_tile(player_name)
 
         if (
@@ -337,7 +337,7 @@ class JoinGame(GameWindow):
                 self.close()
 
                 # One last call to server to update the game session players
-                self.event_handler.check_game_sessions_before_join()
+                self.event_handler.get_game_sessions()
 
                 self.event_handler.lobby.open(
                     game_session_id=self.clicked_game_session_tile.game_session_id,
