@@ -118,22 +118,6 @@ class JoinGame(GameWindow):
             self.event_handler.screen.get_width() * 0.03
         )
 
-    def build_game_info_box(self):
-        surface = common.get_image("game_info_menu.png")
-        self.game_info_box = MultilineTextTile(
-            "test_text",
-            surface,
-            self.event_handler.screen,
-            30,
-            0,
-            20,
-            "",
-            6,
-            0,
-        )
-
-        self.set_game_info_size()
-
     def set_game_info_size(self):
         if not self.game_info_box:
             return
@@ -270,9 +254,6 @@ class JoinGame(GameWindow):
             self.game_info_tile.image, self.game_info_tile.rect
         )
 
-        self.event_handler.screen.blit(
-            self.game_info_box.image, self.game_info_box.rect
-        )
         self.game_info_box.blit()
 
         self.game_session_group.blit()

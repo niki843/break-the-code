@@ -5,8 +5,6 @@ from client.game_objects.custom_exceptions.player_usernames_not_provided_excepti
     PlayerUsernamesNotProvidedException,
 )
 from client.game_objects.pages.game_window import GameWindow
-from client.game_objects.tiles.tile import Tile
-from client.utils import common
 
 
 class Lobby(GameWindow):
@@ -27,9 +25,12 @@ class Lobby(GameWindow):
 
         self.build_back_tile()
 
+        self.build_game_info_box()
+
     def resize(self):
         super().resize()
         self.set_back_tile()
+        self.set_game_info_size()
 
     def open(self, **kwargs):
         super().open()
@@ -71,3 +72,4 @@ class Lobby(GameWindow):
     def blit(self):
         super().blit()
         self.event_handler.screen.blit(self.back_tile.image, self.back_tile.rect)
+        self.game_info_box.blit()

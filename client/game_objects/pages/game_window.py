@@ -1,6 +1,7 @@
 import client
 from pygame.sprite import LayeredUpdates
 
+from client.game_objects.tiles.multiline_text_tile import MultilineTextTile
 from client.game_objects.tiles.tile import Tile
 from client.utils import common
 
@@ -14,6 +15,7 @@ class GameWindow:
         self.background_image = None
         self.back_tile = None
         self.tiles_background = None
+        self.game_info_box = None
 
     def activate_tile(self, tile, event):
         pass
@@ -85,6 +87,31 @@ class GameWindow:
         self.tiles_background.resize()
         self.tiles_background.rect.centerx = self.event_handler.screen_rect.centerx
         self.tiles_background.rect.centery = self.event_handler.screen_rect.centery
+
+    def build_game_info_box(self):
+        surface = common.get_image("game_info_menu.png")
+        self.game_info_box = MultilineTextTile(
+            "game_info",
+            surface,
+            self.event_handler.screen,
+            30,
+            0,
+            20,
+            "",
+            6,
+            0,
+        )
+
+        self.set_game_info_size()
+
+    def set_game_info_size(self):
+        if not self.game_info_box:
+            return
+
+        self.game_info_box.resize()
+        self.game_info_box.rect.centerx = self.event_handler.screen_rect.centerx
+        self.game_info_box.rect.centery = self.event_handler.screen_rect.centery
+        self.game_info_box.center_text()
 
     def blit(self):
         self.event_handler.screen.blit(

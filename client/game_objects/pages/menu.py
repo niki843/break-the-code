@@ -174,8 +174,8 @@ class Menu(GameWindow):
             return
 
         self.blured_tile.resize()
-        self.blured_tile.rect.centerx = self.event_handler.screen.get_rect().centerx
-        self.blured_tile.rect.centery = self.event_handler.screen.get_rect().centery
+        self.blured_tile.rect.centerx = self.event_handler.screen_rect.centerx
+        self.blured_tile.rect.centery = self.event_handler.screen_rect.centery
 
     def build_game_session_name_box(self):
         surface = common.get_image("create_game_window.png")
@@ -198,10 +198,10 @@ class Menu(GameWindow):
 
         self.game_session_name_box.resize()
         self.game_session_name_box.rect.centerx = (
-            self.event_handler.screen.get_rect().centerx
+            self.event_handler.screen_rect.centerx
         )
         self.game_session_name_box.rect.centery = (
-            self.event_handler.screen.get_rect().centery
+            self.event_handler.screen_rect.centery
         )
 
     def build_game_name_text_box(self):
