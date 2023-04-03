@@ -53,6 +53,7 @@ class Menu(GameWindow):
         self.set_game_name_text_size()
         self.set_cancel_button_size()
         self.set_create_button_size()
+        self.set_number_players_text_size()
         self.set_toggle_size()
 
     def build_join_game(self):
@@ -245,7 +246,7 @@ class Menu(GameWindow):
             surface=surface,
             dropdown_name_text_map=name_text_map,
             screen=self.event_handler.screen,
-            size_percent=10,
+            size_percent=9,
             tile_addition_width=0,
             tile_addition_height=0,
         )
@@ -428,6 +429,7 @@ class Menu(GameWindow):
         self.cancel_button = None
         self.create_button = None
         self.private_game_toggle_button = None
+        self.number_players_text = None
         self.is_private_game = False
 
     def activate_tile(self, tile, event):

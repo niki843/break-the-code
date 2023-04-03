@@ -49,12 +49,14 @@ class Dropdown:
             tile_addition_width,
             tile_addition_height,
             text_to_display=first_tile_text,
-            text_size_percent=90,
+            text_size_percent=70,
             max_characters_on_line=1,
         )
 
     def center_dropdown(self):
         self.first_tile.center()
+        self.first_tile.text_rect.centerx = self.first_tile.rect.centerx
+        self.first_tile.text_rect.centery = self.first_tile.rect.centery
         top = self.first_tile.rect.top
         centerx = self.first_tile.rect.centerx
         for surface in self.dropdown_surfaces:
@@ -69,9 +71,7 @@ class Dropdown:
         self.first_tile = clicked_surface
 
     def blit(self):
-        self.screen.blit(self.first_tile.image, self.first_tile.rect)
-        self.screen.blit(self.first_tile.text_surface, self.first_tile.text_rect)
-        # self.first_tile.blit()
+        self.first_tile.blit()
         if self.active:
             for surface in self.dropdown_surfaces:
                 surface.blit()
