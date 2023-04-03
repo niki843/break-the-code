@@ -192,7 +192,9 @@ class JoinGame(GameWindow):
                 and game_session_id == self.clicked_game_session_tile.game_session_id
             ):
                 self.player_info_group.clear_players()
-                for player_name in self.clicked_game_session_tile.player_id_usernames_map.values():
+                for (
+                    player_name
+                ) in self.clicked_game_session_tile.player_id_usernames_map.values():
                     self.player_info_group.add_player_tile(player_name)
 
         for removed_game_session_id in removed_game_sessions.keys():
@@ -331,7 +333,11 @@ class JoinGame(GameWindow):
                 self.event_handler.get_game_sessions()
 
                 # Make sure that the game is actually there
-                if self.clicked_game_session_tile not in self.game_session_group.game_sessions:
+                if (
+                    self.clicked_game_session_tile
+                    not in self.game_session_group.game_sessions
+                    and self.clicked_game_session_tile.active_players < 4
+                ):
                     self.reset_selected_game_session()
                     return
 
