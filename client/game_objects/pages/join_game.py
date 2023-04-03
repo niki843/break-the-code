@@ -376,21 +376,3 @@ class JoinGame(GameWindow):
         if self.clicked_game_session_tile:
             self.clicked_game_session_tile = None
             self.player_info_group.clear_players()
-
-    def delete(self):
-        super().delete()
-        self.join_game_tile.image.fill(pygame.Color(0, 0, 0))
-        self.scroll_text_tile.image.fill(pygame.Color(0, 0, 0))
-        self.tiles_background.image.fill(pygame.Color(0, 0, 0))
-        self.back_tile.image.fill(pygame.Color(0, 0, 0))
-        self.game_info_tile.image.fill(pygame.Color(0, 0, 0))
-        self.game_info_box.image.fill(pygame.Color(0, 0, 0))
-
-        self.blit()
-
-        del self.join_game_tile
-        del self.scroll_text_tile
-        del self.tiles_background
-        del self.back_tile
-        del self.game_info_tile
-        del self.game_info_box

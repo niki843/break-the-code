@@ -402,37 +402,3 @@ class Settings(GameWindow):
                     pygame.HWSURFACE | pygame.DOUBLEBUF,
                 )
             )
-
-    def delete(self):
-        # Apparently pygame doesn't have an option to actually delete visual objects
-        # instead we should just make them transparent
-        super().delete()
-        self.tiles_background.image.fill(pygame.Color(0, 0, 0))
-        self.settings_label_tile.image.fill(pygame.Color(0, 0, 0))
-        self.resolution_label_tile.image.fill(pygame.Color(0, 0, 0))
-        self.resolution_slider.current_text_surface.fill(pygame.Color(0, 0, 0))
-        self.resolution_slider.slider_handle.image.fill(pygame.Color(0, 0, 0))
-        self.music_label_tile.image.fill(pygame.Color(0, 0, 0))
-        self.music_slider.image.fill(pygame.Color(0, 0, 0))
-        self.music_slider.slider_handle.image.fill(pygame.Color(0, 0, 0))
-        self.username_label.image.fill(pygame.Color(0, 0, 0))
-        self.username_input_box.image.fill(pygame.Color(0, 0, 0))
-        self.username_input_box.text_surface.image.fill(pygame.Color(0, 0, 0))
-        self.apply_button.image.fill(pygame.Color(0, 0, 0))
-        self.back_tile.image.fill(pygame.Color(0, 0, 0))
-
-        self.blit()
-
-        del self.background_image
-        del self.tiles_background
-        del self.settings_label_tile
-        del self.resolution_label_tile.current_text_surface
-        del self.resolution_slider
-        del self.music_label_tile
-        del self.music_slider
-        del self.username_label
-        del self.username_input_box
-        del self.apply_button
-        del self.back_tile
-
-        self.tiles_group.empty()

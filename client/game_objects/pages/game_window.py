@@ -1,4 +1,3 @@
-import pygame
 import client
 from pygame.sprite import LayeredUpdates
 
@@ -91,10 +90,3 @@ class GameWindow:
 
     def close(self):
         pass
-
-    def delete(self):
-        self.background_image.image.fill(pygame.Color(0, 0, 0))
-
-        self.blit()
-
-        del self.background_image

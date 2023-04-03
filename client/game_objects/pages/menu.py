@@ -450,25 +450,6 @@ class Menu(GameWindow):
                 self.private_game_toggle_button.rect,
             )
 
-    def delete(self):
-        # Apparently pygame doesn't have an option to actually delete visual objects
-        # instead we should just make them transparent
-        self.background_image.fill(Color(0, 0, 0))
-        self.join_game_tile.image.fill(Color(0, 0, 0))
-        self.new_game_tile.image.fill(Color(0, 0, 0))
-        self.settings_tile.image.fill(Color(0, 0, 0))
-        self.quit_tile.image.fill(Color(0, 0, 0))
-
-        self.blit()
-
-        del self.background_image
-        del self.join_game_tile
-        del self.new_game_tile
-        del self.settings_tile
-        del self.quit_tile
-
-        self.tiles_group.empty()
-
     def open_game_name_popup(self):
         self.build_blurred_background()
         self.build_game_session_name_box()
