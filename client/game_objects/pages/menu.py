@@ -22,14 +22,14 @@ class Menu(GameWindow):
         self.blured_tile = None
         self.game_session_name_box = None
         self.game_session_name_text = None
-        self.number_players_text = None
+        self.number_players_dropdown = None
         self.cancel_button = None
         self.create_button = None
         self.private_game_toggle_button = None
 
         self.is_private_game = False
         self.game_session_name = ""
-        self.players_count = 4
+        self.players_count_tile = None
 
         self.build()
 
@@ -53,7 +53,7 @@ class Menu(GameWindow):
         self.set_game_name_text_size()
         self.set_cancel_button_size()
         self.set_create_button_size()
-        self.set_number_players_text_size()
+        self.set_number_players_dropdown_size()
         self.set_toggle_size()
 
     def build_join_game(self):
@@ -234,14 +234,14 @@ class Menu(GameWindow):
         )
         self.game_session_name_text.center()
 
-    def build_number_players_text_box(self):
+    def build_number_players_dropdown_box(self):
         surface = common.get_image("player_number_menu.png")
         name_text_map = {
-            "three_players": "3"
+            "players_count": "3"
         }
 
-        self.number_players_text = Dropdown(
-            first_tile_name="four_players",
+        self.number_players_dropdown = Dropdown(
+            first_tile_name="players_count",
             first_tile_text="4",
             surface=surface,
             dropdown_name_text_map=name_text_map,
@@ -250,20 +250,21 @@ class Menu(GameWindow):
             tile_addition_width=0,
             tile_addition_height=0,
         )
+        self.players_count_tile = self.number_players_dropdown.first_tile
 
-        self.set_number_players_text_size()
-        self.tiles_group.add(self.number_players_text.first_tile)
+        self.set_number_players_dropdown_size()
+        self.tiles_group.add(self.number_players_dropdown.first_tile)
 
-    def set_number_players_text_size(self):
-        if not self.number_players_text:
+    def set_number_players_dropdown_size(self):
+        if not self.number_players_dropdown:
             return
 
-        self.number_players_text.resize()
-        self.number_players_text.first_tile.rect.right = self.game_session_name_text.rect.right
-        self.number_players_text.first_tile.rect.top = self.game_session_name_text.rect.bottom + (
+        self.number_players_dropdown.resize()
+        self.number_players_dropdown.first_tile.rect.right = self.game_session_name_text.rect.right
+        self.number_players_dropdown.first_tile.rect.top = self.game_session_name_text.rect.bottom + (
             self.event_handler.screen.get_height() * 0.04
         )
-        self.number_players_text.center_dropdown()
+        self.number_players_dropdown.center_dropdown()
 
     def build_cancel_button_tile(self):
         surface = common.get_image("cancel_button.png")
@@ -349,7 +350,7 @@ class Menu(GameWindow):
             self.game_session_name_text.rect.right
         )
         self.private_game_toggle_button.rect.top = (
-            self.number_players_text.first_tile.rect.bottom
+            self.number_players_dropdown.first_tile.rect.bottom
             + (self.event_handler.screen.get_height() * 0.04)
         )
 
@@ -375,7 +376,6 @@ class Menu(GameWindow):
                 self.game_session_name_box.image, self.game_session_name_box.rect
             )
             self.game_session_name_text.blit()
-            self.number_players_text.blit()
             self.event_handler.screen.blit(
                 self.cancel_button.image, self.cancel_button.rect
             )
@@ -386,6 +386,7 @@ class Menu(GameWindow):
                 self.private_game_toggle_button.image,
                 self.private_game_toggle_button.rect,
             )
+            self.number_players_dropdown.blit()
 
     def delete(self):
         # Apparently pygame doesn't have an option to actually delete visual objects
@@ -410,7 +411,7 @@ class Menu(GameWindow):
         self.build_blurred_background()
         self.build_game_session_name_box()
         self.build_game_name_text_box()
-        self.build_number_players_text_box()
+        self.build_number_players_dropdown_box()
         self.build_cancel_button_tile()
         self.build_create_button_tile()
         self.build_private_game_toggle()
@@ -419,7 +420,7 @@ class Menu(GameWindow):
         self.tiles_group.remove(self.blured_tile)
         self.tiles_group.remove(self.game_session_name_box)
         self.tiles_group.remove(self.game_session_name_text)
-        self.tiles_group.remove(self.number_players_text)
+        self.tiles_group.remove(self.number_players_dropdown)
         self.tiles_group.remove(self.cancel_button)
         self.tiles_group.remove(self.create_button)
         self.tiles_group.remove(self.private_game_toggle_button)
@@ -429,7 +430,7 @@ class Menu(GameWindow):
         self.cancel_button = None
         self.create_button = None
         self.private_game_toggle_button = None
-        self.number_players_text = None
+        self.number_players_dropdown = None
         self.is_private_game = False
 
     def activate_tile(self, tile, event):
@@ -450,20 +451,6 @@ class Menu(GameWindow):
             self.event_handler.wait_text_input(self.game_session_name_text)
             self.game_session_name = self.game_session_name_text.text
         elif (
-            tile.name == "players_count_input"
-            and event.button == client.LEFT_BUTTON_CLICK
-        ):
-            self.number_players_text.mark_clicked()
-            self.event_handler.wait_text_input(self.number_players_text)
-            if not self.number_players_text.text.isnumeric() or (
-                int(self.number_players_text.text) > 4
-                or int(self.number_players_text.text) < 3
-            ):
-                self.number_players_text.new_line()
-                self.number_players_text.write("4")
-                self.number_players_text.center()
-            self.players_count = int(self.number_players_text.text)
-        elif (
             tile.name == "toggle_button_on" and event.button == client.LEFT_BUTTON_CLICK
         ):
             self.is_private_game = True
@@ -483,3 +470,5 @@ class Menu(GameWindow):
             self.event_handler.handle_save_button(self.create_button)
             self.close_game_name_popup()
             self.event_handler.lobby.open()
+        elif tile.name == "players_count":
+            self.number_players_dropdown.drop_elements()
