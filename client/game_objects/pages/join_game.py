@@ -1,13 +1,12 @@
 import asyncio
+import copy
 from collections import OrderedDict
 
 import client
 from client.game_objects.tiles.game_sessions_group import GameSessionsGroup
-from client.game_objects.tiles.player_info_group import PlayerInfoGroup
 from client.utils import common
 
 from client.game_objects.pages.game_window import GameWindow
-from client.game_objects.tiles.multiline_text_tile import MultilineTextTile
 from client.game_objects.tiles.tile import Tile
 
 
@@ -27,7 +26,6 @@ class JoinGame(GameWindow):
         self.clicked_game_session_tile = None
 
         self.game_session_group = None
-        self.player_info_group = None
 
         self.build()
 
@@ -208,37 +206,6 @@ class JoinGame(GameWindow):
         )
         return left, top, right
 
-    def build_player_info_group(self):
-        left, top = self.get_player_info_initial_position()
-        self.player_info_group = PlayerInfoGroup(
-            "player_info_group",
-            0,
-            left,
-            top,
-            self.event_handler.screen,
-        )
-
-        self.set_player_info_group_size()
-
-    def set_player_info_group_size(self):
-        if not self.player_info_group:
-            return
-
-        left, top = self.get_player_info_initial_position()
-
-        self.player_info_group.first_element_left_position = left
-        self.player_info_group.first_element_top_position = top
-        self.player_info_group.resize()
-
-    def get_player_info_initial_position(self):
-        left = self.game_info_box.rect.left + (
-            self.event_handler.screen.get_width() * 0.02
-        )
-        top = self.game_info_box.rect.top + (
-            self.event_handler.screen.get_height() * 0.02
-        )
-        return left, top
-
     def blit(self):
         super().blit()
         self.event_handler.screen.blit(
@@ -309,6 +276,7 @@ class JoinGame(GameWindow):
             ):
                 # Keeping it as a different variable because it will get reset when we call the close function
                 clicked_game_session_tile = self.clicked_game_session_tile
+                player_info_group = copy.copy(self.player_info_group)
 
                 # One last call to server to update the game session players
                 self.event_handler.get_game_sessions()
@@ -332,6 +300,7 @@ class JoinGame(GameWindow):
                     player_id_usernames_map=clicked_game_session_tile.player_id_usernames_map,
                     game_session_name=clicked_game_session_tile.game_session_name,
                 )
+                self.event_handler.lobby.set_player_info_group(player_info_group)
 
         if (
             tile.name

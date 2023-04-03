@@ -5,6 +5,7 @@ from client.game_objects.custom_exceptions.player_usernames_not_provided_excepti
     PlayerUsernamesNotProvidedException,
 )
 from client.game_objects.pages.game_window import GameWindow
+from client.game_objects.tiles.player_info_group import PlayerInfoGroup
 
 
 class Lobby(GameWindow):
@@ -17,6 +18,8 @@ class Lobby(GameWindow):
         self.host_id = None
         self.players_id_username_map = []
 
+        self.player_info_group = None
+
         self.build()
 
     def build(self):
@@ -28,11 +31,14 @@ class Lobby(GameWindow):
         self.build_tiles_background()
         self.build_game_info_box()
 
+        self.build_player_info_group()
+
     def resize(self):
         super().resize()
         self.set_back_tile()
         self.set_tiles_background_size()
         self.set_game_info_size()
+        self.set_player_info_group_size()
 
     def open(self, **kwargs):
         super().open()
@@ -67,16 +73,19 @@ class Lobby(GameWindow):
                 self.game_session_id
             )
 
-        print(f"[OPENED]{self.game_session_name}")
-
     def add_player(self, player_id, player_name):
         self.players_id_username_map[player_id] = player_name
 
     def update_game_session_id(self, game_session_id):
         self.game_session_id = game_session_id
 
+    def set_player_info_group(self, player_info_group):
+        self.player_info_group = player_info_group
+        self.set_player_info_group_size()
+
     def close(self):
         self.event_handler.server_communication_manager.send_exit_game_message()
+        self.player_info_group.clear_players()
 
     def activate_tile(self, tile, event):
         if tile.name == self.back_tile.name:
@@ -90,3 +99,4 @@ class Lobby(GameWindow):
             self.tiles_background.image, self.tiles_background.rect
         )
         self.game_info_box.blit()
+        self.player_info_group.blit()

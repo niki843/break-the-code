@@ -2,6 +2,7 @@ import client
 from pygame.sprite import LayeredUpdates
 
 from client.game_objects.tiles.multiline_text_tile import MultilineTextTile
+from client.game_objects.tiles.player_info_group import PlayerInfoGroup
 from client.game_objects.tiles.tile import Tile
 from client.utils import common
 
@@ -16,6 +17,7 @@ class GameWindow:
         self.back_tile = None
         self.tiles_background = None
         self.game_info_box = None
+        self.player_info_group = None
 
     def activate_tile(self, tile, event):
         pass
@@ -112,6 +114,37 @@ class GameWindow:
         self.game_info_box.rect.centerx = self.event_handler.screen_rect.centerx
         self.game_info_box.rect.centery = self.event_handler.screen_rect.centery
         self.game_info_box.center_text()
+
+    def build_player_info_group(self):
+        left, top = self.get_player_info_initial_position()
+        self.player_info_group = PlayerInfoGroup(
+            "player_info_group",
+            0,
+            left,
+            top,
+            self.event_handler.screen,
+        )
+
+        self.set_player_info_group_size()
+
+    def set_player_info_group_size(self):
+        if not self.player_info_group:
+            return
+
+        left, top = self.get_player_info_initial_position()
+
+        self.player_info_group.first_element_left_position = left
+        self.player_info_group.first_element_top_position = top
+        self.player_info_group.resize()
+
+    def get_player_info_initial_position(self):
+        left = self.game_info_box.rect.left + (
+            self.event_handler.screen.get_width() * 0.02
+        )
+        top = self.game_info_box.rect.top + (
+            self.event_handler.screen.get_height() * 0.02
+        )
+        return left, top
 
     def blit(self):
         self.event_handler.screen.blit(
