@@ -1,4 +1,5 @@
 from client.game_objects.cards.card_reader import CardReader
+from client.game_objects.custom_exceptions.no_such_card_exception import NoSuchCardException
 from client.game_objects.pages.game_window import GameWindow
 
 
@@ -27,6 +28,28 @@ class NewGame(GameWindow):
 
         for card in cr.cards:
             self.non_played_condition_cards[card.id] = card
+
+    def draw_condition_card(self, card_id):
+        card = self.non_played_condition_cards.pop(card_id)
+
+        if not card:
+            raise NoSuchCardException(card_id, "or is already drawn")
+
+        self.current_drawn_condition_cards[card.id] = card
+
+    def play_card(self):
+        pass
+
+    def remove_played_card(self, card_id):
+        card = self.current_drawn_condition_cards.pop(card_id)
+
+        if not card:
+            raise NoSuchCardException(card_id, "or is already played or not drawn yet")
+
+        self.played_condition_cards[card_id] = card
+
+    def activate_tile(self, tile, event):
+        pass
 
     def blit(self):
         super().blit()
