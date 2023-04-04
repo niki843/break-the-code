@@ -76,6 +76,7 @@ class JoinGame(GameWindow):
             0,
         )
 
+        self.tiles_group.add(self.join_game_tile)
         self.set_join_game_button_size()
 
     def set_join_game_button_size(self):
@@ -89,7 +90,6 @@ class JoinGame(GameWindow):
         self.join_game_tile.rect.bottom = self.event_handler.screen_rect.bottom - (
             self.event_handler.screen.get_height() * 0.03
         )
-        self.tiles_group.add(self.join_game_tile)
 
     def build_game_info_label(self):
         surface = common.get_image("game_info.png")
@@ -174,10 +174,10 @@ class JoinGame(GameWindow):
                 and game_session_id == self.clicked_game_session_tile.game_session_id
             ):
                 self.player_info_group.clear_players()
-                for (
-                    player_name
-                ) in game_session.get("player_id_name_map").values():
-                    self.player_info_group.add_player_tile(player_name)
+                for (player_id, player_name) in game_session.get(
+                    "player_id_name_map"
+                ).items():
+                    self.player_info_group.add_player_tile(player_id, player_name)
 
         for removed_game_session_id in removed_game_sessions.keys():
             self.tiles_group.remove(
@@ -263,8 +263,8 @@ class JoinGame(GameWindow):
 
             self.clicked_game_session_tile = tile
             tile.next_value()
-            for player_name in tile.player_id_usernames_map.values():
-                self.player_info_group.add_player_tile(player_name)
+            for player_id, player_name in tile.player_id_usernames_map.items():
+                self.player_info_group.add_player_tile(player_id, player_name)
 
         if (
             tile.name == self.join_game_tile.name

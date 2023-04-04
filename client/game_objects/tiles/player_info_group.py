@@ -33,8 +33,9 @@ class PlayerInfoGroup:
 
         self.player_image_tiles = []
         self.player_name_tiles = []
+        self.player_ids = []
 
-    def add_player_tile(self, player_name):
+    def add_player_tile(self, player_id, player_name):
         if len(self.player_image_tiles) >= self.MAX_PLAYERS_IN_GROUP:
             raise PlayerLimitExceededException()
 
@@ -63,6 +64,7 @@ class PlayerInfoGroup:
             15,
         )
         self.player_name_tiles.append(text_tile)
+        self.player_ids.append(player_id)
 
         self.center_player_tile(self.connected_players)
 
@@ -118,15 +120,35 @@ class PlayerInfoGroup:
             )
 
     def remove_player(self, player_name):
-        name_tile = [name_tile for name_tile in self.player_name_tiles if name_tile.original_text == player_name][0]
+        name_tile = [
+            name_tile
+            for name_tile in self.player_name_tiles
+            if name_tile.original_text == player_name
+        ]
+        if len(name_tile) == 0:
+            print("stop in the name of love")
+        name_tile = name_tile[0]
         index = self.player_name_tiles.index(name_tile)
-        self.player_image_tiles.pop(index)
         self.player_name_tiles.pop(index)
-        self.connected_players -= 1
+
+        player_name_tiles = self.player_name_tiles
+        player_ids = self.player_ids
+        self.clear_players()
+
+        for i in range(0, len(player_name_tiles)):
+            self.add_player_tile(player_ids[i], player_name_tiles[i].original_text)
+
+    def get_player_name_id_map(self):
+        values = {}
+        for i in range(0, len(self.player_name_tiles)):
+            values[self.player_ids[i]] = self.player_name_tiles[i].original_text
+
+        return values
 
     def clear_players(self):
         self.player_image_tiles = []
         self.player_name_tiles = []
+        self.player_ids = []
         self.connected_players = 0
 
         self.player_images = [
