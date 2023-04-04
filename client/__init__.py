@@ -37,3 +37,7 @@ IMAGE_CACHE = {}
 
 # IMPORTANT!!! This is how the game will know if the game should stop running
 GAME_RUNNING = True
+
+# Game constatnts shared between the server and client
+MISSING_PROPERTY_DEFAULT = -1
+CARD_INDEX_TO_LETTER_MAP = {0: "a", 1: "b", 2: "c", 3: "d", 4: "e"}

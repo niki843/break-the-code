@@ -5,6 +5,8 @@ class NewGame(GameWindow):
     def __init__(self, event_handler):
         super().__init__(event_handler)
 
+        self.all_cards_by_id = {}
+
         self.build()
 
     def build(self):
