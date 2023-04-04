@@ -156,5 +156,8 @@ class GameWindow:
     def open(self, **kwargs):
         self.event_handler.change_window(self)
 
+    def start_game(self):
+        pass
+
     def close(self):
         pass

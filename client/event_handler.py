@@ -187,6 +187,8 @@ class EventHandler(Singleton):
             self.current_window.replace_host(message.get("player_id"))
         if message_type == "player_disconnected":
             self.current_window.remove_player(message.get("player_id"))
+        if message_type == "start_game":
+            self.current_window.start_game()
 
     def open_full_screen(self):
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
