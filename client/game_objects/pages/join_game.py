@@ -176,7 +176,7 @@ class JoinGame(GameWindow):
                 self.player_info_group.clear_players()
                 for (
                     player_name
-                ) in self.clicked_game_session_tile.player_id_usernames_map.values():
+                ) in game_session.get("player_id_name_map").values():
                     self.player_info_group.add_player_tile(player_name)
 
         for removed_game_session_id in removed_game_sessions.keys():
