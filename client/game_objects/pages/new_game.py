@@ -1,9 +1,8 @@
 import client
 from client.game_objects.cards.card_reader import CardReader
 from client.game_objects.custom_exceptions.no_such_card_exception import NoSuchCardException
+from client.game_objects.groups.condition_cards_group import ConditionCardsGroup
 from client.game_objects.pages.game_window import GameWindow
-from client.game_objects.tiles.tile import Tile
-from client.utils import common
 
 
 class NewGame(GameWindow):
@@ -16,41 +15,33 @@ class NewGame(GameWindow):
 
         self.number_cards = []
 
-        self.draw_pile_tile = None
+        self.condition_cards_group = None
 
         self.build()
 
     def build(self):
         self.build_new_game_background()
 
-        self.build_draw_pile()
-
     def resize(self):
         super().resize()
 
-        self.set_draw_pile_size()
+        self.set_condition_cards_size()
 
-    def build_draw_pile(self):
-        surface = common.get_image("card_back.png")
-
-        self.draw_pile_tile = Tile(
-            "draw_pile",
-            surface,
+    def build_draw_pile(self, condition_cards):
+        self.condition_cards_group = ConditionCardsGroup(
+            "condition_cards_group",
+            "condition_card",
             self.event_handler.screen,
-            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_MEDIUM,
-            0,
-            0,
+            condition_cards,
         )
 
-        self.set_draw_pile_size()
+        self.set_condition_cards_size()
 
-    def set_draw_pile_size(self):
-        if not self.draw_pile_tile:
+    def set_condition_cards_size(self):
+        if not self.condition_cards_group:
             return
 
-        self.draw_pile_tile.resize()
-        self.draw_pile_tile.rect.centerx = self.event_handler.screen_rect.centerx
-        self.draw_pile_tile.rect.centery = self.event_handler.screen_rect.centery
+        self.condition_cards_group.resize()
 
     def open(self, **kwargs):
         super().open()
@@ -59,6 +50,12 @@ class NewGame(GameWindow):
 
         for card in cr.cards:
             self.non_played_condition_cards[card.id] = card
+
+    def load_condition_cards(self, card_ids):
+        for card_id in card_ids:
+            self.current_drawn_condition_cards[card_id] = self.non_played_condition_cards.pop(card_id)
+
+        self.build_draw_pile(self.current_drawn_condition_cards.values())
 
     def draw_condition_card(self, card_id):
         card = self.non_played_condition_cards.pop(card_id)
@@ -86,4 +83,5 @@ class NewGame(GameWindow):
     def blit(self):
         super().blit()
 
-        self.event_handler.screen.blit(self.draw_pile_tile.image, self.draw_pile_tile.rect)
+        if self.condition_cards_group:
+            self.condition_cards_group.blit()

@@ -189,6 +189,8 @@ class EventHandler(Singleton):
             self.current_window.remove_player(message.get("player_id"))
         if message_type == "start_game":
             self.current_window.start_game()
+        if message_type == "give_condition_cards":
+            self.current_window.load_condition_cards(message.get("condition_card_ids"))
 
     def open_full_screen(self):
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
