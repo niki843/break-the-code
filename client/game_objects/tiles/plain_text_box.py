@@ -26,6 +26,7 @@ class PlainTextTile(Tile):
             tile_addition_height,
         )
 
+        self.original_text = text_to_display
         self.text = text_to_display
         self.text_surface = None
         self.text_rect = None

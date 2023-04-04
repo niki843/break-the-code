@@ -103,6 +103,10 @@ class Lobby(GameWindow):
         if not self.host_name:
             raise PlayerNotFoundException()
 
+    def remove_player(self, player_id):
+        self.players_id_username_map.pop(player_id)
+        self.player_info_group.remove_player(self.players_id_username_map.get(player_id))
+
     def blit(self):
         super().blit()
         self.event_handler.screen.blit(self.back_tile.image, self.back_tile.rect)

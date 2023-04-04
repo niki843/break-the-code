@@ -117,6 +117,13 @@ class PlayerInfoGroup:
                 self.player_name_tiles[i].text_rect,
             )
 
+    def remove_player(self, player_name):
+        name_tile = [name_tile for name_tile in self.player_name_tiles if name_tile.original_text == player_name][0]
+        index = self.player_name_tiles.index(name_tile)
+        self.player_image_tiles.pop(index)
+        self.player_name_tiles.pop(index)
+        self.connected_players -= 1
+
     def clear_players(self):
         self.player_image_tiles = []
         self.player_name_tiles = []
