@@ -1,4 +1,3 @@
-import client
 from client.game_objects.tiles.tile import Tile
 from client.utils import common
 
