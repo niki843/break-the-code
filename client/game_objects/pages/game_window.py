@@ -2,7 +2,7 @@ import client
 from pygame.sprite import LayeredUpdates
 
 from client.game_objects.tiles.multiline_text_tile import MultilineTextTile
-from client.game_objects.tiles.player_info_group import PlayerInfoGroup
+from client.game_objects.groups.player_info_group import PlayerInfoGroup
 from client.game_objects.tiles.tile import Tile
 from client.utils import common
 

@@ -3,7 +3,7 @@ import copy
 from collections import OrderedDict
 
 import client
-from client.game_objects.tiles.game_sessions_group import GameSessionsGroup
+from client.game_objects.groups.game_sessions_group import GameSessionsGroup
 from client.utils import common
 
 from client.game_objects.pages.game_window import GameWindow
