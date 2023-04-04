@@ -1,3 +1,4 @@
+import client
 from client.game_objects.cards.card_reader import CardReader
 from client.game_objects.custom_exceptions.no_such_card_exception import NoSuchCardException
 from client.game_objects.pages.game_window import GameWindow
@@ -37,8 +38,8 @@ class NewGame(GameWindow):
 
         self.current_drawn_condition_cards[card.id] = card
 
-    def play_card(self):
-        pass
+    def play_card(self, card_id):
+        self.event_handler.server_communication_manager.play_condition_card(card_id)
 
     def remove_played_card(self, card_id):
         card = self.current_drawn_condition_cards.pop(card_id)
@@ -49,7 +50,8 @@ class NewGame(GameWindow):
         self.played_condition_cards[card_id] = card
 
     def activate_tile(self, tile, event):
-        pass
+        if tile.name == "condition_card" and event.button == client.LEFT_BUTTON_CLICK:
+            pass
 
     def blit(self):
         super().blit()
