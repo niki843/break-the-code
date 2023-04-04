@@ -1,4 +1,4 @@
-from enum import IntEnum, auto
+from enum import IntEnum, Enum, auto
 
 
 class Colors(IntEnum):
@@ -13,3 +13,10 @@ class Colors(IntEnum):
             return "White"
         else:
             return "Green"
+
+
+class Position(Enum):
+    LEFT = auto()
+    RIGHT = auto()
+    TOP = auto()
+    BOTTOM = auto

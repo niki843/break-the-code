@@ -37,7 +37,7 @@ class NewGame(GameWindow):
             "draw_pile",
             surface,
             self.event_handler.screen,
-            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMEDIUM,
+            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_MEDIUM,
             0,
             0,
         )
