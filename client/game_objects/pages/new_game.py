@@ -2,6 +2,8 @@ import client
 from client.game_objects.cards.card_reader import CardReader
 from client.game_objects.custom_exceptions.no_such_card_exception import NoSuchCardException
 from client.game_objects.pages.game_window import GameWindow
+from client.game_objects.tiles.tile import Tile
+from client.utils import common
 
 
 class NewGame(GameWindow):
@@ -14,13 +16,41 @@ class NewGame(GameWindow):
 
         self.number_cards = []
 
+        self.draw_pile_tile = None
+
         self.build()
 
     def build(self):
         self.build_new_game_background()
 
+        self.build_draw_pile()
+
     def resize(self):
         super().resize()
+
+        self.set_draw_pile_size()
+
+    def build_draw_pile(self):
+        surface = common.get_image("card_back.png")
+
+        self.draw_pile_tile = Tile(
+            "draw_pile",
+            surface,
+            self.event_handler.screen,
+            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMEDIUM,
+            0,
+            0,
+        )
+
+        self.set_draw_pile_size()
+
+    def set_draw_pile_size(self):
+        if not self.draw_pile_tile:
+            return
+
+        self.draw_pile_tile.resize()
+        self.draw_pile_tile.rect.centerx = self.event_handler.screen_rect.centerx
+        self.draw_pile_tile.rect.centery = self.event_handler.screen_rect.centery
 
     def open(self, **kwargs):
         super().open()
@@ -55,3 +85,5 @@ class NewGame(GameWindow):
 
     def blit(self):
         super().blit()
+
+        self.event_handler.screen.blit(self.draw_pile_tile.image, self.draw_pile_tile.rect)
