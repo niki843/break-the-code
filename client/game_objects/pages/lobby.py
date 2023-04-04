@@ -136,7 +136,6 @@ class Lobby(GameWindow):
         self.set_player_info_group_size()
 
     def close(self):
-        self.event_handler.server_communication_manager.send_exit_game_message()
         self.player_info_group.clear_players()
 
     def replace_host(self, player_id):
@@ -159,15 +158,15 @@ class Lobby(GameWindow):
 
     def activate_tile(self, tile, event):
         if tile.name == self.back_tile.name:
+            self.event_handler.server_communication_manager.send_exit_game_message()
             self.close()
             self.event_handler.menu.open()
             self.am_i_host = False
-        if tile.name == self.start_game_tile.name and self.am_i_host:
+        if tile.name == self.start_game_tile.name and self.am_i_host and len(self.players_id_username_map.keys()) >= 3:
             player_info_group = self.player_info_group
             host_id = self.host_id
             host_username = self.host_name
             self.close()
-            self.event_handler.server_communication_manager.send_start_game_message()
             self.event_handler.new_game.open(
                 player_info_group=player_info_group,
                 host_id=host_id,

@@ -30,15 +30,17 @@ class GameWindow:
 
     def build_background(self):
         surface = common.get_image("background.png")
-
-        self.background_image = Tile(
-            "background", surface, self.event_handler.screen, 100, 0, 0
-        )
-        self.set_background_size()
+        self.load_background_and_resize(surface)
 
     def build_clear_background(self):
         surface = common.get_image("clear_bgr.png")
+        self.load_background_and_resize(surface)
 
+    def build_new_game_background(self):
+        surface = common.get_image("new_game_bgr.png")
+        self.load_background_and_resize(surface)
+
+    def load_background_and_resize(self, surface):
         self.background_image = Tile(
             "background", surface, self.event_handler.screen, 100, 0, 0
         )
