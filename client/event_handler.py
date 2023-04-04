@@ -183,6 +183,8 @@ class EventHandler(Singleton):
                 )
         if message_type == "game_created":
             self.current_window.update_game_session_id(message.get("game_session_id"))
+        if message_type == "host_disconnected":
+            self.current_window.replace_host(message.get("player_id"))
 
     def open_full_screen(self):
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)

@@ -333,9 +333,6 @@ async def send_message_and_close_connection(websocket):
 
 # Handles all new incoming requests and distributes to appropriate functions
 async def handler(websocket):
-    # message = await websocket.recv()
-    event_msg = None
-    event_msg_type = None
     CURRENT_WEBSOCKET_CONNECTIONS.append(websocket)
 
     async for message in websocket:
@@ -360,8 +357,6 @@ async def handler(websocket):
             )
             continue
 
-        # TODO: Make sure that when exiting join_game and new_game
-        #  the connection is kept alive and we can still call get_current_games
         if event_msg and event_msg_type == "join_game":
             print("JOINING GAME")
             await join_game(

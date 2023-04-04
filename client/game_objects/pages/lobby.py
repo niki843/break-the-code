@@ -1,6 +1,7 @@
 from client.game_objects.custom_exceptions.game_sessionId_not_provided_exception import (
     GameSessionIdNotProvidedException,
 )
+from client.game_objects.custom_exceptions.player_not_found_exception import PlayerNotFoundException
 from client.game_objects.custom_exceptions.player_usernames_not_provided_exception import (
     PlayerUsernamesNotProvidedException,
 )
@@ -16,7 +17,7 @@ class Lobby(GameWindow):
         self.game_session_name = None
         self.host_name = None
         self.host_id = None
-        self.players_id_username_map = []
+        self.players_id_username_map = {}
 
         self.player_info_group = None
 
@@ -56,6 +57,7 @@ class Lobby(GameWindow):
             self.host_name = self.event_handler.server_communication_manager.player_username
 
             self.players_id_username_map[self.host_id] = self.host_name
+            self.add_player(self.host_id, self.host_name)
         else:
             self.players_id_username_map = kwargs.get("player_id_usernames_map")
             self.game_session_id = kwargs.get("game_session_id")
@@ -72,9 +74,11 @@ class Lobby(GameWindow):
             self.event_handler.server_communication_manager.send_join_game_message(
                 self.game_session_id
             )
+            self.add_player(self.event_handler.server_communication_manager.player_id, self.event_handler.server_communication_manager.player_username)
 
     def add_player(self, player_id, player_name):
         self.players_id_username_map[player_id] = player_name
+        self.player_info_group.add_player_tile(player_name)
 
     def update_game_session_id(self, game_session_id):
         self.game_session_id = game_session_id
@@ -91,6 +95,13 @@ class Lobby(GameWindow):
         if tile.name == self.back_tile.name:
             self.close()
             self.event_handler.menu.open()
+
+    def replace_host(self, player_id):
+        self.host_id = player_id
+        self.host_name = self.players_id_username_map.get("player_id")
+
+        if not self.host_name:
+            raise PlayerNotFoundException()
 
     def blit(self):
         super().blit()

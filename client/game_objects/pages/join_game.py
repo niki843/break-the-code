@@ -295,12 +295,12 @@ class JoinGame(GameWindow):
                 # calling close before anything else to stop the automated server call for refreshing game sessions
                 self.close()
 
+                self.event_handler.lobby.set_player_info_group(player_info_group)
                 self.event_handler.lobby.open(
                     game_session_id=clicked_game_session_tile.game_session_id,
                     player_id_usernames_map=clicked_game_session_tile.player_id_usernames_map,
                     game_session_name=clicked_game_session_tile.game_session_name,
                 )
-                self.event_handler.lobby.set_player_info_group(player_info_group)
 
         if (
             tile.name
