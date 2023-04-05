@@ -1,9 +1,14 @@
+from types import SimpleNamespace
+
 import client
 from client.game_objects.cards.card_reader import CardReader
 from client.game_objects.custom_exceptions.no_such_card_exception import NoSuchCardException
 from client.game_objects.groups.condition_cards_group import ConditionCardsGroup
 from client.game_objects.groups.player_number_tiles_group import PlayerNumberTilesGroup
 from client.game_objects.pages.game_window import GameWindow
+from client.game_objects.tiles.tile import Tile
+from client.utils import common
+from client.utils.enums import Colors
 
 
 class NewGame(GameWindow):
@@ -21,6 +26,8 @@ class NewGame(GameWindow):
 
         self.condition_cards_group = None
         self.player_number_tiles_group = None
+
+        self.shown_cards = []
 
         self.build()
 
@@ -57,6 +64,7 @@ class NewGame(GameWindow):
             self.event_handler.screen,
             self.event_handler.screen_rect,
             self.player_info_group.connected_players,
+            self.number_cards,
         )
 
         self.set_player_number_group_size()
@@ -77,8 +85,6 @@ class NewGame(GameWindow):
         self.host_id = kwargs.get("host_id")
         self.host_username = kwargs.get("host_username")
 
-        self.build_player_number_group()
-
         for card in cr.cards:
             self.non_played_condition_cards[card.id] = card
 
@@ -87,6 +93,20 @@ class NewGame(GameWindow):
             self.current_drawn_condition_cards[card_id] = self.non_played_condition_cards.pop(card_id)
 
         self.build_draw_pile(self.current_drawn_condition_cards.values())
+
+    def load_number_cards(self, number_cards):
+        for card in number_cards:
+            self.number_cards.append(
+                Tile(
+                    "number_card",
+                    common.get_image(f"{card.get('number')}_{Colors(card.get('color'))}.png"),
+                    self.event_handler.screen,
+                    5,
+                    0,
+                    0,
+                )
+            )
+        self.build_player_number_group()
 
     def draw_condition_card(self, card_id):
         card = self.non_played_condition_cards.pop(card_id)
@@ -117,4 +137,5 @@ class NewGame(GameWindow):
         if self.condition_cards_group:
             self.condition_cards_group.blit()
 
-        self.player_number_tiles_group.blit()
+        if self.player_number_tiles_group:
+            self.player_number_tiles_group.blit()
