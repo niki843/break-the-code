@@ -42,7 +42,7 @@ class ConditionCardsGroup:
                 0,
             )
             self.condition_card_tiles.append(tile)
-            self.condition_card_id_tile_map[card.id] = tile
+            self.condition_card_id_tile_map[str(card.id)] = tile
 
     def center_condition_cards(self):
         self.condition_card_tiles[0].rect.centerx = self.center_card.rect.centerx

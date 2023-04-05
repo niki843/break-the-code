@@ -29,5 +29,8 @@ PLAY_TILE for [1, 16, 21]
 {"type": "play_tile", "condition_card_id": 1, "card_number_choice": 8}
 
 TILES WITH CARD_NUNBER_CHOICE
-16- 1,2; 21- 3, 4; 1- 8,9; 2- 6,7
+16 - 1,2;
+21 - 3,4;
+1  - 8,9;
+2  - 6,7
 

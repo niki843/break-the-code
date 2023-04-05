@@ -28,6 +28,7 @@ class NewGame(GameWindow):
         self.player_number_tiles_group = None
 
         self.shown_cards = []
+        self.last_played_condition_card = None
 
         self.build()
 
@@ -42,16 +43,12 @@ class NewGame(GameWindow):
         self.set_player_number_group_size()
 
     def build_draw_pile(self, condition_cards):
-        if self.condition_cards_group:
-            missing_card_id = self.condition_cards_group.missing_card([card.id for card in condition_cards])
-            # self.condition_cards_group.replace_card(missing_card_id)
-        else:
-            self.condition_cards_group = ConditionCardsGroup(
-                "condition_cards_group",
-                "condition_card",
-                self.event_handler.screen,
-                condition_cards,
-            )
+        self.condition_cards_group = ConditionCardsGroup(
+            "condition_cards_group",
+            "condition_card",
+            self.event_handler.screen,
+            condition_cards,
+        )
 
         self.set_condition_cards_size()
 
@@ -93,6 +90,24 @@ class NewGame(GameWindow):
             self.non_played_condition_cards[card.id] = card
 
     def load_condition_cards(self, card_ids):
+        if self.last_played_condition_card:
+            new_card_id = card_ids[-1]
+            card = self.non_played_condition_cards.pop(int(new_card_id))
+            self.current_drawn_condition_cards[new_card_id] = card
+
+            new_tile = Tile(
+                f"condition_card-{new_card_id}",
+                common.get_image(f"card{new_card_id}.png"),
+                self.event_handler.screen,
+                17,
+                0,
+                0,
+            )
+            self.condition_cards_group.replace_card(self.last_played_condition_card, new_tile)
+            self.tiles_group.add(new_tile)
+            self.last_played_condition_card = None
+            return
+
         for card_id in card_ids:
             if card_id in self.current_drawn_condition_cards:
                 continue
@@ -139,6 +154,8 @@ class NewGame(GameWindow):
         self.played_condition_cards[card_id] = card
 
         card = [card for card in self.condition_cards_group.condition_card_tiles if card.name == f"condition_card-{card_id}"][0]
+
+        self.last_played_condition_card = card
 
         self.tiles_group.remove(card)
 
