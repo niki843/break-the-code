@@ -97,7 +97,7 @@ class PlayerNumberTilesGroup:
             self.screen.get_width() * 0.01
         )
         top = self.screen_rect.top + (
-            self.screen.get_height() * 0.35
+            self.screen.get_height() * 0.3
         )
         for card in self.left_letter_cards:
             card.rect.left = left
@@ -122,7 +122,7 @@ class PlayerNumberTilesGroup:
             self.screen.get_width() * 0.01
         )
         bottom = self.screen_rect.bottom - (
-            self.screen.get_height() * 0.35
+            self.screen.get_height() * 0.3
         )
         for card in self.right_letter_cards:
             card.rect.right = right

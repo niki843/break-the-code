@@ -63,4 +63,4 @@ class ServerCommunicationManager(Singleton):
         client.LOOP.create_task(send_message(self.START_GAME))
 
     def play_condition_card(self, card_id):
-        client.LOOP.create_task(send_message(self.START_GAME.format(card_id)))
+        client.LOOP.create_task(send_message(self.PLAY_CARD.format(card_id)))

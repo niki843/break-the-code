@@ -1,3 +1,5 @@
+import numpy
+
 from client.game_objects.tiles.tile import Tile
 from client.utils import common
 
@@ -5,6 +7,7 @@ from client.utils import common
 class ConditionCardsGroup:
     def __init__(self, group_name, card_name, screen, condition_cards):
         self.condition_card_tiles = []
+        self.condition_card_id_tile_map = {}
         self.group_name = group_name
         self.card_name = card_name
         self.screen = screen
@@ -28,17 +31,18 @@ class ConditionCardsGroup:
 
     def load_new_condition_card_tiles(self, condition_cards):
         self.condition_card_tiles = []
+        self.condition_card_id_tile_map = {}
         for card in condition_cards:
-            self.condition_card_tiles.append(
-                Tile(
-                    self.card_name,
-                    common.get_image(f"card{card.id}.png"),
-                    self.screen,
-                    17,
-                    0,
-                    0,
-                )
+            tile = Tile(
+                f"{self.card_name}-{card.id}",
+                common.get_image(f"card{card.id}.png"),
+                self.screen,
+                17,
+                0,
+                0,
             )
+            self.condition_card_tiles.append(tile)
+            self.condition_card_id_tile_map[card.id] = tile
 
     def center_condition_cards(self):
         self.condition_card_tiles[0].rect.centerx = self.center_card.rect.centerx
@@ -74,12 +78,24 @@ class ConditionCardsGroup:
         self.condition_card_tiles[5].rect.centerx = self.condition_card_tiles[4].rect.centerx
 
     def replace_card(self, old_card_tile, new_card_tile):
+        self.condition_card_id_tile_map.pop(self.get_card_id(old_card_tile))
         self.condition_card_tiles[self.condition_card_tiles.index(old_card_tile)] = new_card_tile
+        self.condition_card_id_tile_map[self.get_card_id(new_card_tile)] = new_card_tile
         new_card_tile.rect.centerx = old_card_tile.rect.centerx
         new_card_tile.rect.centery = old_card_tile.rect.centery
 
     def remove_card(self, card_tile):
         self.condition_card_tiles[self.condition_card_tiles.index(card_tile)] = None
+        self.condition_card_id_tile_map.pop(self.get_card_id(card_tile))
+
+    def missing_card(self, card_ids):
+        missing = numpy.setdiff1d(self.condition_card_id_tile_map.keys(), card_ids)
+        if len(missing) > 1:
+            raise Exception("too many missing cards")
+        return missing[0]
+
+    def get_card_id(self, card_tile):
+        return card_tile.name.split("-")[1]
 
     def blit(self):
         self.screen.blit(self.center_card.image, self.center_card.rect)

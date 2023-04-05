@@ -42,12 +42,16 @@ class NewGame(GameWindow):
         self.set_player_number_group_size()
 
     def build_draw_pile(self, condition_cards):
-        self.condition_cards_group = ConditionCardsGroup(
-            "condition_cards_group",
-            "condition_card",
-            self.event_handler.screen,
-            condition_cards,
-        )
+        if self.condition_cards_group:
+            missing_card_id = self.condition_cards_group.missing_card([card.id for card in condition_cards])
+            # self.condition_cards_group.replace_card(missing_card_id)
+        else:
+            self.condition_cards_group = ConditionCardsGroup(
+                "condition_cards_group",
+                "condition_card",
+                self.event_handler.screen,
+                condition_cards,
+            )
 
         self.set_condition_cards_size()
 
@@ -90,9 +94,13 @@ class NewGame(GameWindow):
 
     def load_condition_cards(self, card_ids):
         for card_id in card_ids:
-            self.current_drawn_condition_cards[card_id] = self.non_played_condition_cards.pop(card_id)
+            if card_id in self.current_drawn_condition_cards:
+                continue
+            card = self.non_played_condition_cards.pop(int(card_id))
+            self.current_drawn_condition_cards[card_id] = card
 
         self.build_draw_pile(self.current_drawn_condition_cards.values())
+        self.tiles_group.add(self.condition_cards_group.condition_card_tiles)
 
     def load_number_cards(self, number_cards):
         for card in number_cards:
@@ -116,8 +124,11 @@ class NewGame(GameWindow):
 
         self.current_drawn_condition_cards[card.id] = card
 
+        self.tiles_group.add(card)
+
     def play_card(self, card_id):
         self.event_handler.server_communication_manager.play_condition_card(card_id)
+        self.remove_played_card(card_id)
 
     def remove_played_card(self, card_id):
         card = self.current_drawn_condition_cards.pop(card_id)
@@ -127,9 +138,13 @@ class NewGame(GameWindow):
 
         self.played_condition_cards[card_id] = card
 
+        card = [card for card in self.condition_cards_group.condition_card_tiles if card.name == f"condition_card-{card_id}"][0]
+
+        self.tiles_group.remove(card)
+
     def activate_tile(self, tile, event):
-        if tile.name == "condition_card" and event.button == client.LEFT_BUTTON_CLICK:
-            pass
+        if tile.name.startswith("condition_card") and event.button == client.LEFT_BUTTON_CLICK:
+            self.play_card(int(tile.name.split("-")[1]))
 
     def blit(self):
         super().blit()
