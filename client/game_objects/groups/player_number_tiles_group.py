@@ -73,7 +73,7 @@ class PlayerNumberTilesGroup:
 
     def load_card_icons(self):
         for i in range(0, self.cards_amount):
-            card = common.load_number_tile(f"{chr(97 + i)}_card", f"{chr(97 + i)}.png", self.screen)
+            card = common.load_number_tile(f"{chr(97 + i)}_card", f"{chr(97 + i)}_top.png", self.screen)
             self.top_letter_cards.append(copy(card))
 
             card_left = common.load_left_right_number_tile(f"{chr(97 + i)}_card", f"{chr(97 + i)}_left.png", self.screen)
@@ -97,7 +97,7 @@ class PlayerNumberTilesGroup:
             self.screen.get_width() * 0.01
         )
         top = self.screen_rect.top + (
-            self.screen.get_height() * 0.3
+            self.screen.get_height() * 0.35
         )
         for card in self.left_letter_cards:
             card.rect.left = left
@@ -121,15 +121,15 @@ class PlayerNumberTilesGroup:
         right = self.user_icons.get(Position.RIGHT).rect.left - (
             self.screen.get_width() * 0.01
         )
-        top = self.screen_rect.top + (
-            self.screen.get_height() * 0.3
+        bottom = self.screen_rect.bottom - (
+            self.screen.get_height() * 0.35
         )
         for card in self.right_letter_cards:
             card.rect.right = right
-            card.rect.top = top
+            card.rect.bottom = bottom
 
             right = card.rect.right
-            top = card.rect.bottom + (
+            bottom = card.rect.top - (
                 self.screen.get_height() * 0.02
             )
 
