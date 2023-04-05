@@ -28,7 +28,6 @@ class NewGame(GameWindow):
         self.player_number_tiles_group = None
 
         self.shown_cards = []
-        self.last_played_condition_card = None
 
         self.build()
 
@@ -117,7 +116,23 @@ class NewGame(GameWindow):
         self.tiles_group.add(self.condition_cards_group.condition_card_tiles)
 
     def replace_card_and_give_result(self, card_id, next_card_id, card_description):
-        pass
+        self.remove_played_card(card_id)
+        self.draw_condition_card(next_card_id)
+
+        new_card = Tile(
+            f"condition_card-{next_card_id}",
+            common.get_image(f"card{next_card_id}.png"),
+            self.event_handler.screen,
+            17,
+            0,
+            0,
+        )
+
+        old_card = self.condition_cards_group.get_tile_by_id(str(card_id))
+
+        self.condition_cards_group.replace_card(old_card, new_card)
+
+        self.tiles_group.add(new_card)
 
     def draw_condition_card(self, card_id):
         card = self.non_played_condition_cards.pop(card_id)
@@ -127,11 +142,8 @@ class NewGame(GameWindow):
 
         self.current_drawn_condition_cards[card.id] = card
 
-        self.tiles_group.add(card)
-
     def play_card(self, card_id):
         self.event_handler.server_communication_manager.play_condition_card(card_id)
-        self.remove_played_card(card_id)
 
     def remove_played_card(self, card_id):
         card = self.current_drawn_condition_cards.pop(card_id)
@@ -141,15 +153,12 @@ class NewGame(GameWindow):
 
         self.played_condition_cards[card_id] = card
 
-        card = [card for card in self.condition_cards_group.condition_card_tiles if card.name == f"condition_card-{card_id}"][0]
-
-        self.last_played_condition_card = card
-
-        self.tiles_group.remove(card)
+        card_tile = self.condition_cards_group.get_tile_by_id(card_id)
+        self.tiles_group.remove(card_tile)
 
     def activate_tile(self, tile, event):
         if tile.name.startswith("condition_card") and event.button == client.LEFT_BUTTON_CLICK:
-            self.play_card(int(tile.name.split("-")[1]))
+            self.play_card(int(self.condition_cards_group.get_card_id(tile)))
 
     def blit(self):
         super().blit()

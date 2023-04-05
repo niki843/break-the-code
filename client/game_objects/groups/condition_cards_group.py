@@ -97,6 +97,9 @@ class ConditionCardsGroup:
     def get_card_id(self, card_tile):
         return card_tile.name.split("-")[1]
 
+    def get_tile_by_id(self, card_id: str):
+        return self.condition_card_id_tile_map.get(card_id)
+
     def blit(self):
         self.screen.blit(self.center_card.image, self.center_card.rect)
         for card in self.condition_card_tiles:
