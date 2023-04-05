@@ -46,6 +46,7 @@ class GameBuilder:
             if card.id == condition_card_id:
                 end_game = EndGame.CONTINUE
                 self.__current_condition_cards.remove(card)
+                new_card = None
                 # In the case that all the cards are drawn the game should play until the last card is called
                 if len(self.condition_cards) != 0:
                     new_card = random.choice(self.condition_cards)
@@ -56,7 +57,7 @@ class GameBuilder:
                 if len(self.__current_condition_cards) == 0:
                     end_game = EndGame.ALL_CARDS_PLAYED
 
-                return card, end_game
+                return card, new_card, end_game
 
     def guess_cards(self, player_id, player_guess):
         if (self.game_type == GameTypes.FOUR_PLAYER and len(player_guess) != 4) or (

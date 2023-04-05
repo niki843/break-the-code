@@ -193,6 +193,8 @@ class EventHandler(Singleton):
             self.current_window.load_condition_cards(message.get("condition_card_ids"))
         if message_type == "give_number_cards":
             self.current_window.load_number_cards(message.get("cards"))
+        if message_type == "card_condition_result":
+            self.current_window.replace_card_and_give_result(message.get("card_id"), message.get("next_card_id"), message.get("card_description"))
 
     def open_full_screen(self):
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)

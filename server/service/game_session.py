@@ -116,7 +116,7 @@ class GameSession:
         ):
             raise IncorrectCardNumberInput(self.get_player_name_by_id(player_id))
 
-        card, end_game = self.__game_board.play_condition_card(
+        card, new_card, end_game = self.__game_board.play_condition_card(
             self.__connected_players[player_id], condition_card_id
         )
 
@@ -136,7 +136,10 @@ class GameSession:
         event = {
             "type": "card_condition_result",
             "message": "Returning results from played card condition",
+            "card_id": card.id,
+            "next_card_id": new_card.id,
             "card_condition": card.description,
+            "player_results": [],
         }
 
         self.__played_condition_cards_and_results.append(event)
@@ -150,7 +153,7 @@ class GameSession:
                     event["card_number_choice"] = card_number_choice
                 else:
                     matching_card_condition = card.check_condition(player)
-                event[player.get_id()] = matching_card_condition
+                event.get("player_results").append({"player_id": player.get_id(), "player_name": player.get_name(), "matching_cards": matching_card_condition})
 
         # change the current player at hand to the next in line
         self.next_player()
@@ -158,7 +161,7 @@ class GameSession:
         websockets.broadcast(
             self.__connected_player_connections.values(), json.dumps(event)
         )
-        await self.give_out_condition_cards()
+        # await self.give_out_condition_cards()
 
     async def send_message_to_all_others(self, player_id, message_content):
         event = {

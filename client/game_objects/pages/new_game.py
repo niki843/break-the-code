@@ -58,6 +58,20 @@ class NewGame(GameWindow):
 
         self.condition_cards_group.resize()
 
+    def load_number_cards(self, number_cards):
+        for card in number_cards:
+            self.number_cards.append(
+                Tile(
+                    "number_card",
+                    common.get_image(f"{card.get('number')}_{Colors(card.get('color'))}.png"),
+                    self.event_handler.screen,
+                    5,
+                    0,
+                    0,
+                )
+            )
+        self.build_player_number_group()
+
     def build_player_number_group(self):
         self.player_number_tiles_group = PlayerNumberTilesGroup(
             "player_number_group",
@@ -90,22 +104,7 @@ class NewGame(GameWindow):
             self.non_played_condition_cards[card.id] = card
 
     def load_condition_cards(self, card_ids):
-        if self.last_played_condition_card:
-            new_card_id = card_ids[-1]
-            card = self.non_played_condition_cards.pop(int(new_card_id))
-            self.current_drawn_condition_cards[new_card_id] = card
-
-            new_tile = Tile(
-                f"condition_card-{new_card_id}",
-                common.get_image(f"card{new_card_id}.png"),
-                self.event_handler.screen,
-                17,
-                0,
-                0,
-            )
-            self.condition_cards_group.replace_card(self.last_played_condition_card, new_tile)
-            self.tiles_group.add(new_tile)
-            self.last_played_condition_card = None
+        if self.current_drawn_condition_cards or self.played_condition_cards:
             return
 
         for card_id in card_ids:
@@ -117,19 +116,8 @@ class NewGame(GameWindow):
         self.build_draw_pile(self.current_drawn_condition_cards.values())
         self.tiles_group.add(self.condition_cards_group.condition_card_tiles)
 
-    def load_number_cards(self, number_cards):
-        for card in number_cards:
-            self.number_cards.append(
-                Tile(
-                    "number_card",
-                    common.get_image(f"{card.get('number')}_{Colors(card.get('color'))}.png"),
-                    self.event_handler.screen,
-                    5,
-                    0,
-                    0,
-                )
-            )
-        self.build_player_number_group()
+    def replace_card_and_give_result(self, card_id, next_card_id, card_description):
+        pass
 
     def draw_condition_card(self, card_id):
         card = self.non_played_condition_cards.pop(card_id)
