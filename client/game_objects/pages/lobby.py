@@ -1,3 +1,5 @@
+from copy import copy
+
 import client
 from client.game_objects.custom_exceptions.game_sessionId_not_provided_exception import (
     GameSessionIdNotProvidedException,
@@ -157,7 +159,7 @@ class Lobby(GameWindow):
         self.players_id_username_map.pop(player_id)
 
     def start_game(self):
-        player_info_group = self.player_info_group
+        player_info_group = copy(self.player_info_group)
         host_id = self.host_id
         host_username = self.host_name
         self.close()

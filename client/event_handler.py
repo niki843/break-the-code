@@ -154,7 +154,7 @@ class EventHandler(Singleton):
             window.resize()
 
     def change_player_username(self, username):
-        self.player_username = username
+        self.server_communication_manager.player_username = username
         common.change_username(username)
 
     def handle_mouse_click(self, event):

@@ -2,7 +2,7 @@ NEW_GAME:
 {"type": "new_game", "player_id": "0ed61f48-2761-4c82-9460-788af1f52795", "player_name": "first_player", "room_name": "test1"}
 
 JOIN_GAME FIRST PLAYER
-{"type": "join_game", "player_id": "0ed61f48-2761-4c82-9460-788af1f52795", "player_name": "first_player", "game_session_id": "9906061a-508a-4b9f-91ff-11055baeb6d5"}
+{"type": "join_game", "player_id": "0ed61f48-2761-4c82-9460-788af1f52795", "player_name": "first_player", "game_session_id": ""}
 
 START_GAME:
 {"type": "start_game"}

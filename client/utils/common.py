@@ -3,6 +3,8 @@ import client
 import os
 import uuid
 
+from client.game_objects.tiles.tile import Tile
+
 
 def get_percentage_multiplier_from_percentage(percentage: float):
     return percentage / 100
@@ -64,3 +66,14 @@ def generate_transparent_image(width, height):
     )
     transparent_image = transparent_image.convert_alpha()
     return transparent_image
+
+
+def load_tiny_tile(tile_name, img_path, screen):
+    return Tile(
+        tile_name,
+        get_image(img_path),
+        screen,
+        client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_TINY,
+        0,
+        0
+    )
