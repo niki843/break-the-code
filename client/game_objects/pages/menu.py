@@ -64,7 +64,7 @@ class Menu(GameWindow):
         self.join_game_tile = Tile(
             "join_game",
             surface,
-            self.event_handler.screen,
+            client.state_manager.screen,
             client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_MEDIUM,
             client.TILE_WIDTH_ADDITION,
             client.TILE_HEIGHT_ADDITION,
@@ -76,8 +76,8 @@ class Menu(GameWindow):
             return
 
         self.join_game_tile.resize()
-        self.join_game_tile.rect.centerx = self.event_handler.screen_rect.centerx
-        self.join_game_tile.rect.centery = self.event_handler.screen_rect.centery
+        self.join_game_tile.rect.centerx = client.state_manager.screen_rect.centerx
+        self.join_game_tile.rect.centery = client.state_manager.screen_rect.centery
         self.tiles_group.add(self.join_game_tile)
 
     def build_new_game(self):
@@ -85,7 +85,7 @@ class Menu(GameWindow):
         self.new_game_tile = Tile(
             "new_game",
             surface,
-            self.event_handler.screen,
+            client.state_manager.screen,
             client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_MEDIUM,
             client.TILE_WIDTH_ADDITION,
             client.TILE_HEIGHT_ADDITION,
@@ -97,7 +97,7 @@ class Menu(GameWindow):
             return
 
         self.new_game_tile.resize()
-        self.new_game_tile.rect.centerx = self.event_handler.screen_rect.centerx
+        self.new_game_tile.rect.centerx = client.state_manager.screen_rect.centerx
         self.new_game_tile.rect.bottom = (
             self.join_game_tile.rect.top - client.BETWEEN_TILES_SPACING
         )
@@ -108,7 +108,7 @@ class Menu(GameWindow):
         self.settings_tile = Tile(
             "settings",
             surface,
-            self.event_handler.screen,
+            client.state_manager.screen,
             client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_MEDIUM,
             client.TILE_WIDTH_ADDITION,
             client.TILE_HEIGHT_ADDITION,
@@ -120,7 +120,7 @@ class Menu(GameWindow):
             return
 
         self.settings_tile.resize()
-        self.settings_tile.rect.centerx = self.event_handler.screen_rect.centerx
+        self.settings_tile.rect.centerx = client.state_manager.screen_rect.centerx
         self.settings_tile.rect.top = (
             self.join_game_tile.rect.bottom + client.BETWEEN_TILES_SPACING
         )
@@ -131,7 +131,7 @@ class Menu(GameWindow):
         self.quit_tile = Tile(
             "quit_game",
             surface,
-            self.event_handler.screen,
+            client.state_manager.screen,
             client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_MEDIUM,
             client.TILE_WIDTH_ADDITION,
             client.TILE_HEIGHT_ADDITION,
@@ -144,11 +144,11 @@ class Menu(GameWindow):
 
         self.quit_tile.resize()
         self.quit_tile.rect.right = (
-            self.event_handler.screen_rect.right
+            client.state_manager.screen_rect.right
             - client.BETWEEN_TILE_AND_SCREEN_SPACING
         )
         self.quit_tile.rect.top = (
-            self.event_handler.screen_rect.bottom
+            client.state_manager.screen_rect.bottom
             - self.quit_tile.image.get_height()
             - client.BETWEEN_TILE_AND_SCREEN_SPACING
         )
@@ -159,7 +159,7 @@ class Menu(GameWindow):
         self.blured_tile = Tile(
             "blurr",
             blurr,
-            self.event_handler.screen,
+            client.state_manager.screen,
             100,
             0,
             0,
@@ -174,15 +174,15 @@ class Menu(GameWindow):
             return
 
         self.blured_tile.resize()
-        self.blured_tile.rect.centerx = self.event_handler.screen_rect.centerx
-        self.blured_tile.rect.centery = self.event_handler.screen_rect.centery
+        self.blured_tile.rect.centerx = client.state_manager.screen_rect.centerx
+        self.blured_tile.rect.centery = client.state_manager.screen_rect.centery
 
     def build_game_session_name_box(self):
         surface = common.get_image("create_game_window.png")
         self.game_session_name_box = Tile(
             "game_session_name_box",
             surface,
-            self.event_handler.screen,
+            client.state_manager.screen,
             55,
             0,
             0,
@@ -197,8 +197,8 @@ class Menu(GameWindow):
             return
 
         self.game_session_name_box.resize()
-        self.game_session_name_box.rect.centerx = self.event_handler.screen_rect.centerx
-        self.game_session_name_box.rect.centery = self.event_handler.screen_rect.centery
+        self.game_session_name_box.rect.centerx = client.state_manager.screen_rect.centerx
+        self.game_session_name_box.rect.centery = client.state_manager.screen_rect.centery
 
     def build_game_name_text_box(self):
         surface = common.get_image("non_selected_nickname.png")
@@ -208,7 +208,7 @@ class Menu(GameWindow):
             "game_name_input",
             "game_name_input",
             surface,
-            self.event_handler.screen,
+            client.state_manager.screen,
             43,
             0,
             0,
@@ -229,7 +229,7 @@ class Menu(GameWindow):
             self.game_session_name_box.rect.centerx
         )
         self.game_session_name_text.rect.top = self.game_session_name_box.rect.top + (
-            self.event_handler.screen.get_height() * 0.1
+            client.state_manager.screen.get_height() * 0.1
         )
         self.game_session_name_text.center()
 
@@ -241,7 +241,7 @@ class Menu(GameWindow):
         self.number_players_label = PlainTextTile(
             "number_of_players",
             transparent_image,
-            self.event_handler.screen,
+            client.state_manager.screen,
             40,
             0,
             0,
@@ -259,7 +259,7 @@ class Menu(GameWindow):
         self.number_players_label.resize()
         self.number_players_label.rect.left = self.game_session_name_text.rect.left
         self.number_players_label.rect.top = self.game_session_name_text.rect.bottom + (
-            self.event_handler.screen.get_height() * 0.03
+            client.state_manager.screen.get_height() * 0.03
         )
         self.number_players_label.center()
 
@@ -272,7 +272,7 @@ class Menu(GameWindow):
             first_tile_text="4",
             surface=surface,
             dropdown_name_text_map=name_text_map,
-            screen=self.event_handler.screen,
+            screen=client.state_manager.screen,
             size_percent=9,
             tile_addition_width=0,
             tile_addition_height=0,
@@ -292,7 +292,7 @@ class Menu(GameWindow):
         )
         self.number_players_dropdown.first_tile.rect.top = (
             self.game_session_name_text.rect.bottom
-            + (self.event_handler.screen.get_height() * 0.04)
+            + (client.state_manager.screen.get_height() * 0.04)
         )
         self.number_players_dropdown.center_dropdown()
 
@@ -304,7 +304,7 @@ class Menu(GameWindow):
         self.private_game_label = PlainTextTile(
             "private_game",
             transparent_image,
-            self.event_handler.screen,
+            client.state_manager.screen,
             40,
             0,
             0,
@@ -322,7 +322,7 @@ class Menu(GameWindow):
         self.private_game_label.resize()
         self.private_game_label.rect.left = self.number_players_label.rect.left
         self.private_game_label.rect.top = self.number_players_label.rect.bottom + (
-            self.event_handler.screen.get_height() * 0.03
+            client.state_manager.screen.get_height() * 0.03
         )
         self.private_game_label.center()
 
@@ -334,7 +334,7 @@ class Menu(GameWindow):
             name="toggle_button_off",
             next_name="toggle_button_on",
             current_surface=surface,
-            screen=self.event_handler.screen,
+            screen=client.state_manager.screen,
             size_percent=8,
             tile_addition_width=0,
             tile_addition_height=0,
@@ -355,7 +355,7 @@ class Menu(GameWindow):
         )
         self.private_game_toggle_button.rect.top = (
             self.number_players_dropdown.first_tile.rect.bottom
-            + (self.event_handler.screen.get_height() * 0.04)
+            + (client.state_manager.screen.get_height() * 0.04)
         )
 
     def build_cancel_button_tile(self):
@@ -366,7 +366,7 @@ class Menu(GameWindow):
             name="cancel_button",
             next_name="cancel_button",
             current_surface=surface,
-            screen=self.event_handler.screen,
+            screen=client.state_manager.screen,
             size_percent=client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
             tile_addition_width=0,
             tile_addition_height=0,
@@ -383,7 +383,7 @@ class Menu(GameWindow):
 
         self.cancel_button.resize()
         self.cancel_button.rect.bottom = self.game_session_name_box.rect.bottom - (
-            self.event_handler.screen.get_height() * 0.05
+            client.state_manager.screen.get_height() * 0.05
         )
         self.cancel_button.rect.left = self.game_session_name_text.rect.left
 
@@ -395,7 +395,7 @@ class Menu(GameWindow):
             name="apply_button",
             next_name="apply_button",
             current_surface=surface,
-            screen=self.event_handler.screen,
+            screen=client.state_manager.screen,
             size_percent=client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
             tile_addition_width=0,
             tile_addition_height=0,
@@ -417,36 +417,36 @@ class Menu(GameWindow):
     def blit(self):
         # Refresh the object on the screen so any runtime changes will be reflected
         super().blit()
-        self.event_handler.screen.blit(
+        client.state_manager.screen.blit(
             self.join_game_tile.image, self.join_game_tile.rect
         )
-        self.event_handler.screen.blit(
+        client.state_manager.screen.blit(
             self.new_game_tile.image, self.new_game_tile.rect
         )
-        self.event_handler.screen.blit(
+        client.state_manager.screen.blit(
             self.settings_tile.image, self.settings_tile.rect
         )
-        self.event_handler.screen.blit(self.quit_tile.image, self.quit_tile.rect)
+        client.state_manager.screen.blit(self.quit_tile.image, self.quit_tile.rect)
 
         if self.blured_tile:
-            self.event_handler.screen.blit(
+            client.state_manager.screen.blit(
                 self.blured_tile.image, self.blured_tile.rect
             )
-            self.event_handler.screen.blit(
+            client.state_manager.screen.blit(
                 self.game_session_name_box.image, self.game_session_name_box.rect
             )
             self.game_session_name_text.blit()
-            self.event_handler.screen.blit(
+            client.state_manager.screen.blit(
                 self.cancel_button.image, self.cancel_button.rect
             )
-            self.event_handler.screen.blit(
+            client.state_manager.screen.blit(
                 self.create_button.image, self.create_button.rect
             )
             self.number_players_label.blit()
             self.number_players_dropdown.blit()
 
             self.private_game_label.blit()
-            self.event_handler.screen.blit(
+            client.state_manager.screen.blit(
                 self.private_game_toggle_button.image,
                 self.private_game_toggle_button.rect,
             )

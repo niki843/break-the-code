@@ -19,9 +19,6 @@ class NewGame(GameWindow):
 
         self.number_cards = []
 
-        self.host_id = None
-        self.host_username = None
-
         self.condition_cards_group = None
         self.player_number_tiles_group = None
 
@@ -43,7 +40,7 @@ class NewGame(GameWindow):
         self.condition_cards_group = ConditionCardsGroup(
             "condition_cards_group",
             "condition_card",
-            self.event_handler.screen,
+            client.state_manager.screen,
             condition_cards,
         )
 
@@ -61,7 +58,7 @@ class NewGame(GameWindow):
                 Tile(
                     "number_card",
                     common.get_image(f"{card.get('number')}_{Colors(card.get('color'))}.png"),
-                    self.event_handler.screen,
+                    client.state_manager.screen,
                     5,
                     0,
                     0,
@@ -73,9 +70,7 @@ class NewGame(GameWindow):
         self.player_number_tiles_group = PlayerNumberTilesGroup(
             "player_number_group",
             "number_card",
-            self.event_handler.screen,
-            self.event_handler.screen_rect,
-            self.player_info_group.connected_players,
+            dict(zip(self.player_info_group.player_ids, self.player_info_group.player_name_tiles)),
             self.number_cards,
         )
 
@@ -90,12 +85,10 @@ class NewGame(GameWindow):
 
     def open(self, **kwargs):
         super().open()
-        self.event_handler.server_communication_manager.send_start_game_message()
+        client.server_communication_manager.send_start_game_message()
         cr = CardReader()
 
         self.player_info_group = kwargs.get("player_info_group")
-        self.host_id = kwargs.get("host_id")
-        self.host_username = kwargs.get("host_username")
 
         for card in cr.cards:
             self.non_played_condition_cards[card.id] = card
@@ -118,17 +111,22 @@ class NewGame(GameWindow):
         self.draw_condition_card(next_card_id)
 
         for result in player_results:
-            print(played_card.positive_condition_message.format(result.get("matching_cards")))
+            if isinstance(result.get("matching_cards"), list):
+                if result.get("matching_cards"):
+                    print(played_card.positive_condition_message.format(*result.get("matching_cards")))
+                else:
+                    print(played_card.negative_condition_message)
+            else:
+                print(played_card.positive_condition_message.format(result.get("matching_cards")))
 
         new_card = Tile(
             f"condition_card-{next_card_id}",
             common.get_image(f"card{next_card_id}.png"),
-            self.event_handler.screen,
+            client.state_manager.screen,
             17,
             0,
             0,
         )
-
         old_card = self.condition_cards_group.get_tile_by_id(str(card_id))
 
         self.condition_cards_group.replace_card(old_card, new_card)
@@ -142,9 +140,6 @@ class NewGame(GameWindow):
             raise NoSuchCardException(card_id, "or is already drawn")
 
         self.current_drawn_condition_cards[card.id] = card
-
-    def play_card(self, card_id):
-        self.event_handler.server_communication_manager.play_condition_card(card_id)
 
     def remove_played_card(self, card_id):
         card = self.current_drawn_condition_cards.pop(card_id)
@@ -161,7 +156,7 @@ class NewGame(GameWindow):
 
     def activate_tile(self, tile, event):
         if tile.name.startswith("condition_card") and event.button == client.LEFT_BUTTON_CLICK:
-            self.play_card(int(self.condition_cards_group.get_card_id(tile)))
+            client.server_communication_manager.play_condition_card(self.condition_cards_group.get_card_id(tile))
 
     def blit(self):
         super().blit()

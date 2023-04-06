@@ -1,6 +1,8 @@
 import os
 import asyncio
 
+from client.state_manager import StateManager
+
 IMG_PATH = f".{os.path.sep}resources{os.path.sep}images{os.path.sep}"
 FONT_PATH = f".{os.path.sep}resources{os.path.sep}fonts{os.path.sep}"
 MUSIC_PATH = f".{os.path.sep}resources{os.path.sep}music{os.path.sep}"
@@ -36,6 +38,9 @@ SCROLL_UP = 4
 SCROLL_DOWN = 5
 
 IMAGE_CACHE = {}
+
+state_manager = None
+server_communication_manager = None
 
 # IMPORTANT!!! This is how the game will know if the game should stop running
 GAME_RUNNING = True

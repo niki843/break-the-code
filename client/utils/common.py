@@ -38,6 +38,7 @@ def get_or_generate_player_id():
 
 
 def change_username(new_username):
+    client.state_manager.username = new_username
     with open("player_id.txt", "r") as f:
         player_details = f.readlines()
         player_details = player_details[:-1]
@@ -91,6 +92,17 @@ def load_number_tile(tile_name, img_path, screen):
 
 
 def load_left_right_number_tile(tile_name, img_path, screen):
+    return Tile(
+        tile_name,
+        get_image(img_path),
+        screen,
+        9,
+        0,
+        0
+    )
+
+
+def load_medium_tile(tile_name, img_path, screen):
     return Tile(
         tile_name,
         get_image(img_path),

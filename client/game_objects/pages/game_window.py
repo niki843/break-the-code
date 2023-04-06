@@ -42,21 +42,21 @@ class GameWindow:
 
     def load_background_and_resize(self, surface):
         self.background_image = Tile(
-            "background", surface, self.event_handler.screen, 100, 0, 0
+            "background", surface, client.state_manager.screen, 100, 0, 0
         )
         self.set_background_size()
 
     def set_background_size(self):
         self.background_image.resize()
-        self.background_image.rect.centerx = self.event_handler.screen_rect.centerx
-        self.background_image.rect.centery = self.event_handler.screen_rect.centery
+        self.background_image.rect.centerx = client.state_manager.screen_rect.centerx
+        self.background_image.rect.centery = client.state_manager.screen_rect.centery
 
     def build_back_tile(self):
         back_surface = common.get_image("back.png")
         self.back_tile = Tile(
             "back",
             back_surface,
-            self.event_handler.screen,
+            client.state_manager.screen,
             client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
             0,
             0,
@@ -70,18 +70,18 @@ class GameWindow:
             return
 
         self.back_tile.resize()
-        self.back_tile.rect.left = self.event_handler.screen_rect.left + (
-            self.event_handler.screen.get_width() * 0.03
+        self.back_tile.rect.left = client.state_manager.screen_rect.left + (
+            client.state_manager.screen.get_width() * 0.03
         )
-        self.back_tile.rect.top = self.event_handler.screen_rect.top + (
-            self.event_handler.screen.get_height() * 0.03
+        self.back_tile.rect.top = client.state_manager.screen_rect.top + (
+            client.state_manager.screen.get_height() * 0.03
         )
 
     def build_tiles_background(self):
         surface = common.get_image("menu_field_cropped.png")
 
         self.tiles_background = Tile(
-            "tiles_background", surface, self.event_handler.screen, 80, 0, 0
+            "tiles_background", surface, client.state_manager.screen, 80, 0, 0
         )
         self.set_tiles_background_size()
 
@@ -89,15 +89,15 @@ class GameWindow:
         if not self.tiles_background:
             return
         self.tiles_background.resize()
-        self.tiles_background.rect.centerx = self.event_handler.screen_rect.centerx
-        self.tiles_background.rect.centery = self.event_handler.screen_rect.centery
+        self.tiles_background.rect.centerx = client.state_manager.screen_rect.centerx
+        self.tiles_background.rect.centery = client.state_manager.screen_rect.centery
 
     def build_game_info_box(self):
         surface = common.get_image("game_info_menu.png")
         self.game_info_box = MultilineTextTile(
             "game_info",
             surface,
-            self.event_handler.screen,
+            client.state_manager.screen,
             30,
             0,
             20,
@@ -113,8 +113,8 @@ class GameWindow:
             return
 
         self.game_info_box.resize()
-        self.game_info_box.rect.centerx = self.event_handler.screen_rect.centerx
-        self.game_info_box.rect.centery = self.event_handler.screen_rect.centery
+        self.game_info_box.rect.centerx = client.state_manager.screen_rect.centerx
+        self.game_info_box.rect.centery = client.state_manager.screen_rect.centery
         self.game_info_box.center_text()
 
     def build_player_info_group(self):
@@ -124,7 +124,7 @@ class GameWindow:
             0,
             left,
             top,
-            self.event_handler.screen,
+            client.state_manager.screen,
         )
 
         self.set_player_info_group_size()
@@ -141,15 +141,15 @@ class GameWindow:
 
     def get_player_info_initial_position(self):
         left = self.game_info_box.rect.left + (
-            self.event_handler.screen.get_width() * 0.02
+            client.state_manager.screen.get_width() * 0.02
         )
         top = self.game_info_box.rect.top + (
-            self.event_handler.screen.get_height() * 0.02
+            client.state_manager.screen.get_height() * 0.02
         )
         return left, top
 
     def blit(self):
-        self.event_handler.screen.blit(
+        client.state_manager.screen.blit(
             self.background_image.image, self.background_image.rect
         )
 

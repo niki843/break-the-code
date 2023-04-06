@@ -1,19 +1,14 @@
-import uuid
-
 import pygame
 import asyncio
 
 import client
 from client.server_communication_manager import ServerCommunicationManager
+from client.state_manager import StateManager
 from client.utils import common
 from client.event_handler import EventHandler
 
 
 def start_game():
-    player_id, username = common.get_or_generate_player_id()
-    # TODO: Remove this when testing is done
-    player_id = str(uuid.uuid4())
-
     pygame.init()
     pygame.fastevent.init()
     pygame.mixer.init()
@@ -29,14 +24,11 @@ def start_game():
     thumbnail = common.get_image("logo_thumbnail.png")
     pygame.display.set_icon(thumbnail)
 
-    server_communication_manager = ServerCommunicationManager(
-        player_username=username, player_id=player_id
-    )
+    client.state_manager = StateManager(screen)
 
-    event_handler = EventHandler(
-        screen=screen,
-        server_communication_manager=server_communication_manager,
-    )
+    client.server_communication_manager = ServerCommunicationManager()
+
+    event_handler = EventHandler()
 
     while client.GAME_RUNNING:
         event_handler.current_window.blit()

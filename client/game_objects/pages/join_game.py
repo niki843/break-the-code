@@ -31,7 +31,7 @@ class JoinGame(GameWindow):
 
     async def call_get_game_sessions(self):
         while True:
-            self.event_handler.server_communication_manager.get_current_game()
+            client.server_communication_manager.get_current_game()
             await asyncio.sleep(5)
 
     def build(self):
@@ -70,7 +70,7 @@ class JoinGame(GameWindow):
         self.join_game_tile = Tile(
             "join_game_button",
             surface,
-            self.event_handler.screen,
+            client.state_manager.screen,
             client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
             10,
             0,
@@ -84,11 +84,11 @@ class JoinGame(GameWindow):
             return
 
         self.join_game_tile.resize()
-        self.join_game_tile.rect.right = self.event_handler.screen_rect.right - (
-            self.event_handler.screen.get_width() * 0.03
+        self.join_game_tile.rect.right = client.state_manager.screen_rect.right - (
+            client.state_manager.screen.get_width() * 0.03
         )
-        self.join_game_tile.rect.bottom = self.event_handler.screen_rect.bottom - (
-            self.event_handler.screen.get_height() * 0.03
+        self.join_game_tile.rect.bottom = client.state_manager.screen_rect.bottom - (
+            client.state_manager.screen.get_height() * 0.03
         )
 
     def build_game_info_label(self):
@@ -96,7 +96,7 @@ class JoinGame(GameWindow):
         self.game_info_tile = Tile(
             name="game_info",
             surface=surface,
-            screen=self.event_handler.screen,
+            screen=client.state_manager.screen,
             size_percent=25,
             tile_addition_width=0,
             tile_addition_height=0,
@@ -110,10 +110,10 @@ class JoinGame(GameWindow):
 
         self.game_info_tile.resize()
         self.game_info_tile.rect.top = self.tiles_background.rect.top + (
-            self.event_handler.screen.get_height() * 0.02
+            client.state_manager.screen.get_height() * 0.02
         )
         self.game_info_tile.rect.right = self.tiles_background.rect.right - (
-            self.event_handler.screen.get_width() * 0.03
+            client.state_manager.screen.get_width() * 0.03
         )
 
     def set_game_info_size(self):
@@ -122,7 +122,7 @@ class JoinGame(GameWindow):
 
         self.game_info_box.resize()
         self.game_info_box.rect.bottom = self.tiles_background.rect.bottom - (
-            self.event_handler.screen.get_height() * 0.02
+            client.state_manager.screen.get_height() * 0.02
         )
         self.game_info_box.rect.centerx = self.game_info_tile.rect.centerx
         self.game_info_box.center_text()
@@ -135,7 +135,7 @@ class JoinGame(GameWindow):
             "game_session_tile",
             "game_session_tile",
             common.get_image("game_session.png"),
-            self.event_handler.screen,
+            client.state_manager.screen,
             44,
             40,
             0,
@@ -196,28 +196,28 @@ class JoinGame(GameWindow):
 
     def get_game_sessions_group_position(self):
         left = self.tiles_background.rect.left + (
-            self.event_handler.screen.get_width() * 0.02
+            client.state_manager.screen.get_width() * 0.02
         )
         top = self.tiles_background.rect.top + (
-            self.event_handler.screen.get_height() * 0.03
+            client.state_manager.screen.get_height() * 0.03
         )
         right = self.game_info_box.rect.left - (
-            self.event_handler.screen.get_width() * 0.016
+            client.state_manager.screen.get_width() * 0.016
         )
         return left, top, right
 
     def blit(self):
         super().blit()
-        self.event_handler.screen.blit(
+        client.state_manager.screen.blit(
             self.tiles_background.image, self.tiles_background.rect
         )
 
-        self.event_handler.screen.blit(self.back_tile.image, self.back_tile.rect)
-        self.event_handler.screen.blit(
+        client.state_manager.screen.blit(self.back_tile.image, self.back_tile.rect)
+        client.state_manager.screen.blit(
             self.join_game_tile.image, self.join_game_tile.rect
         )
 
-        self.event_handler.screen.blit(
+        client.state_manager.screen.blit(
             self.game_info_tile.image, self.game_info_tile.rect
         )
 

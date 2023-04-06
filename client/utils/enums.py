@@ -20,3 +20,13 @@ class Position(Enum):
     RIGHT = auto()
     TOP = auto()
     BOTTOM = auto
+
+    def __str__(self):
+        if self.value == Position.LEFT:
+            return "left"
+        elif self.value == Position.RIGHT:
+            return "right"
+        elif self.value == Position.TOP:
+            return "top"
+        else:
+            return "bottom"

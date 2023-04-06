@@ -12,11 +12,8 @@ from client.utils.singelton import Singleton
 
 
 class EventHandler(Singleton):
-    def __init__(self, screen, server_communication_manager):
+    def __init__(self):
         self.game_windows = []
-        self.screen = screen
-        self.screen_rect = screen.get_rect()
-        self.server_communication_manager = server_communication_manager
         self.current_window = Menu(self)
 
         self.menu = self.current_window
@@ -83,7 +80,7 @@ class EventHandler(Singleton):
     def check_common_events(self, event, keys):
         if event.type == pygame.QUIT:
             self.current_window.close()
-            self.server_communication_manager.close_connection()
+            client_init.server_communication_manager.close_connection()
             client_init.GAME_RUNNING = False
             # Returning False for is_game_running
             return False
@@ -125,7 +122,7 @@ class EventHandler(Singleton):
 
     def get_game_sessions(self):
         # This functions calls the server one last time to make sure that the players count is correct
-        self.server_communication_manager.get_current_game()
+        client_init.server_communication_manager.get_current_game()
 
         waiting_for_server_response = True
         while waiting_for_server_response:
@@ -147,15 +144,11 @@ class EventHandler(Singleton):
         self.current_window = new_window
 
     def change_screen(self, screen):
-        self.screen = screen
-        self.screen_rect = self.screen.get_rect()
+        client_init.state_manager.screen = screen
+        client_init.state_manager.screen_rect = screen.get_rect()
 
         for window in self.game_windows:
             window.resize()
-
-    def change_player_username(self, username):
-        self.server_communication_manager.player_username = username
-        common.change_username(username)
 
     def handle_mouse_click(self, event):
         tiles_copy = self.current_window.tiles_group.copy()
@@ -175,7 +168,7 @@ class EventHandler(Singleton):
         if message_type == "send_game_sessions":
             self.current_window.update_game_sessions(message.get("game_sessions"))
         if message_type == "player_joined":
-            if not self.server_communication_manager.player_id == message.get(
+            if not client_init.state_manager.player_id == message.get(
                 "player_id"
             ):
                 self.current_window.add_player(

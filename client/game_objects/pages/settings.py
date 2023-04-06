@@ -34,9 +34,7 @@ class Settings(GameWindow):
 
         self.username_label = None
         self.username_input_box = None
-        self.current_username = (
-            self.event_handler.server_communication_manager.player_username
-        )
+        self.current_username = client.state_manager.username
 
         self.apply_button = None
 
@@ -87,7 +85,7 @@ class Settings(GameWindow):
         surface = common.get_image("settings_top.png")
 
         self.settings_label_tile = Tile(
-            "settings_label", surface, self.event_handler.screen, 30, 0, 0
+            "settings_label", surface, client.state_manager.screen, 30, 0, 0
         )
         self.set_settings_label_size()
 
@@ -96,16 +94,16 @@ class Settings(GameWindow):
             return
 
         self.settings_label_tile.resize()
-        self.settings_label_tile.rect.centerx = self.event_handler.screen_rect.centerx
-        self.settings_label_tile.rect.top = self.event_handler.screen_rect.top + (
-            self.event_handler.screen_rect.bottom * 0.03
+        self.settings_label_tile.rect.centerx = client.state_manager.screen_rect.centerx
+        self.settings_label_tile.rect.top = client.state_manager.screen_rect.top + (
+            client.state_manager.screen_rect.bottom * 0.03
         )
 
     def build_resolution_label(self):
         surface = common.get_image("res_description.png")
 
         self.resolution_label_tile = Tile(
-            "resolution_label", surface, self.event_handler.screen, 21, 0, 0
+            "resolution_label", surface, client.state_manager.screen, 21, 0, 0
         )
         self.set_resolution_label_size()
 
@@ -115,29 +113,29 @@ class Settings(GameWindow):
 
         self.resolution_label_tile.resize()
         self.resolution_label_tile.rect.top = self.tiles_background.rect.top + (
-            self.event_handler.screen.get_height() * 0.07
+            client.state_manager.screen.get_height() * 0.07
         )
         self.resolution_label_tile.rect.left = self.tiles_background.rect.left + (
-            self.event_handler.screen.get_width() * 0.06
+            client.state_manager.screen.get_width() * 0.06
         )
 
     def build_resolution_slider(self):
-        self.current_resolution = f"{self.event_handler.screen.get_width()}x{self.event_handler.screen.get_height()}"
+        self.current_resolution = f"{client.state_manager.screen.get_width()}x{client.state_manager.screen.get_height()}"
         slider_surface = common.get_image("slider_res_bar.png")
         slider_handle = common.get_image("slider_button.png")
 
         max_desktop_res = pygame.display.get_desktop_sizes()[0]
         # Check if the resolution is in the list of resolutions if not set to fullscreen
         if (
-            max_desktop_res[0] == self.event_handler.screen.get_width()
-            and max_desktop_res[1] == self.event_handler.screen.get_height()
+            max_desktop_res[0] == client.state_manager.screen.get_width()
+            and max_desktop_res[1] == client.state_manager.screen.get_height()
         ):
             self.current_resolution = "fullscreen"
 
         self.resolution_slider = Slider(
             name="resolution_slider",
             surface=slider_surface,
-            screen=self.event_handler.screen,
+            screen=client.state_manager.screen,
             size_percent=60,
             tile_addition_width=0,
             tile_addition_height=0,
@@ -156,7 +154,7 @@ class Settings(GameWindow):
 
         self.resolution_slider.resize()
         self.resolution_slider.rect.top = self.resolution_label_tile.rect.bottom + (
-            self.event_handler.screen.get_height() * 0.04
+            client.state_manager.screen.get_height() * 0.04
         )
         self.resolution_slider.rect.left = self.resolution_label_tile.rect.left
         self.resolution_slider.set_slider_handle_position()
@@ -165,7 +163,7 @@ class Settings(GameWindow):
         surface = common.get_image("music_description.png")
 
         self.music_label_tile = Tile(
-            "music_label", surface, self.event_handler.screen, 11, 0, 0
+            "music_label", surface, client.state_manager.screen, 11, 0, 0
         )
         self.set_music_label_size()
 
@@ -175,7 +173,7 @@ class Settings(GameWindow):
 
         self.music_label_tile.resize()
         self.music_label_tile.rect.top = self.resolution_slider.rect.bottom + (
-            self.event_handler.screen.get_height() * 0.05
+            client.state_manager.screen.get_height() * 0.05
         )
         self.music_label_tile.rect.left = self.resolution_slider.rect.left
 
@@ -186,7 +184,7 @@ class Settings(GameWindow):
         self.music_slider = Slider(
             name="music_slider",
             surface=slider_surface,
-            screen=self.event_handler.screen,
+            screen=client.state_manager.screen,
             size_percent=60,
             tile_addition_width=0,
             tile_addition_height=0,
@@ -205,7 +203,7 @@ class Settings(GameWindow):
 
         self.music_slider.resize()
         self.music_slider.rect.top = self.music_label_tile.rect.bottom + (
-            self.event_handler.screen.get_height() * 0.04
+            client.state_manager.screen.get_height() * 0.04
         )
         self.music_slider.rect.left = self.music_label_tile.rect.left
         self.music_slider.set_slider_handle_position()
@@ -214,7 +212,7 @@ class Settings(GameWindow):
         surface = common.get_image("change_nickname_description.png")
 
         self.username_label = Tile(
-            "username_label", surface, self.event_handler.screen, 33, 0, 0
+            "username_label", surface, client.state_manager.screen, 33, 0, 0
         )
         self.set_username_label_size()
 
@@ -224,7 +222,7 @@ class Settings(GameWindow):
 
         self.username_label.resize()
         self.username_label.rect.top = self.music_slider.rect.bottom + (
-            self.event_handler.screen.get_height() * 0.05
+            client.state_manager.screen.get_height() * 0.05
         )
         self.username_label.rect.left = self.music_slider.rect.left
 
@@ -236,7 +234,7 @@ class Settings(GameWindow):
             "name_input",
             "name_input",
             surface,
-            self.event_handler.screen,
+            client.state_manager.screen,
             50,
             client.TILE_WIDTH_ADDITION,
             client.TILE_HEIGHT_ADDITION,
@@ -254,7 +252,7 @@ class Settings(GameWindow):
 
         self.username_input_box.resize()
         self.username_input_box.rect.top = self.username_label.rect.bottom + (
-            self.event_handler.screen.get_height() * 0.03
+            client.state_manager.screen.get_height() * 0.03
         )
         self.username_input_box.rect.left = self.username_label.rect.left
 
@@ -268,7 +266,7 @@ class Settings(GameWindow):
             name="apply_button_on",
             next_name="apply_button_off",
             current_surface=surface,
-            screen=self.event_handler.screen,
+            screen=client.state_manager.screen,
             size_percent=client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
             tile_addition_width=0,
             tile_addition_height=0,
@@ -286,48 +284,48 @@ class Settings(GameWindow):
         self.apply_button.resize()
         self.apply_button.rect.centery = self.username_input_box.rect.centery
         self.apply_button.rect.left = self.username_input_box.rect.right + (
-            self.event_handler.screen.get_width() * 0.04
+            client.state_manager.screen.get_width() * 0.04
         )
 
     def blit(self):
         super().blit()
 
-        self.event_handler.screen.blit(
+        client.state_manager.screen.blit(
             self.tiles_background.image, self.tiles_background.rect
         )
 
-        self.event_handler.screen.blit(
+        client.state_manager.screen.blit(
             self.settings_label_tile.image, self.settings_label_tile.rect
         )
 
-        self.event_handler.screen.blit(
+        client.state_manager.screen.blit(
             self.resolution_label_tile.image, self.resolution_label_tile.rect
         )
-        self.event_handler.screen.blit(
+        client.state_manager.screen.blit(
             self.resolution_slider.image, self.resolution_slider.rect
         )
-        self.event_handler.screen.blit(
+        client.state_manager.screen.blit(
             self.resolution_slider.slider_handle.image,
             self.resolution_slider.slider_handle.rect,
         )
 
-        self.event_handler.screen.blit(
+        client.state_manager.screen.blit(
             self.music_label_tile.image, self.music_label_tile.rect
         )
-        self.event_handler.screen.blit(self.music_slider.image, self.music_slider.rect)
-        self.event_handler.screen.blit(
+        client.state_manager.screen.blit(self.music_slider.image, self.music_slider.rect)
+        client.state_manager.screen.blit(
             self.music_slider.slider_handle.image, self.music_slider.slider_handle.rect
         )
 
-        self.event_handler.screen.blit(
+        client.state_manager.screen.blit(
             self.username_label.image, self.username_label.rect
         )
 
         self.username_input_box.blit()
 
-        self.event_handler.screen.blit(self.apply_button.image, self.apply_button.rect)
+        client.state_manager.screen.blit(self.apply_button.image, self.apply_button.rect)
 
-        self.event_handler.screen.blit(self.back_tile.image, self.back_tile.rect)
+        client.state_manager.screen.blit(self.back_tile.image, self.back_tile.rect)
 
     def activate_tile(self, tile, event):
         if (
@@ -371,7 +369,7 @@ class Settings(GameWindow):
             # Save the username if only it's not empty
             if len(self.username_input_box.text) > 0:
                 self.current_username = self.username_input_box.text
-                self.event_handler.change_player_username(self.username_input_box.text)
+                common.change_username(self.username_input_box.text)
             self.event_handler.handle_save_button(self.apply_button)
         if tile.name == "back" and event.button == client.LEFT_BUTTON_CLICK:
             self.username_input_box.text = self.current_username
