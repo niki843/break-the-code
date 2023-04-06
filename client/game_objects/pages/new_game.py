@@ -113,9 +113,12 @@ class NewGame(GameWindow):
         self.build_draw_pile(self.current_drawn_condition_cards.values())
         self.tiles_group.add(self.condition_cards_group.condition_card_tiles)
 
-    def replace_card_and_give_result(self, card_id, next_card_id, card_description):
-        self.remove_played_card(card_id)
+    def replace_card_and_give_result(self, card_id, next_card_id, player_results):
+        played_card = self.remove_played_card(card_id)
         self.draw_condition_card(next_card_id)
+
+        for result in player_results:
+            print(played_card.positive_condition_message.format(result.get("matching_cards")))
 
         new_card = Tile(
             f"condition_card-{next_card_id}",
@@ -153,6 +156,8 @@ class NewGame(GameWindow):
 
         card_tile = self.condition_cards_group.get_tile_by_id(card_id)
         self.tiles_group.remove(card_tile)
+
+        return card
 
     def activate_tile(self, tile, event):
         if tile.name.startswith("condition_card") and event.button == client.LEFT_BUTTON_CLICK:
