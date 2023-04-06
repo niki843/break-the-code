@@ -2,5 +2,7 @@
    "id":6,
    "description":"How many odd tiles do you have?",
    "has_user_choice": false,
-   "additional_info":null
+   "additional_info":null,
+   "positive_condition_message": "I have {0} odd tiles",
+   "negative_condition_message": "I don't have an odd tile"
 }

@@ -2,5 +2,7 @@
    "id":3,
    "description":"Where are your #0 tiles?",
    "has_user_choice": false,
-   "additional_info":null
+   "additional_info":null,
+   "positive_condition_message": "I have a tile with number 0 on {0}",
+   "negative_condition_message": "I don't have a tile with number 0"
 }

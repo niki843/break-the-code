@@ -2,5 +2,7 @@
    "id":11,
    "description":"What is the sum of your black numbers?",
    "has_user_choice": false,
-   "additional_info":null
+   "additional_info":null,
+   "positive_condition_message": "The sum of my black numbers is {0}",
+   "negative_condition_message": "I don't have any black numbers"
 }

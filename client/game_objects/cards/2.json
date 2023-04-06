@@ -2,5 +2,7 @@
    "id":2,
    "description":"Where are your #6 or #7 tiles?",
    "has_user_choice": true,
-   "additional_info": "You must chose one number before asking that question"
+   "additional_info": "You must chose one number before asking that question",
+   "positive_condition_message": "I have a tile with number {0} on {1}",
+   "negative_condition_message": "I don't have a tile with number {0}"
 }

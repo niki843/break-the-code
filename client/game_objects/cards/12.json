@@ -2,5 +2,7 @@
    "id":12,
    "description":"Is your C Tile greater than 4?",
    "has_user_choice": false,
-   "additional_info":null
+   "additional_info":null,
+   "positive_condition_message": "My C Tile is greater than 4",
+   "negative_condition_message": "My C tile is not greater than 4"
 }

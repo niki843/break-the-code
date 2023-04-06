@@ -2,5 +2,7 @@
    "id":20,
    "description":"What is the sum of your white numbers?",
    "has_user_choice": false,
-   "additional_info":null
+   "additional_info":null,
+   "positive_condition_message": "The sum of my white numbers is {0}",
+   "negative_condition_message": "I don't have any white numbers"
 }
