@@ -30,3 +30,9 @@ class Position(IntEnum):
             return "top"
         else:
             return "bottom"
+
+
+class AlignType(IntEnum):
+    LEFT = auto()
+    CENTER = auto()
+    RIGHT = auto()

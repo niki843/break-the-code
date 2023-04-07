@@ -1,6 +1,7 @@
 import client
 
 from client.game_objects.entities.player import Player
+from client.game_objects.tiles.multiline_text_tile import MultilineTextTile
 from client.game_objects.tiles.plain_text_box import PlainTextTile
 from client.utils import common
 from client.utils.enums import Position
@@ -39,7 +40,7 @@ class PlayerNumberTilesGroup:
         for index, player_data in enumerate(ordered_players):
             position = all_positions[index]
             image_tile = common.load_tiny_tile(self.tiles_name, f"user{index+1}_w_background.png", client.state_manager.screen)
-            text_bubble = PlainTextTile(
+            text_bubble = MultilineTextTile(
                 "text_bubble",
                 common.get_image(f"result_bubble_{position}.png"),
                 client.state_manager.screen,
@@ -48,7 +49,7 @@ class PlayerNumberTilesGroup:
                 0,
                 "",
                 10,
-                50,
+                0,
             )
 
             cards = self.number_cards
@@ -70,19 +71,7 @@ class PlayerNumberTilesGroup:
     def update_message(self, card, player_id, matching_cards):
         player = self.player_id_player_map.get(player_id)
 
-        if isinstance(matching_cards, list) and not matching_cards:
-            if card.has_user_choice:
-                text = card.negative_condition_message.format(card.id)
-            else:
-                text = card.negative_condition_message
-        elif card.has_user_choice:
-            text = card.positive_condition_message.format(card.id, matching_cards)
-        else:
-            text = card.positive_condition_message.format(matching_cards)
-
-        player.text_bubble_tile.text_bubble.text = text
-        player.text_bubble_tile.load_text()
-        player.text_bubble_tile.center()
+        player.give_condition_card_response(card, matching_cards)
 
     def resize(self):
         for player in self.player_id_player_map.values():

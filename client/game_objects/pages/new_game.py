@@ -110,7 +110,7 @@ class NewGame(GameWindow):
         played_card = self.remove_played_card(card_id)
 
         for result in player_results:
-            self.condition_cards_group.update_message(played_card, result.player_id, result.get("matching_cards"))
+            self.player_number_tiles_group.update_message(played_card, result.get("player_id"), result.get("matching_cards"))
 
         if not next_card_id:
             self.condition_cards_group.remove_card(self.condition_cards_group.get_tile_by_id(str(card_id)))

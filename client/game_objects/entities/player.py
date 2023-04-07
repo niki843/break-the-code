@@ -1,5 +1,5 @@
 import client
-from client.utils.enums import Position
+from client.utils.enums import Position, AlignType
 
 
 class Player:
@@ -105,3 +105,20 @@ class Player:
                 bottom = card.rect.top - (
                     client.state_manager.screen.get_height() * 0.02
                 )
+
+    def give_condition_card_response(self, card, matching_cards):
+        if isinstance(matching_cards, list) and not matching_cards:
+            if card.has_user_choice:
+                text = card.negative_condition_message.format(card.id)
+            else:
+                text = card.negative_condition_message
+        elif card.has_user_choice:
+            text = card.positive_condition_message.format(card.id, matching_cards)
+        else:
+            text = card.positive_condition_message.format(matching_cards)
+
+        self.text_bubble_tile.replace_text(text)
+        if self.position == Position.TOP:
+            self.text_bubble_tile.center_text(align_type=AlignType.CENTER, top_additional_spacing=0.1)
+        else:
+            self.text_bubble_tile.center_text(align_type=AlignType.CENTER, top_additional_spacing=0.05)

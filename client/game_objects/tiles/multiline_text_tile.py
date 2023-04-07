@@ -1,6 +1,7 @@
 import client
 from client.game_objects.tiles.tile import Tile
 from client.utils import common
+from client.utils.enums import AlignType
 
 
 class MultilineTextTile(Tile):
@@ -93,15 +94,22 @@ class MultilineTextTile(Tile):
             current_word += " " + next_word
             current_word = current_word.lstrip(" ")
 
-    def center_text(self):
-        current_top_surface = self.rect.top
+    def center_text(self, align_type=AlignType.LEFT, top_additional_spacing=0):
+        current_top_surface = self.rect.top + (
+            self.screen.get_height() * top_additional_spacing
+        )
         displayed_surfaces = self.text_surfaces[
-            self.start_line : self.start_line + self.max_lines_to_display
+            self.start_line: self.start_line + self.max_lines_to_display
         ]
         for surface, rect in displayed_surfaces:
-            rect.left = self.rect.left + self.text_left_spacing
-            rect.top = current_top_surface + self.new_line_space
-            current_top_surface = rect.bottom
+            if align_type == AlignType.LEFT:
+                rect.left = self.rect.left + self.text_left_spacing
+            elif align_type == AlignType.CENTER:
+                rect.centerx = self.rect.centerx + self.text_left_spacing
+            else:
+                rect.right = self.rect.right + self.text_left_spacing
+            rect.top = current_top_surface
+            current_top_surface = rect.bottom + self.new_line_space
 
     def blit(self):
         self.screen.blit(self.image, self.rect)
