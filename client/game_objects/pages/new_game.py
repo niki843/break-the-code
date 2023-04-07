@@ -70,7 +70,7 @@ class NewGame(GameWindow):
         self.player_number_tiles_group = PlayerNumberTilesGroup(
             "player_number_group",
             "number_card",
-            {self.player_info_group.player_ids[i]: self.player_info_group.player_name_tiles[i].text for i in range(0, len(self.player_info_group.player_ids))},
+            self.player_info_group.get_player_name_id_map(),
             self.number_cards,
         )
 
