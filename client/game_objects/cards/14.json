@@ -2,6 +2,7 @@
    "id":14,
    "description":"What is the difference between your highest and lowest numbers?",
    "has_user_choice": false,
+   "choices": [],
    "additional_info":null,
    "positive_condition_message": "The difference between my highest and lowest numbers is {0}",
    "negative_condition_message": "I don't have a highest or lowest number, lol this shouldn't be happening"

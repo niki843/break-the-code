@@ -2,7 +2,8 @@
    "id":5,
    "description":"How many of your tiles have a white number?",
    "has_user_choice": false,
+   "choices": [],
    "additional_info":null,
-   "positive_condition_message": "I have a tile with white number on {1}",
+   "positive_condition_message": "I have a tile with white number on {0}",
    "negative_condition_message": "I don't have a tile with white number"
 }

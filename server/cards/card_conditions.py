@@ -229,15 +229,16 @@ def get_even_or_odd_from_player_tiles(player, eval_num, info_text):
 
 
 def get_sum_for_color(player, color):
-    sum_card = 0
+    sum_card = None
 
     for card in player.get_cards():
         if card.color == color:
+            if not sum_card:
+                sum_card = 0
             sum_card += card.number
 
     print(
-        f"""Player {player.get_name()}, has a sum of f{sum_card} for his {color} cards. 
-        Have in mind that even if the player hasn't got any {color} cards the sum is still 0"""
+        f"Player {player.get_name()}, has a sum of {sum_card} for his {color} cards."
     )
     return sum_card
 

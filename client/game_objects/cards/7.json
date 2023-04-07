@@ -2,6 +2,7 @@
    "id":7,
    "description":"Which neighbouring tiles have the same color?",
    "has_user_choice": false,
+   "choices": [],
    "additional_info":null,
    "positive_condition_message": "The tiles {0} have the same colour",
    "negative_condition_message": "I don't have any tiles with the same colour"

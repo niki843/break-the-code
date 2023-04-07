@@ -2,6 +2,7 @@
    "id":15,
    "description":"How many even tiles do you have?",
    "has_user_choice": false,
+   "choices": [],
    "additional_info":"0 is considered an even number",
    "positive_condition_message": "I have {0} even tiles",
    "negative_condition_message": "I don't have any even tiles"

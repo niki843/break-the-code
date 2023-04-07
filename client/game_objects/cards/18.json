@@ -2,6 +2,7 @@
    "id":18,
    "description":"What is the sum of your 3 right-most tiles?",
    "has_user_choice": false,
+   "choices": [],
    "additional_info":null,
    "positive_condition_message": "The sum of my 3 right-most tiles is {0}",
    "negative_condition_message": "I don't have a sum, lol this shouldn't be happening"

@@ -85,7 +85,7 @@ class ConditionCardsGroup:
         new_card_tile.rect.centery = old_card_tile.rect.centery
 
     def remove_card(self, card_tile):
-        self.condition_card_tiles[self.condition_card_tiles.index(card_tile)] = None
+        self.condition_card_tiles.pop(self.condition_card_tiles.index(card_tile))
         self.condition_card_id_tile_map.pop(self.get_card_id(card_tile))
 
     def missing_card(self, card_ids):

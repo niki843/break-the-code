@@ -2,6 +2,7 @@
    "id":17,
    "description":"How many of your tiles have the same number?",
    "has_user_choice": false,
+   "choices": [],
    "additional_info":null,
    "positive_condition_message": "I have {0} with the same number",
    "negative_condition_message": "I don't have any tiles with the same number"

@@ -108,14 +108,21 @@ class NewGame(GameWindow):
 
     def replace_card_and_give_result(self, card_id, next_card_id, player_results):
         played_card = self.remove_played_card(card_id)
+
+        if not next_card_id:
+            self.condition_cards_group.remove_card(self.condition_cards_group.get_tile_by_id(str(card_id)))
+            return
+
         self.draw_condition_card(next_card_id)
 
         for result in player_results:
-            if isinstance(result.get("matching_cards"), list):
-                if result.get("matching_cards"):
-                    print(played_card.positive_condition_message.format(*result.get("matching_cards")))
+            if isinstance(result.get("matching_cards"), list) and not result.get("matching_cards"):
+                if self.played_condition_cards.get(card_id).has_user_choice:
+                    print(played_card.negative_condition_message.format(card_id))
                 else:
                     print(played_card.negative_condition_message)
+            elif self.played_condition_cards.get(card_id).has_user_choice:
+                print(played_card.positive_condition_message.format(card_id, result.get("matching_cards")))
             else:
                 print(played_card.positive_condition_message.format(result.get("matching_cards")))
 
@@ -156,7 +163,12 @@ class NewGame(GameWindow):
 
     def activate_tile(self, tile, event):
         if tile.name.startswith("condition_card") and event.button == client.LEFT_BUTTON_CLICK:
-            client.server_communication_manager.play_condition_card(self.condition_cards_group.get_card_id(tile))
+            card_id = self.condition_cards_group.get_card_id(tile)
+            card = self.current_drawn_condition_cards.get(int(card_id))
+            if card.has_user_choice:
+                client.server_communication_manager.play_choice_condition_card(card.id, card.choices[0])
+                return
+            client.server_communication_manager.play_condition_card(card.id)
 
     def blit(self):
         super().blit()

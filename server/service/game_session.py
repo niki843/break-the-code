@@ -133,11 +133,13 @@ class GameSession:
             )
             self.__state = GameState.END_ALL_CARDS_PLAYED
 
+        next_card_id = new_card.id if new_card else None
+
         event = {
             "type": "card_condition_result",
             "message": "Returning results from played card condition",
             "card_id": card.id,
-            "next_card_id": new_card.id,
+            "next_card_id": next_card_id,
             "card_condition": card.description,
             "player_results": [],
         }

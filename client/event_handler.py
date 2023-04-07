@@ -62,7 +62,8 @@ class EventHandler(Singleton):
 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
-                        text_surface.new_line()
+                        text_surface.mark_clicked()
+                        return
                     elif event.key == pygame.K_BACKSPACE:
                         text_surface.delete()
                     else:
