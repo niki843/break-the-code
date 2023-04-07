@@ -106,14 +106,14 @@ class Player:
                     client.state_manager.screen.get_height() * 0.02
                 )
 
-    def give_condition_card_response(self, card, matching_cards):
+    def give_condition_card_response(self, card, matching_cards, card_number_choice):
         if isinstance(matching_cards, list) and not matching_cards:
             if card.has_user_choice:
-                text = card.negative_condition_message.format(card.id)
+                text = card.negative_condition_message.format(card_number_choice)
             else:
                 text = card.negative_condition_message
         elif card.has_user_choice:
-            text = card.positive_condition_message.format(card.id, matching_cards)
+            text = card.positive_condition_message.format(card_number_choice, matching_cards)
         else:
             text = card.positive_condition_message.format(matching_cards)
 

@@ -4,6 +4,6 @@
    "has_user_choice": false,
    "choices": [],
    "additional_info":null,
-   "positive_condition_message": "The sum of my white numbers is {0}",
+   "positive_condition_message": "My sum is {0}",
    "negative_condition_message": "I don't have any white numbers"
 }

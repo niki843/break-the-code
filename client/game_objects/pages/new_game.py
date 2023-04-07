@@ -106,11 +106,11 @@ class NewGame(GameWindow):
         self.build_draw_pile(self.current_drawn_condition_cards.values())
         self.tiles_group.add(self.condition_cards_group.condition_card_tiles)
 
-    def replace_card_and_give_result(self, card_id, next_card_id, player_results):
+    def replace_card_and_give_result(self, card_id, next_card_id, player_results, card_number_choice):
         played_card = self.remove_played_card(card_id)
 
         for result in player_results:
-            self.player_number_tiles_group.update_message(played_card, result.get("player_id"), result.get("matching_cards"))
+            self.player_number_tiles_group.update_message(played_card, result.get("player_id"), result.get("matching_cards"), card_number_choice)
 
         if not next_card_id:
             self.condition_cards_group.remove_card(self.condition_cards_group.get_tile_by_id(str(card_id)))

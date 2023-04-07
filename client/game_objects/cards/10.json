@@ -4,6 +4,6 @@
    "has_user_choice": false,
    "choices": [],
    "additional_info":null,
-   "positive_condition_message": "The tiles {0} have consecutive numbers",
+   "positive_condition_message": "{0} have consecutive numbers",
    "negative_condition_message": "None of my tiles have consecutive numbers"
 }

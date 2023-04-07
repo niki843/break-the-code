@@ -68,10 +68,10 @@ class PlayerNumberTilesGroup:
             cards.append(common.load_number_tile(f"{chr(97 + i)}_card", f"{chr(97 + i)}_{position}.png", client.state_manager.screen))
         return cards
 
-    def update_message(self, card, player_id, matching_cards):
+    def update_message(self, card, player_id, matching_cards, card_number_choice):
         player = self.player_id_player_map.get(player_id)
 
-        player.give_condition_card_response(card, matching_cards)
+        player.give_condition_card_response(card, matching_cards, card_number_choice)
 
     def resize(self):
         for player in self.player_id_player_map.values():

@@ -4,6 +4,6 @@
    "has_user_choice": false,
    "choices": [],
    "additional_info":null,
-   "positive_condition_message": "I have a tile with number 5 on {0}",
+   "positive_condition_message": "My 5 is on {0}",
    "negative_condition_message": "I don't have a tile with number 5"
 }

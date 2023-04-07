@@ -120,7 +120,7 @@ def seventeenth_card(player):
     Bear in mind that the deck of tiles has only a set of 2 with the same number, 
     so this means 2 of one number and 2 of another if the number is 4"""
     )
-    return same_number_cards_count
+    return None if same_number_cards_count == 0 else same_number_cards_count
 
 
 def eighteenth_card(player):

@@ -4,6 +4,6 @@
    "has_user_choice": true,
    "choices": [1, 2],
    "additional_info":"You must chose one number before asking a question.",
-   "positive_condition_message": "I have a tile with number {0} on {1}",
+   "positive_condition_message": "My {0} is on {1}",
    "negative_condition_message": "I don't have a tile with number {0}"
 }
