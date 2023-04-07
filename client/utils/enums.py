@@ -1,4 +1,4 @@
-from enum import IntEnum, Enum, auto
+from enum import IntEnum, auto
 
 
 class Colors(IntEnum):
@@ -15,11 +15,11 @@ class Colors(IntEnum):
             return "green"
 
 
-class Position(Enum):
+class Position(IntEnum):
     LEFT = auto()
     RIGHT = auto()
     TOP = auto()
-    BOTTOM = auto
+    BOTTOM = auto()
 
     def __str__(self):
         if self.value == Position.LEFT:

@@ -34,13 +34,13 @@ class PlainTextTile(Tile):
         self.font = None
         self.max_characters_on_line = max_characters_on_line
 
+        self.load_text()
+
+    def load_text(self):
         if len(self.text) > self.max_characters_on_line:
             self.text = self.text[: self.max_characters_on_line - 3]
             self.text += "..."
 
-        self.load_text()
-
-    def load_text(self):
         text_size = int(
             self.image.get_height()
             * common.get_percentage_multiplier_from_percentage(self.text_size_percent)

@@ -70,7 +70,7 @@ class NewGame(GameWindow):
         self.player_number_tiles_group = PlayerNumberTilesGroup(
             "player_number_group",
             "number_card",
-            dict(zip(self.player_info_group.player_ids, self.player_info_group.player_name_tiles)),
+            {self.player_info_group.player_ids[i]: self.player_info_group.player_name_tiles[i].text for i in range(0, len(self.player_info_group.player_ids))},
             self.number_cards,
         )
 
@@ -109,22 +109,14 @@ class NewGame(GameWindow):
     def replace_card_and_give_result(self, card_id, next_card_id, player_results):
         played_card = self.remove_played_card(card_id)
 
+        for result in player_results:
+            self.condition_cards_group.update_message(played_card, result.player_id, result.get("matching_cards"))
+
         if not next_card_id:
             self.condition_cards_group.remove_card(self.condition_cards_group.get_tile_by_id(str(card_id)))
             return
 
         self.draw_condition_card(next_card_id)
-
-        for result in player_results:
-            if isinstance(result.get("matching_cards"), list) and not result.get("matching_cards"):
-                if self.played_condition_cards.get(card_id).has_user_choice:
-                    print(played_card.negative_condition_message.format(card_id))
-                else:
-                    print(played_card.negative_condition_message)
-            elif self.played_condition_cards.get(card_id).has_user_choice:
-                print(played_card.positive_condition_message.format(card_id, result.get("matching_cards")))
-            else:
-                print(played_card.positive_condition_message.format(result.get("matching_cards")))
 
         new_card = Tile(
             f"condition_card-{next_card_id}",
