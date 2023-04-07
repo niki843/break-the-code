@@ -82,7 +82,6 @@ class Lobby(GameWindow):
     def open(self, **kwargs):
         super().open()
         if kwargs.get("create_game"):
-            self.players_id_username_map = {client.state_manager.username: client.state_manager.player_id}
             self.game_session_name = kwargs.get("game_name") or "Unknown"
 
             client.server_communication_manager.send_create_game_message(
@@ -91,7 +90,6 @@ class Lobby(GameWindow):
 
             client.state_manager.set_host(client.state_manager.player_id, client.state_manager.username)
 
-            self.players_id_username_map[client.state_manager.player_id] = client.state_manager.username
             self.add_player(client.state_manager.host_id, client.state_manager.host_username)
             self.tiles_group.add(self.start_game_tile)
         else:
