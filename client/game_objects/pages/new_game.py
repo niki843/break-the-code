@@ -170,6 +170,7 @@ class NewGame(GameWindow):
         if (
             tile.name.startswith("condition_card")
             and event.button == client.LEFT_BUTTON_CLICK
+            and not self.player_number_tiles_group.displaying_text_bubbles
         ):
             card_id = self.condition_cards_group.get_card_id(tile)
             card = self.current_drawn_condition_cards.get(int(card_id))

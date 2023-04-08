@@ -1,4 +1,5 @@
 import re
+import time
 
 import client
 from client.utils.enums import Position, AlignType
@@ -14,6 +15,7 @@ class Player:
         self.text_bubble_tile = text_bubble_tile
         self.cards = cards
         self.position = position
+        self.message_displayed_time = None
 
         self.position_tiles()
 
@@ -130,3 +132,5 @@ class Player:
 
         self.text_bubble_tile.replace_text(text)
         self.text_bubble_tile.center_text()
+
+        self.message_displayed_time = time.time()

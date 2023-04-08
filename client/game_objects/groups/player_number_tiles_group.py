@@ -1,3 +1,5 @@
+import time
+
 import client
 
 from client.game_objects.entities.player import Player
@@ -21,6 +23,8 @@ class PlayerNumberTilesGroup:
 
         self.player_id_text_bubble_map = {}
         self.player_id_player_map = {}
+
+        self.text_bubble_displayed_time = None
 
         self.load_players(player_id_name_map)
         # self.load_number_card_icons()
@@ -116,4 +120,6 @@ class PlayerNumberTilesGroup:
             )
             for card in player.cards:
                 client.state_manager.screen.blit(card.image, card.rect)
-            player.text_bubble_tile.blit()
+
+            if player.message_displayed_time and time.time() - player.message_displayed_time <= 5:
+                player.text_bubble_tile.blit()
