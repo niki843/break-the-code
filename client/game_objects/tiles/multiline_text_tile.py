@@ -134,4 +134,5 @@ class MultilineTextTile(Tile):
         super().resize()
         if hasattr(self, "font"):
             self._load_max_characters_and_lines()
+            self.load_font()
             self.load_text()

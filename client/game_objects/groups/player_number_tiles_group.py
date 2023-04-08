@@ -107,6 +107,7 @@ class PlayerNumberTilesGroup:
     def center(self):
         for player in self.player_id_player_map.values():
             player.position_tiles()
+            player.text_bubble_tile.center_text()
 
     def blit(self):
         for player in self.player_id_player_map.values():
