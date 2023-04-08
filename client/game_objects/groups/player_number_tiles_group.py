@@ -27,7 +27,7 @@ class PlayerNumberTilesGroup:
 
     def load_players(self, player_id_name_map):
         all_positions = [Position.BOTTOM, Position.LEFT, Position.TOP, Position.RIGHT]
-        size_by_position = {Position.BOTTOM: (21, 7), Position.LEFT: (21, 7), Position.TOP: (21, 7), Position.RIGHT: (21, 7)}
+        size_by_position = {Position.BOTTOM: (21, 6.5), Position.LEFT: (21, 6.5), Position.TOP: (21, 6.5), Position.RIGHT: (21, 6.5)}
 
         index_of_current_player = list(player_id_name_map.keys()).index(client.state_manager.player_id)
         ordered_players = list(player_id_name_map.items())
