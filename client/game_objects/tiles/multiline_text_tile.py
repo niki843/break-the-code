@@ -34,7 +34,7 @@ class MultilineTextTile(Tile):
         self.start_line = start_line
 
         self.load_font()
-        self.new_line_space = self.screen.get_height() * 0.015
+        self.new_line_space = self.screen.get_height() * 0.01
         self.text_left_spacing = self.image.get_width() * 0.07
 
         self.character_width, self.character_height = self.font.size("h")

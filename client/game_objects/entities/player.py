@@ -1,3 +1,5 @@
+import re
+
 import client
 from client.utils.enums import Position, AlignType
 
@@ -21,7 +23,7 @@ class Player:
     def position_image_tile(self):
         if self.position == Position.BOTTOM:
             self.image_tile.rect.bottom = client.state_manager.screen_rect.bottom - (
-                client.state_manager.screen.get_height() * 0.01
+                    client.state_manager.screen.get_height() * 0.01
             )
             self.image_tile.rect.left = client.state_manager.screen_rect.left + (
                     client.state_manager.screen.get_width() * 0.3
@@ -47,7 +49,7 @@ class Player:
     def position_text_bubble(self):
         if self.position == Position.BOTTOM:
             self.text_bubble_tile.rect.bottom = self.image_tile.rect.top
-            self.text_bubble_tile.rect.left = self. image_tile.rect.centerx
+            self.text_bubble_tile.rect.left = self.image_tile.rect.centerx
         elif self.position == Position.LEFT:
             self.text_bubble_tile.rect.left = self.image_tile.rect.centerx
             self.text_bubble_tile.rect.bottom = self.image_tile.rect.top
@@ -64,15 +66,15 @@ class Player:
             for card in self.cards:
                 card.rect.centery = self.image_tile.rect.centery
                 card.rect.left = left + (
-                    client.state_manager.screen.get_width() * 0.01
+                        client.state_manager.screen.get_width() * 0.01
                 )
                 left = card.rect.right
         elif self.position == Position.LEFT:
             left = self.image_tile.rect.right + (
-                client.state_manager.screen.get_width() * 0.01
+                    client.state_manager.screen.get_width() * 0.01
             )
             top = client.state_manager.screen_rect.top + (
-                client.state_manager.screen.get_height() * 0.3
+                    client.state_manager.screen.get_height() * 0.3
             )
             for card in self.cards:
                 card.rect.left = left
@@ -80,22 +82,22 @@ class Player:
 
                 left = card.rect.left
                 top = card.rect.bottom + (
-                    client.state_manager.screen.get_height() * 0.02
+                        client.state_manager.screen.get_height() * 0.02
                 )
         elif self.position == Position.TOP:
             right = self.image_tile.rect.left
             for card in self.cards:
                 card.rect.centery = self.image_tile.rect.centery
                 card.rect.right = right - (
-                    client.state_manager.screen.get_width() * 0.01
+                        client.state_manager.screen.get_width() * 0.01
                 )
                 right = card.rect.left
         elif self.position == Position.RIGHT:
             right = self.image_tile.rect.left - (
-                client.state_manager.screen.get_width() * 0.01
+                    client.state_manager.screen.get_width() * 0.01
             )
             bottom = client.state_manager.screen_rect.bottom - (
-                client.state_manager.screen.get_height() * 0.3
+                    client.state_manager.screen.get_height() * 0.3
             )
             for card in self.cards:
                 card.rect.right = right
@@ -103,7 +105,7 @@ class Player:
 
                 right = card.rect.right
                 bottom = card.rect.top - (
-                    client.state_manager.screen.get_height() * 0.02
+                        client.state_manager.screen.get_height() * 0.02
                 )
 
     def give_condition_card_response(self, card, matching_cards, card_number_choice):
@@ -118,6 +120,8 @@ class Player:
             text = card.positive_condition_message.format(matching_cards)
         else:
             text = card.negative_condition_message.format()
+
+        text = re.sub("\[\|]", "", text)
 
         self.text_bubble_tile.replace_text(text)
         self.text_bubble_tile.center_text()
