@@ -119,6 +119,6 @@ class Player:
 
         self.text_bubble_tile.replace_text(text)
         if self.position == Position.TOP:
-            self.text_bubble_tile.center_text(align_type=AlignType.CENTER, top_additional_spacing=0.1)
+            self.text_bubble_tile.center_text()
         else:
-            self.text_bubble_tile.center_text(align_type=AlignType.CENTER, top_additional_spacing=0.05)
+            self.text_bubble_tile.center_text()

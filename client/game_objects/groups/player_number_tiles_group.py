@@ -1,8 +1,7 @@
 import client
 
 from client.game_objects.entities.player import Player
-from client.game_objects.tiles.multiline_text_tile import MultilineTextTile
-from client.game_objects.tiles.plain_text_box import PlainTextTile
+from client.game_objects.tiles.bubble_box_tile import BubbleBoxTile
 from client.utils import common
 from client.utils.enums import Position
 
@@ -28,6 +27,7 @@ class PlayerNumberTilesGroup:
 
     def load_players(self, player_id_name_map):
         all_positions = [Position.BOTTOM, Position.LEFT, Position.TOP, Position.RIGHT]
+        size_by_position = {Position.BOTTOM: (20, 7), Position.LEFT: (20, 7), Position.TOP: (21, 7), Position.RIGHT: (21, 7)}
 
         index_of_current_player = list(player_id_name_map.keys()).index(client.state_manager.player_id)
         ordered_players = list(player_id_name_map.items())
@@ -40,16 +40,15 @@ class PlayerNumberTilesGroup:
         for index, player_data in enumerate(ordered_players):
             position = all_positions[index]
             image_tile = common.load_tiny_tile(self.tiles_name, f"user{index+1}_w_background.png", client.state_manager.screen)
-            text_bubble = MultilineTextTile(
+            text_bubble = BubbleBoxTile(
                 "text_bubble",
                 common.get_image(f"result_bubble_{position}.png"),
                 client.state_manager.screen,
-                20,
+                size_by_position[position][0],
                 0,
                 0,
                 "",
-                10,
-                0,
+                size_by_position[position][1],
             )
 
             cards = self.number_cards

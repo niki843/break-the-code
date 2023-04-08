@@ -27,7 +27,7 @@ def fourth_card(player):
 
 def fifth_card(player):
     check_player_has_cards(player)
-    return get_card_index_list_from_property(player, "color", Colors.COLOR_WHITE)
+    return len(get_card_index_list_from_property(player, "color", Colors.COLOR_WHITE))
 
 
 def sixth_card(player):
