@@ -27,9 +27,16 @@ class PlayerNumberTilesGroup:
 
     def load_players(self, player_id_name_map):
         all_positions = [Position.BOTTOM, Position.LEFT, Position.TOP, Position.RIGHT]
-        size_by_position = {Position.BOTTOM: (21, 6.5), Position.LEFT: (21, 6.5), Position.TOP: (21, 6.5), Position.RIGHT: (21, 6.5)}
+        size_by_position = {
+            Position.BOTTOM: (21, 6.5),
+            Position.LEFT: (21, 6.5),
+            Position.TOP: (21, 6.5),
+            Position.RIGHT: (21, 6.5),
+        }
 
-        index_of_current_player = list(player_id_name_map.keys()).index(client.state_manager.player_id)
+        index_of_current_player = list(player_id_name_map.keys()).index(
+            client.state_manager.player_id
+        )
         ordered_players = list(player_id_name_map.items())
         last_index = len(ordered_players) - 1
 
@@ -39,7 +46,11 @@ class PlayerNumberTilesGroup:
 
         for index, player_data in enumerate(ordered_players):
             position = all_positions[index]
-            image_tile = common.load_tiny_tile(self.tiles_name, f"user{index+1}_w_background.png", client.state_manager.screen)
+            image_tile = common.load_tiny_tile(
+                self.tiles_name,
+                f"user{index+1}_w_background.png",
+                client.state_manager.screen,
+            )
             text_bubble = BubbleBoxTile(
                 "text_bubble",
                 common.get_image(f"result_bubble_{position}.png"),
@@ -55,16 +66,30 @@ class PlayerNumberTilesGroup:
             if index > 0:
                 cards = self.load_card_backs(position)
 
-            player = Player(player_data[0], player_data[1], image_tile, text_bubble, cards, position)
+            player = Player(
+                player_data[0], player_data[1], image_tile, text_bubble, cards, position
+            )
             self.player_id_player_map[player_data[0]] = player
 
     def load_card_backs(self, position):
         cards = []
         for i in range(0, self.cards_amount):
             if position == Position.LEFT or position == Position.RIGHT:
-                cards.append(common.load_left_right_number_tile(f"{chr(97 + i)}_card", f"{chr(97 + i)}_{position}.png", client.state_manager.screen))
+                cards.append(
+                    common.load_left_right_number_tile(
+                        f"{chr(97 + i)}_card",
+                        f"{chr(97 + i)}_{position}.png",
+                        client.state_manager.screen,
+                    )
+                )
                 continue
-            cards.append(common.load_number_tile(f"{chr(97 + i)}_card", f"{chr(97 + i)}_{position}.png", client.state_manager.screen))
+            cards.append(
+                common.load_number_tile(
+                    f"{chr(97 + i)}_card",
+                    f"{chr(97 + i)}_{position}.png",
+                    client.state_manager.screen,
+                )
+            )
         return cards
 
     def update_message(self, card, player_id, matching_cards, card_number_choice):
@@ -85,7 +110,9 @@ class PlayerNumberTilesGroup:
 
     def blit(self):
         for player in self.player_id_player_map.values():
-            client.state_manager.screen.blit(player.image_tile.image, player.image_tile.rect)
+            client.state_manager.screen.blit(
+                player.image_tile.image, player.image_tile.rect
+            )
             for card in player.cards:
                 client.state_manager.screen.blit(card.image, card.rect)
             player.text_bubble_tile.blit()

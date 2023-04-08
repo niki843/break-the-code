@@ -1,5 +1,7 @@
 import client
-from client.game_objects.custom_exceptions.player_cards_missing import PlayerCardsMissingException
+from client.game_objects.custom_exceptions.player_cards_missing import (
+    PlayerCardsMissingException,
+)
 from server.utils.enums import Colors
 
 
@@ -185,7 +187,9 @@ def get_consecutive_cards(player, attr):
             check_value = card.number - 1
 
         if not current_match_card_numbers or last_attr == check_value:
-            current_match_card_numbers.append(client.CARD_INDEX_TO_LETTER_MAP.get(index))
+            current_match_card_numbers.append(
+                client.CARD_INDEX_TO_LETTER_MAP.get(index)
+            )
             last_attr = card_attr
             continue
 

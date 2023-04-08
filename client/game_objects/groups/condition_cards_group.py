@@ -55,10 +55,12 @@ class ConditionCardsGroup:
             self.screen.get_width() * 0.01
         )
 
-        self.condition_card_tiles[2].rect.top = self.condition_card_tiles[1].rect.bottom + (
-            self.screen.get_width() * 0.01
-        )
-        self.condition_card_tiles[2].rect.centerx = self.condition_card_tiles[1].rect.centerx
+        self.condition_card_tiles[2].rect.top = self.condition_card_tiles[
+            1
+        ].rect.bottom + (self.screen.get_width() * 0.01)
+        self.condition_card_tiles[2].rect.centerx = self.condition_card_tiles[
+            1
+        ].rect.centerx
 
         self.condition_card_tiles[3].rect.centerx = self.center_card.rect.centerx
         self.condition_card_tiles[3].rect.top = self.center_card.rect.bottom + (
@@ -72,14 +74,18 @@ class ConditionCardsGroup:
             self.screen.get_width() * 0.01
         )
 
-        self.condition_card_tiles[5].rect.bottom = self.condition_card_tiles[4].rect.top - (
-            self.screen.get_width() * 0.01
-        )
-        self.condition_card_tiles[5].rect.centerx = self.condition_card_tiles[4].rect.centerx
+        self.condition_card_tiles[5].rect.bottom = self.condition_card_tiles[
+            4
+        ].rect.top - (self.screen.get_width() * 0.01)
+        self.condition_card_tiles[5].rect.centerx = self.condition_card_tiles[
+            4
+        ].rect.centerx
 
     def replace_card(self, old_card_tile, new_card_tile):
         self.condition_card_id_tile_map.pop(self.get_card_id(old_card_tile))
-        self.condition_card_tiles[self.condition_card_tiles.index(old_card_tile)] = new_card_tile
+        self.condition_card_tiles[
+            self.condition_card_tiles.index(old_card_tile)
+        ] = new_card_tile
         self.condition_card_id_tile_map[self.get_card_id(new_card_tile)] = new_card_tile
         new_card_tile.rect.centerx = old_card_tile.rect.centerx
         new_card_tile.rect.centery = old_card_tile.rect.centery

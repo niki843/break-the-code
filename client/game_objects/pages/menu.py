@@ -197,8 +197,12 @@ class Menu(GameWindow):
             return
 
         self.game_session_name_box.resize()
-        self.game_session_name_box.rect.centerx = client.state_manager.screen_rect.centerx
-        self.game_session_name_box.rect.centery = client.state_manager.screen_rect.centery
+        self.game_session_name_box.rect.centerx = (
+            client.state_manager.screen_rect.centerx
+        )
+        self.game_session_name_box.rect.centery = (
+            client.state_manager.screen_rect.centery
+        )
 
     def build_game_name_text_box(self):
         surface = common.get_image("non_selected_nickname.png")

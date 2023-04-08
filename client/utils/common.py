@@ -76,38 +76,17 @@ def load_tiny_tile(tile_name, img_path, screen):
         screen,
         client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_TINY,
         0,
-        0
+        0,
     )
 
 
 def load_number_tile(tile_name, img_path, screen):
-    return Tile(
-        tile_name,
-        get_image(img_path),
-        screen,
-        4.5,
-        0,
-        0
-    )
+    return Tile(tile_name, get_image(img_path), screen, 4.5, 0, 0)
 
 
 def load_left_right_number_tile(tile_name, img_path, screen):
-    return Tile(
-        tile_name,
-        get_image(img_path),
-        screen,
-        9,
-        0,
-        0
-    )
+    return Tile(tile_name, get_image(img_path), screen, 9, 0, 0)
 
 
 def load_medium_tile(tile_name, img_path, screen):
-    return Tile(
-        tile_name,
-        get_image(img_path),
-        screen,
-        9,
-        0,
-        0
-    )
+    return Tile(tile_name, get_image(img_path), screen, 9, 0, 0)
