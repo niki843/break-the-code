@@ -110,10 +110,10 @@ class JoinGame(GameWindow):
 
         self.game_info_tile.resize()
         self.game_info_tile.rect.top = self.tiles_background.rect.top + (
-            client.state_manager.screen.get_height() * 0.02
+            client.state_manager.screen.get_height() * 0.03
         )
         self.game_info_tile.rect.right = self.tiles_background.rect.right - (
-            client.state_manager.screen.get_width() * 0.03
+            client.state_manager.screen.get_width() * 0.06
         )
 
     def set_game_info_size(self):
@@ -122,7 +122,7 @@ class JoinGame(GameWindow):
 
         self.game_info_box.resize()
         self.game_info_box.rect.bottom = self.tiles_background.rect.bottom - (
-            client.state_manager.screen.get_height() * 0.02
+            client.state_manager.screen.get_height() * 0.04
         )
         self.game_info_box.rect.centerx = self.game_info_tile.rect.centerx
         self.game_info_box.center_text()

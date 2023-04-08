@@ -81,7 +81,7 @@ class GameWindow:
         surface = common.get_image("menu_field_cropped.png")
 
         self.tiles_background = Tile(
-            "tiles_background", surface, client.state_manager.screen, 80, 0, 0
+            "tiles_background", surface, client.state_manager.screen, 84, 0, 0
         )
         self.set_tiles_background_size()
 
