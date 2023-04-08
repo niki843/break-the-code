@@ -114,8 +114,10 @@ class Player:
                 text = card.negative_condition_message
         elif card.has_user_choice:
             text = card.positive_condition_message.format(card_number_choice, matching_cards)
-        else:
+        elif matching_cards:
             text = card.positive_condition_message.format(matching_cards)
+        else:
+            text = card.negative_condition_message.format()
 
         self.text_bubble_tile.replace_text(text)
         self.text_bubble_tile.center_text()

@@ -30,7 +30,13 @@ class BubbleBoxTile(MultilineTextTile):
         displayed_surfaces = self.text_surfaces[
             self.start_line: self.start_line + self.max_lines_to_display
         ]
-        current_center = self.rect.centery - ((self.character_height + self.new_line_space) * int(len(displayed_surfaces)/2))
+
+        if len(displayed_surfaces) % 2 == 0:
+            center_of_lower_element = self.rect.centery + (self.new_line_space/2) + (self.character_height/2)
+            current_center = center_of_lower_element - (self.new_line_space + self.character_height * int(len(displayed_surfaces)/2))
+        else:
+            current_center = self.rect.centery - ((self.character_height + self.new_line_space) * int(len(displayed_surfaces)/2))
+
         for surface, rect in displayed_surfaces:
             if align_type == AlignType.LEFT:
                 rect.left = self.rect.left + self.text_left_spacing
