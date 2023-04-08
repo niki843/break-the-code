@@ -1,6 +1,8 @@
 import client
 from client.game_objects.cards.card_reader import CardReader
-from client.game_objects.custom_exceptions.no_such_card_exception import NoSuchCardException
+from client.game_objects.custom_exceptions.no_such_card_exception import (
+    NoSuchCardException,
+)
 from client.game_objects.groups.condition_cards_group import ConditionCardsGroup
 from client.game_objects.groups.player_number_tiles_group import PlayerNumberTilesGroup
 from client.game_objects.pages.game_window import GameWindow
@@ -57,7 +59,9 @@ class NewGame(GameWindow):
             self.number_cards.append(
                 Tile(
                     "number_card",
-                    common.get_image(f"{card.get('number')}_{Colors(card.get('color'))}.png"),
+                    common.get_image(
+                        f"{card.get('number')}_{Colors(card.get('color'))}.png"
+                    ),
                     client.state_manager.screen,
                     5,
                     0,
@@ -106,14 +110,23 @@ class NewGame(GameWindow):
         self.build_draw_pile(self.current_drawn_condition_cards.values())
         self.tiles_group.add(self.condition_cards_group.condition_card_tiles)
 
-    def replace_card_and_give_result(self, card_id, next_card_id, player_results, card_number_choice):
+    def replace_card_and_give_result(
+        self, card_id, next_card_id, player_results, card_number_choice
+    ):
         played_card = self.remove_played_card(card_id)
 
         for result in player_results:
-            self.player_number_tiles_group.update_message(played_card, result.get("player_id"), result.get("matching_cards"), card_number_choice)
+            self.player_number_tiles_group.update_message(
+                played_card,
+                result.get("player_id"),
+                result.get("matching_cards"),
+                card_number_choice,
+            )
 
         if not next_card_id:
-            self.condition_cards_group.remove_card(self.condition_cards_group.get_tile_by_id(str(card_id)))
+            self.condition_cards_group.remove_card(
+                self.condition_cards_group.get_tile_by_id(str(card_id))
+            )
             return
 
         self.draw_condition_card(next_card_id)
@@ -154,11 +167,16 @@ class NewGame(GameWindow):
         return card
 
     def activate_tile(self, tile, event):
-        if tile.name.startswith("condition_card") and event.button == client.LEFT_BUTTON_CLICK:
+        if (
+            tile.name.startswith("condition_card")
+            and event.button == client.LEFT_BUTTON_CLICK
+        ):
             card_id = self.condition_cards_group.get_card_id(tile)
             card = self.current_drawn_condition_cards.get(int(card_id))
             if card.has_user_choice:
-                client.server_communication_manager.play_choice_condition_card(card.id, card.choices[0])
+                client.server_communication_manager.play_choice_condition_card(
+                    card.id, card.choices[0]
+                )
                 return
             client.server_communication_manager.play_condition_card(card.id)
 

@@ -26,7 +26,9 @@ class ServerCommunicationManager(Singleton):
     JOIN_GAME = '{{"type": "join_game", "player_id": "{0}", "player_name": "{1}", "game_session_id": "{2}"}}'
     CREATE_GAME = '{{"type": "new_game", "player_id": "{0}", "player_name": "{1}", "room_name": "{2}"}}'
     PLAY_CARD = '{{"type": "play_tile", "condition_card_id": {0}}}'
-    PLAY_CHOICE_CARD = '{{"type": "play_tile", "condition_card_id": {0}, "card_number_choice": {1}}}'
+    PLAY_CHOICE_CARD = (
+        '{{"type": "play_tile", "condition_card_id": {0}, "card_number_choice": {1}}}'
+    )
 
     def __init__(self):
         # Connect to server
@@ -42,7 +44,9 @@ class ServerCommunicationManager(Singleton):
         client.LOOP.create_task(
             send_message(
                 self.JOIN_GAME.format(
-                    client.state_manager.player_id, client.state_manager.username, game_session_id
+                    client.state_manager.player_id,
+                    client.state_manager.username,
+                    game_session_id,
                 )
             )
         )
@@ -50,7 +54,11 @@ class ServerCommunicationManager(Singleton):
     def send_create_game_message(self, game_name):
         client.LOOP.create_task(
             send_message(
-                self.CREATE_GAME.format(client.state_manager.player_id, client.state_manager.username, game_name)
+                self.CREATE_GAME.format(
+                    client.state_manager.player_id,
+                    client.state_manager.username,
+                    game_name,
+                )
             )
         )
 
@@ -64,4 +72,6 @@ class ServerCommunicationManager(Singleton):
         client.LOOP.create_task(send_message(self.PLAY_CARD.format(card_id)))
 
     def play_choice_condition_card(self, card_id, choice):
-        client.LOOP.create_task(send_message(self.PLAY_CHOICE_CARD.format(card_id, choice)))
+        client.LOOP.create_task(
+            send_message(self.PLAY_CHOICE_CARD.format(card_id, choice))
+        )

@@ -312,7 +312,9 @@ class Settings(GameWindow):
         client.state_manager.screen.blit(
             self.music_label_tile.image, self.music_label_tile.rect
         )
-        client.state_manager.screen.blit(self.music_slider.image, self.music_slider.rect)
+        client.state_manager.screen.blit(
+            self.music_slider.image, self.music_slider.rect
+        )
         client.state_manager.screen.blit(
             self.music_slider.slider_handle.image, self.music_slider.slider_handle.rect
         )
@@ -323,7 +325,9 @@ class Settings(GameWindow):
 
         self.username_input_box.blit()
 
-        client.state_manager.screen.blit(self.apply_button.image, self.apply_button.rect)
+        client.state_manager.screen.blit(
+            self.apply_button.image, self.apply_button.rect
+        )
 
         client.state_manager.screen.blit(self.back_tile.image, self.back_tile.rect)
 

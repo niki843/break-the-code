@@ -34,7 +34,7 @@ class MultilineTextTile(Tile):
         self.start_line = start_line
 
         self.load_font()
-        self.new_line_space = self.screen.get_height() * 0.015
+        self.new_line_space = self.screen.get_height() * 0.01
         self.text_left_spacing = self.image.get_width() * 0.07
 
         self.character_width, self.character_height = self.font.size("h")
@@ -92,7 +92,7 @@ class MultilineTextTile(Tile):
     def center_text(self, align_type=AlignType.LEFT):
         current_top_surface = self.rect.top
         displayed_surfaces = self.text_surfaces[
-            self.start_line: self.start_line + self.max_lines_to_display
+            self.start_line : self.start_line + self.max_lines_to_display
         ]
         for surface, rect in displayed_surfaces:
             if align_type == AlignType.LEFT:
@@ -108,7 +108,7 @@ class MultilineTextTile(Tile):
         self.screen.blit(self.image, self.rect)
 
         displayed_surfaces = self.text_surfaces[
-            self.start_line: self.start_line + self.max_lines_to_display
+            self.start_line : self.start_line + self.max_lines_to_display
         ]
         for surface, rect in displayed_surfaces:
             self.screen.blit(surface, rect)
@@ -123,7 +123,8 @@ class MultilineTextTile(Tile):
 
     def _load_max_characters_and_lines(self):
         self.max_characters_per_line = int(
-            self.image.get_width() / (self.character_width + self.character_width * 0.14)
+            self.image.get_width()
+            / (self.character_width + self.character_width * 0.14)
         )
         self.max_lines_to_display = int(
             self.image.get_height() / (self.character_height + self.new_line_space)

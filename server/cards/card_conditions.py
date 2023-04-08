@@ -27,7 +27,7 @@ def fourth_card(player):
 
 def fifth_card(player):
     check_player_has_cards(player)
-    return len(get_card_index_list_from_property(player, "color", Colors.COLOR_WHITE))
+    return get_card_index_list_from_property(player, "color", Colors.COLOR_WHITE)
 
 
 def sixth_card(player):
@@ -164,10 +164,10 @@ def get_card_index_list_from_property(player, attr, value):
         print(
             f"Player {player.get_name()}, has a card with {attr} {value} on place\\places {player_card_index}."
         )
-        return player_card_index
+        return len(player_card_index)
 
     print(f"Player {player.get_name()}, hasn't got any cards with {attr} {value}.")
-    return player_card_index
+    return None
 
 
 def get_consecutive_cards(player, attr):

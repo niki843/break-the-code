@@ -88,9 +88,13 @@ class Lobby(GameWindow):
                 self.game_session_name
             )
 
-            client.state_manager.set_host(client.state_manager.player_id, client.state_manager.username)
+            client.state_manager.set_host(
+                client.state_manager.player_id, client.state_manager.username
+            )
 
-            self.add_player(client.state_manager.host_id, client.state_manager.host_username)
+            self.add_player(
+                client.state_manager.host_id, client.state_manager.host_username
+            )
             self.tiles_group.add(self.start_game_tile)
         else:
             self.players_id_username_map = kwargs.get("player_id_usernames_map")
@@ -99,7 +103,7 @@ class Lobby(GameWindow):
 
             client.state_manager.set_host(
                 list(self.players_id_username_map.values())[0],
-                list(self.players_id_username_map.keys())[0]
+                list(self.players_id_username_map.keys())[0],
             )
 
             if not self.game_session_id:
@@ -110,7 +114,9 @@ class Lobby(GameWindow):
             client.server_communication_manager.send_join_game_message(
                 self.game_session_id
             )
-            self.add_player(client.state_manager.player_id, client.state_manager.username)
+            self.add_player(
+                client.state_manager.player_id, client.state_manager.username
+            )
             self.players_id_username_map.update(
                 self.player_info_group.get_player_name_id_map()
             )
@@ -131,7 +137,9 @@ class Lobby(GameWindow):
 
     def replace_host(self, player_id):
         self.remove_player(client.state_manager.host_id)
-        client.state_manager.set_host(player_id, self.players_id_username_map.get(player_id))
+        client.state_manager.set_host(
+            player_id, self.players_id_username_map.get(player_id)
+        )
 
         if client.state_manager.am_i_host():
             self.tiles_group.add(self.start_game_tile)
@@ -157,7 +165,11 @@ class Lobby(GameWindow):
             client.server_communication_manager.send_exit_game_message()
             self.close()
             self.event_handler.menu.open()
-        if tile.name == self.start_game_tile.name and client.state_manager.am_i_host() and len(self.players_id_username_map.keys()) >= 3:
+        if (
+            tile.name == self.start_game_tile.name
+            and client.state_manager.am_i_host()
+            and len(self.players_id_username_map.keys()) >= 3
+        ):
             self.start_game()
 
     def blit(self):
