@@ -115,9 +115,12 @@ class Player:
             else:
                 text = card.negative_condition_message
         elif card.has_user_choice:
-            text = card.positive_condition_message.format(
-                card_number_choice, matching_cards
-            )
+            if matching_cards:
+                text = card.positive_condition_message.format(
+                    card_number_choice, matching_cards
+                )
+            else:
+                text = card.negative_condition_message.format(card_number_choice)
         elif matching_cards:
             text = card.positive_condition_message.format(matching_cards)
         else:
