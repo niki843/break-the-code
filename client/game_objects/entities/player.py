@@ -76,7 +76,7 @@ class Player:
                 client.state_manager.screen.get_width() * 0.01
             )
             top = client.state_manager.screen_rect.top + (
-                client.state_manager.screen.get_height() * 0.3
+                client.state_manager.screen.get_height() * 0.26
             )
             for card in self.cards:
                 card.rect.left = left
@@ -99,7 +99,7 @@ class Player:
                 client.state_manager.screen.get_width() * 0.01
             )
             bottom = client.state_manager.screen_rect.bottom - (
-                client.state_manager.screen.get_height() * 0.3
+                client.state_manager.screen.get_height() * 0.26
             )
             for card in self.cards:
                 card.rect.right = right

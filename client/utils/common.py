@@ -80,12 +80,23 @@ def load_tiny_tile(tile_name, img_path, screen):
     )
 
 
-def load_number_tile(tile_name, img_path, screen):
-    return Tile(tile_name, get_image(img_path), screen, 4.5, 0, 0)
+def load_number_tile(tile_name, surface, screen):
+    return Tile(tile_name, surface, screen, 4.5, 0, 0)
 
 
-def load_left_right_number_tile(tile_name, img_path, screen):
-    return Tile(tile_name, get_image(img_path), screen, 9, 0, 0)
+def load_rotated_left_tile(tile_name, img_path, size, screen):
+    surface = pygame.transform.rotate(get_image(img_path), -90)
+    return Tile(tile_name, surface, screen, size, 0, 0)
+
+
+def load_rotated_right_tile(tile_name, img_path, size, screen):
+    surface = pygame.transform.rotate(get_image(img_path), 90)
+    return Tile(tile_name, surface, screen, size, 0, 0)
+
+
+def load_flipped_tile(tile_name, img_path, size, screen):
+    surface = pygame.transform.rotate(get_image(img_path), 180)
+    return Tile(tile_name, surface, screen, size, 0, 0)
 
 
 def load_medium_tile(tile_name, img_path, screen):

@@ -78,22 +78,35 @@ class PlayerNumberTilesGroup:
     def load_card_backs(self, position):
         cards = []
         for i in range(0, self.cards_amount):
-            if position == Position.LEFT or position == Position.RIGHT:
+            if position == Position.LEFT:
                 cards.append(
-                    common.load_left_right_number_tile(
+                    common.load_rotated_left_tile(
                         f"{chr(97 + i)}_card",
-                        f"{chr(97 + i)}_{position}.png",
+                        f"{chr(97 + i)}.png",
+                        7,
                         client.state_manager.screen,
                     )
                 )
                 continue
-            cards.append(
-                common.load_number_tile(
-                    f"{chr(97 + i)}_card",
-                    f"{chr(97 + i)}_{position}.png",
-                    client.state_manager.screen,
+            elif position == Position.RIGHT:
+                cards.append(
+                    common.load_rotated_right_tile(
+                        f"{chr(97 + i)}_card",
+                        f"{chr(97 + i)}.png",
+                        7,
+                        client.state_manager.screen,
+                    )
                 )
-            )
+                continue
+            elif position == Position.TOP:
+                cards.append(
+                    common.load_flipped_tile(
+                        f"{chr(97 + i)}_card",
+                        f"{chr(97 + i)}.png",
+                        4.5,
+                        client.state_manager.screen,
+                    )
+                )
         return cards
 
     def update_message(self, card, player_id, matching_cards, card_number_choice):
