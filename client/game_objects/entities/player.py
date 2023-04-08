@@ -118,7 +118,4 @@ class Player:
             text = card.positive_condition_message.format(matching_cards)
 
         self.text_bubble_tile.replace_text(text)
-        if self.position == Position.TOP:
-            self.text_bubble_tile.center_text()
-        else:
-            self.text_bubble_tile.center_text()
+        self.text_bubble_tile.center_text()
