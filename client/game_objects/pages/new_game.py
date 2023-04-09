@@ -4,6 +4,7 @@ from client.game_objects.custom_exceptions.no_such_card_exception import (
     NoSuchCardException,
 )
 from client.game_objects.groups.condition_cards_group import ConditionCardsGroup
+from client.game_objects.groups.guess_tiles_popup_group import GuessTilesPopupGroup
 from client.game_objects.groups.player_number_tiles_group import PlayerNumberTilesGroup
 from client.game_objects.pages.game_window import GameWindow
 from client.game_objects.tiles.tile import Tile
@@ -23,9 +24,9 @@ class NewGame(GameWindow):
 
         self.condition_cards_group = None
         self.player_number_tiles_group = None
+        self.guess_tiles_popup_group = None
 
         self.guess_button = None
-        self.guess_popup_background = None
 
         self.shown_cards = []
 
@@ -37,6 +38,8 @@ class NewGame(GameWindow):
 
         self.build_guess_tile()
 
+        self.build_guess_popup()
+
     def resize(self):
         super().resize()
 
@@ -45,7 +48,8 @@ class NewGame(GameWindow):
         self.set_player_number_group_size()
 
         self.set_guess_tile_size()
-        self.set_guess_popup_background_size()
+
+        self.guess_tiles_popup_group.resize()
 
     def build_draw_pile(self, condition_cards):
         self.condition_cards_group = ConditionCardsGroup(
@@ -190,31 +194,7 @@ class NewGame(GameWindow):
         return card
 
     def build_guess_popup(self):
-        self.build_guess_popup_background()
-
-    def close_guess_popup(self):
-        self.tiles_group.remove(self.guess_popup_background)
-
-        self.guess_popup_background = None
-
-    def build_guess_popup_background(self):
-        self.guess_popup_background = common.load_tile(
-            "guess_popup_backgound",
-            common.get_image("menu_field_cropped.png"),
-            40,
-            client.state_manager.screen,
-        )
-
-        self.tiles_group.add(self.guess_popup_background)
-        self.set_guess_popup_background_size()
-
-    def set_guess_popup_background_size(self):
-        if not self.guess_popup_background:
-            return
-
-        self.guess_popup_background.resize()
-        self.guess_popup_background.rect.centerx = client.state_manager.screen_rect.centerx
-        self.guess_popup_background.rect.centery = client.state_manager.screen_rect.centery
+        self.guess_tiles_popup_group = GuessTilesPopupGroup("guess_tiles_group")
 
     def open(self, **kwargs):
         super().open()
@@ -240,18 +220,18 @@ class NewGame(GameWindow):
                 return
             client.server_communication_manager.play_condition_card(card.id)
 
-            if self.guess_popup_background:
-                self.close_guess_popup()
+            if self.guess_tiles_popup_group.is_open:
+                self.guess_tiles_popup_group.close(self.tiles_group)
         if (
             tile.name == self.guess_button.name
             and event.button == client.LEFT_BUTTON_CLICK
         ):
-            self.build_guess_popup()
+            self.guess_tiles_popup_group.open(self.tiles_group)
         if (
             tile.name == self.background_image.name
             and event.button == client.LEFT_BUTTON_CLICK
         ):
-            self.close_guess_popup()
+            self.guess_tiles_popup_group.close(self.tiles_group)
 
     def blit(self):
         super().blit()
@@ -264,5 +244,4 @@ class NewGame(GameWindow):
 
         client.state_manager.screen.blit(self.guess_button.image, self.guess_button.rect)
 
-        if self.guess_popup_background:
-            client.state_manager.screen.blit(self.guess_popup_background.image, self.guess_popup_background.rect)
+        self.guess_tiles_popup_group.blit()
