@@ -103,7 +103,7 @@ class NewGame(GameWindow):
     def build_guess_tile(self):
         surface = common.get_image("guess.png")
         self.guess_button = common.load_tile(
-            "guess_tile",
+            "guess_button",
             surface,
             client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
             client.state_manager.screen

@@ -10,20 +10,24 @@ class GuessTilesPopupGroup:
 
         self.is_open = False
 
-        self.guess_button = None
         self.guess_popup_background = None
         self.guess_cards = []
+
+        self.submit_button = None
 
     def resize(self):
         self.set_guess_popup_background_size()
         self.set_guess_cards_size()
+        self.set_submit_button_size()
 
     def open(self, tiles_group):
         if not self.guess_cards:
             self.build_guess_popup_background()
             self.build_guess_cards()
+            self.build_submit_button()
         self.is_open = True
         tiles_group.add(self.guess_popup_background)
+        tiles_group.add(self.submit_button)
         for card in self.guess_cards:
             tiles_group.add(card)
             for color_button in card.color_buttons:
@@ -32,6 +36,7 @@ class GuessTilesPopupGroup:
     def close(self, tiles_group):
         self.is_open = False
         tiles_group.remove(self.guess_popup_background)
+        tiles_group.remove(self.submit_button)
         for card in self.guess_cards:
             tiles_group.remove(card)
             for color_button in card.color_buttons:
@@ -95,6 +100,26 @@ class GuessTilesPopupGroup:
             )
             card.center_color_buttons()
 
+    def build_submit_button(self):
+        self.submit_button = common.load_tile(
+            "guess_popup_submit_button",
+            common.get_image("submit.png"),
+            12,
+            client.state_manager.screen,
+        )
+
+        self.set_submit_button_size()
+
+    def set_submit_button_size(self):
+        if not self.submit_button:
+            return
+
+        self.submit_button.resize()
+        self.submit_button.rect.centerx = client.state_manager.screen_rect.centerx
+        self.submit_button.rect.bottom = self.guess_popup_background.rect.bottom + (
+            client.state_manager.screen.get_height() * 0.05
+        )
+
     def mark_color(self, tile_name):
         guess_card_id, color_button_id = self.__get_color_button_id_and_card_id(tile_name)
 
@@ -108,6 +133,8 @@ class GuessTilesPopupGroup:
                 guess_card.blit()
                 for color_button in guess_card.color_buttons:
                     client.state_manager.screen.blit(color_button.image, color_button.rect)
+
+            client.state_manager.screen.blit(self.submit_button.image, self.submit_button.rect)
 
     @staticmethod
     def __get_color_button_id_and_card_id(tile_name):
