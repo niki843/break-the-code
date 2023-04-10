@@ -69,7 +69,7 @@ class GuessTilesPopupGroup:
                     8,
                     0,
                     0,
-                    common.get_image("user_number_1.png"),
+                    common.get_image("user_number_pressed.png"),
                     text_size_percentage_from_screen_height=5,
                     max_char=1,
                 )
