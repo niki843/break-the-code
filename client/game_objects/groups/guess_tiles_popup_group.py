@@ -1,7 +1,7 @@
 import client
 from client.game_objects.tiles.guess_card_tile import GuessCardTile
-from client.game_objects.tiles.input_box_tile import InputBoxTile
 from client.utils import common
+from client.utils.enums import GameTypes
 
 
 class GuessTilesPopupGroup:
@@ -14,17 +14,13 @@ class GuessTilesPopupGroup:
         self.guess_popup_background = None
         self.guess_cards = []
 
-        self.build_tiles()
-
-    def build_tiles(self):
-        self.build_guess_popup_background()
-
     def resize(self):
         self.set_guess_popup_background_size()
         self.set_guess_cards_size()
 
     def open(self, tiles_group):
         if not self.guess_cards:
+            self.build_guess_popup_background()
             self.build_guess_cards()
         self.is_open = True
         tiles_group.add(self.guess_popup_background)
@@ -45,7 +41,7 @@ class GuessTilesPopupGroup:
         self.guess_popup_background = common.load_tile(
             "guess_popup_backgound",
             common.get_image("menu_field_cropped.png"),
-            40,
+            50 if client.state_manager.game_type == GameTypes.THREE_PLAYER else 40,
             client.state_manager.screen,
         )
 
@@ -60,7 +56,9 @@ class GuessTilesPopupGroup:
         self.guess_popup_background.rect.centery = client.state_manager.screen_rect.centery
 
     def build_guess_cards(self):
-        for i in range(0, client.state_manager.game_type.value):
+        cards_amm = 5 if client.state_manager.game_type == GameTypes.THREE_PLAYER else 4
+
+        for i in range(0, cards_amm):
             self.guess_cards.append(
                 GuessCardTile(
                     i,
