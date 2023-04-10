@@ -2,6 +2,7 @@ import pygame
 import asyncio
 
 import client
+from client.game_objects.tiles.tile import Tile
 from client.server_communication_manager import ServerCommunicationManager
 from client.state_manager import StateManager
 from client.utils import common
@@ -18,6 +19,9 @@ def start_game():
     # Play the music on re-wind
     pygame.mixer.music.play(-1)
 
+    # Disable the default cursor
+    pygame.mouse.set_visible(False)
+
     screen = pygame.display.set_mode((1280, 720), pygame.HWSURFACE | pygame.DOUBLEBUF)
     pygame.display.set_caption("Break The Code")
 
@@ -32,6 +36,8 @@ def start_game():
 
     while client.GAME_RUNNING:
         event_handler.current_window.blit()
+        event_handler.current_window.position_and_blit_cursor()
+
         pygame.display.flip()
         events = pygame.event.get()
 

@@ -75,6 +75,7 @@ class EventHandler(Singleton):
 
             text_surface.center()
             self.current_window.blit()
+            self.current_window.position_and_blit_cursor()
 
             common.run_once(LOOP)
 
@@ -120,6 +121,7 @@ class EventHandler(Singleton):
                     button.next_value()
                     mouse_clicked = False
             self.current_window.blit()
+            self.current_window.position_and_blit_cursor()
 
     def get_game_sessions(self):
         # This functions calls the server one last time to make sure that the players count is correct
@@ -139,6 +141,7 @@ class EventHandler(Singleton):
                         )
                         waiting_for_server_response = False
             self.current_window.blit()
+            self.current_window.position_and_blit_cursor()
             common.run_once(LOOP)
 
     def change_window(self, new_window):

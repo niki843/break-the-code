@@ -1,3 +1,5 @@
+import pygame
+
 import client
 from pygame.sprite import LayeredUpdates
 
@@ -18,6 +20,15 @@ class GameWindow:
         self.tiles_background = None
         self.game_info_box = None
         self.player_info_group = None
+
+        self.cursor = Tile(
+            "cursor",
+            common.get_image("cursor.png"),
+            client.state_manager.screen,
+            2,
+            0,
+            0
+        )
 
     def activate_tile(self, tile, event):
         pass
@@ -151,6 +162,12 @@ class GameWindow:
     def blit(self):
         client.state_manager.screen.blit(
             self.background_image.image, self.background_image.rect
+        )
+
+    def position_and_blit_cursor(self):
+        self.cursor.rect.left, self.cursor.rect.top = pygame.mouse.get_pos()
+        client.state_manager.screen.blit(
+            self.cursor.image, self.cursor.rect
         )
 
     def open(self, **kwargs):
