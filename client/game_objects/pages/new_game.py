@@ -239,6 +239,11 @@ class NewGame(GameWindow):
             and event.button == client.LEFT_BUTTON_CLICK
         ):
             self.event_handler.wait_text_input(tile)
+        if (
+            tile.name.startswith("color_button")
+            and event.button == client.LEFT_BUTTON_CLICK
+        ):
+            self.guess_tiles_popup_group.mark_color(tile.name)
 
     def blit(self):
         super().blit()

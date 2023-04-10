@@ -39,16 +39,18 @@ class ToggleTile(Tile):
         self.next_surface.rect.centery = self.rect.centery
 
         temp_image = self.image
+        temp_original_image = self.original_image
         temp_rect = self.rect
         temp_name = self.name
 
-        index = self.values.index(self) - 1
-        self.image = self.values[index].image
+        self.image = self.next_surface.image
+        self.original_image = self.next_surface.original_image
         self.name = self.next_surface.name
 
         self.rect = self.next_surface.rect
 
         self.next_surface.image = temp_image
+        self.next_surface.original_image = temp_original_image
         self.next_surface.rect = temp_rect
         self.next_surface.name = temp_name
 

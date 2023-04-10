@@ -1,4 +1,5 @@
 import client
+from client.game_objects.tiles.guess_card_tile import GuessCardTile
 from client.game_objects.tiles.input_box_tile import InputBoxTile
 from client.utils import common
 
@@ -29,12 +30,16 @@ class GuessTilesPopupGroup:
         tiles_group.add(self.guess_popup_background)
         for card in self.guess_cards:
             tiles_group.add(card)
+            for color_button in card.color_buttons:
+                tiles_group.add(color_button)
 
     def close(self, tiles_group):
         self.is_open = False
         tiles_group.remove(self.guess_popup_background)
         for card in self.guess_cards:
             tiles_group.remove(card)
+            for color_button in card.color_buttons:
+                tiles_group.remove(color_button)
 
     def build_guess_popup_background(self):
         self.guess_popup_background = common.load_tile(
@@ -57,7 +62,8 @@ class GuessTilesPopupGroup:
     def build_guess_cards(self):
         for i in range(0, client.state_manager.game_type.value):
             self.guess_cards.append(
-                InputBoxTile(
+                GuessCardTile(
+                    i,
                     f"guess_card-{i}",
                     f"guess_card-{i}",
                     common.get_image("user_number_1.png"),
@@ -89,6 +95,12 @@ class GuessTilesPopupGroup:
             left = card.rect.right + (
                 client.state_manager.screen.get_width() * 0.017
             )
+            card.center_color_buttons()
+
+    def mark_color(self, tile_name):
+        guess_card_id, color_button_id = self.__get_color_button_id_and_card_id(tile_name)
+
+        self.guess_cards[guess_card_id].mark_color(color_button_id)
 
     def blit(self):
         if self.is_open:
@@ -96,3 +108,13 @@ class GuessTilesPopupGroup:
 
             for guess_card in self.guess_cards:
                 guess_card.blit()
+                for color_button in guess_card.color_buttons:
+                    client.state_manager.screen.blit(color_button.image, color_button.rect)
+
+    @staticmethod
+    def __get_color_button_id_and_card_id(tile_name):
+        all_elements = tile_name.split('-')
+        color_button_id = int(all_elements[1])
+        guess_card_id = int(all_elements[3])
+
+        return guess_card_id, color_button_id
