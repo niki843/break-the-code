@@ -9,7 +9,7 @@ from client.game_objects.groups.player_number_tiles_group import PlayerNumberTil
 from client.game_objects.pages.game_window import GameWindow
 from client.game_objects.tiles.tile import Tile
 from client.utils import common
-from client.utils.enums import Colors
+from client.utils.enums import Colors, GameTypes
 
 
 class NewGame(GameWindow):
@@ -202,6 +202,8 @@ class NewGame(GameWindow):
         cr = CardReader()
 
         self.player_info_group = kwargs.get("player_info_group")
+
+        client.state_manager.game_type = GameTypes.FOUR_PLAYER if self.player_info_group.connected_players == 4 else GameTypes.THREE_PLAYER
 
         for card in cr.cards:
             self.non_played_condition_cards[card.id] = card

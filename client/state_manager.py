@@ -11,6 +11,7 @@ class StateManager(Singleton):
         self.host_username = None
         self.screen = screen
         self.screen_rect = screen.get_rect()
+        self.game_type = None
 
     def am_i_host(self):
         return self.host_id and self.player_id == self.host_id

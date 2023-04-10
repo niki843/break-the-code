@@ -36,3 +36,9 @@ class AlignType(IntEnum):
     LEFT = auto()
     CENTER = auto()
     RIGHT = auto()
+
+
+class GameTypes(IntEnum):
+    TWO_PLAYER = 2
+    THREE_PLAYER = 3
+    FOUR_PLAYER = 4

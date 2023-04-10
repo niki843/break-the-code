@@ -1,4 +1,5 @@
 import client
+from client.game_objects.tiles.input_box_tile import InputBoxTile
 from client.utils import common
 
 
@@ -10,19 +11,30 @@ class GuessTilesPopupGroup:
 
         self.guess_button = None
         self.guess_popup_background = None
+        self.guess_cards = []
 
+        self.build_tiles()
+
+    def build_tiles(self):
         self.build_guess_popup_background()
 
     def resize(self):
         self.set_guess_popup_background_size()
+        self.set_guess_cards_size()
 
     def open(self, tiles_group):
+        if not self.guess_cards:
+            self.build_guess_cards()
         self.is_open = True
         tiles_group.add(self.guess_popup_background)
+        for card in self.guess_cards:
+            tiles_group.add(card)
 
     def close(self, tiles_group):
         self.is_open = False
         tiles_group.remove(self.guess_popup_background)
+        for card in self.guess_cards:
+            tiles_group.remove(card)
 
     def build_guess_popup_background(self):
         self.guess_popup_background = common.load_tile(
@@ -42,6 +54,45 @@ class GuessTilesPopupGroup:
         self.guess_popup_background.rect.centerx = client.state_manager.screen_rect.centerx
         self.guess_popup_background.rect.centery = client.state_manager.screen_rect.centery
 
+    def build_guess_cards(self):
+        for i in range(0, client.state_manager.game_type.value):
+            self.guess_cards.append(
+                InputBoxTile(
+                    f"guess_card-{i}",
+                    f"guess_card-{i}",
+                    common.get_image("user_number_1.png"),
+                    client.state_manager.screen,
+                    8,
+                    0,
+                    0,
+                    common.get_image("user_number_1.png"),
+                    text_size_percentage_from_screen_height=5,
+                    max_char=1,
+                )
+            )
+
+        self.set_guess_cards_size()
+
+    def set_guess_cards_size(self):
+        if not self.guess_cards:
+            return
+
+        left = self.guess_popup_background.rect.left + (
+            client.state_manager.screen.get_width() * 0.017
+        )
+        centery = self.guess_popup_background.rect.centery
+        for card in self.guess_cards:
+            card.resize()
+            card.rect.left = left
+            card.rect.centery = centery
+
+            left = card.rect.right + (
+                client.state_manager.screen.get_width() * 0.017
+            )
+
     def blit(self):
         if self.is_open:
             client.state_manager.screen.blit(self.guess_popup_background.image, self.guess_popup_background.rect)
+
+            for guess_card in self.guess_cards:
+                guess_card.blit()
