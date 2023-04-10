@@ -238,6 +238,7 @@ class NewGame(GameWindow):
             tile.name.startswith("guess_card")
             and event.button == client.LEFT_BUTTON_CLICK
         ):
+            tile.mark_clicked()
             self.event_handler.wait_text_input(tile)
         elif (
             tile.name.startswith("color_button")
