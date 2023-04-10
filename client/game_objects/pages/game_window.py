@@ -166,6 +166,9 @@ class GameWindow:
 
     def position_and_blit_cursor(self):
         self.cursor.rect.left, self.cursor.rect.top = pygame.mouse.get_pos()
+        self.cursor.rect.left = self.cursor.rect.left - (
+            self.cursor.image.get_width() * 0.14
+        )
         client.state_manager.screen.blit(
             self.cursor.image, self.cursor.rect
         )
