@@ -224,22 +224,22 @@ class NewGame(GameWindow):
 
             if self.guess_tiles_popup_group.is_open:
                 self.guess_tiles_popup_group.close(self.tiles_group)
-        if (
+        elif (
             tile.name == self.guess_button.name
             and event.button == client.LEFT_BUTTON_CLICK
         ):
             self.guess_tiles_popup_group.open(self.tiles_group)
-        if (
+        elif (
             tile.name == self.background_image.name
             and event.button == client.LEFT_BUTTON_CLICK
         ):
             self.guess_tiles_popup_group.close(self.tiles_group)
-        if (
+        elif (
             tile.name.startswith("guess_card")
             and event.button == client.LEFT_BUTTON_CLICK
         ):
             self.event_handler.wait_text_input(tile)
-        if (
+        elif (
             tile.name.startswith("color_button")
             and event.button == client.LEFT_BUTTON_CLICK
         ):
