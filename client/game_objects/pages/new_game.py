@@ -234,6 +234,11 @@ class NewGame(GameWindow):
             and event.button == client.LEFT_BUTTON_CLICK
         ):
             self.guess_tiles_popup_group.close(self.tiles_group)
+        if (
+            tile.name.startswith("guess_card")
+            and event.button == client.LEFT_BUTTON_CLICK
+        ):
+            self.event_handler.wait_text_input(tile)
 
     def blit(self):
         super().blit()
