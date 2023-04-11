@@ -2,7 +2,8 @@ import re
 import time
 
 import client
-from client.utils.enums import Position, AlignType
+from client.game_objects.tiles.input_box import InputBox
+from client.utils.enums import Position
 
 
 class Player:
@@ -12,6 +13,11 @@ class Player:
         self.id = id
         self.username = username
         self.image_tile = image_tile
+        self.username_text_tile = InputBox(
+            client.state_manager.screen,
+            self.username,
+            2,
+        )
         self.text_bubble_tile = text_bubble_tile
         self.cards = cards
         self.position = position
@@ -21,6 +27,7 @@ class Player:
 
     def position_tiles(self):
         self.position_image_tile()
+        self.position_username_text_tile()
         self.position_text_bubble()
         self.position_cards()
 
@@ -49,6 +56,18 @@ class Player:
                 client.state_manager.screen.get_width() * 0.01
             )
             self.image_tile.rect.centery = client.state_manager.screen_rect.centery
+
+    def position_username_text_tile(self):
+        if self.position == Position.BOTTOM:
+            self.username_text_tile.text_rect.centerx = self.image_tile.rect.centerx
+            self.username_text_tile.text_rect.bottom = self.image_tile.rect.top - (
+                client.state_manager.screen.get_height() * 0.01
+            )
+        else:
+            self.username_text_tile.text_rect.centerx = self.image_tile.rect.centerx
+            self.username_text_tile.text_rect.top = self.image_tile.rect.bottom + (
+                client.state_manager.screen.get_height() * 0.01
+            )
 
     def position_text_bubble(self):
         if self.position == Position.BOTTOM:

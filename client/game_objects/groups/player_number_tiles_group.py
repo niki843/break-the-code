@@ -12,8 +12,7 @@ class PlayerNumberTilesGroup:
     def __init__(self, group_name, tiles_name, player_id_name_map, number_cards=None):
         self.name = group_name
         self.tiles_name = tiles_name
-        self.is_four_player_game = True if len(player_id_name_map) == 4 else False
-        self.cards_amount = 4 if self.is_four_player_game else 5
+        self.cards_amount = 4 if len(player_id_name_map) == 4 else 5
 
         self.number_cards = number_cards or []
 
@@ -110,6 +109,7 @@ class PlayerNumberTilesGroup:
         for player in self.player_id_player_map.values():
             player.image_tile.resize()
             player.text_bubble_tile.resize()
+            player.username_text_tile.resize_text()
             for card in player.cards:
                 card.resize()
 
@@ -128,3 +128,7 @@ class PlayerNumberTilesGroup:
 
             if player.message_displayed_time and time.time() - player.message_displayed_time <= 5:
                 player.text_bubble_tile.blit()
+
+            client.state_manager.screen.blit(
+                player.username_text_tile.text_surface, player.username_text_tile.text_rect
+            )
