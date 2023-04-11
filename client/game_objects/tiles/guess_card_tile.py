@@ -53,7 +53,7 @@ class GuessCardTile(InputBoxTile):
                 0,
                 common.get_image(f"red-circle.png"),
             )
-            setattr(color_button, "color", color)
+            setattr(color_button, "color", index)
             self.color_buttons.append(color_button)
             color_button.priority = 1
 

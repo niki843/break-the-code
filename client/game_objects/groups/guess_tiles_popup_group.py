@@ -125,6 +125,14 @@ class GuessTilesPopupGroup:
 
         self.guess_cards[guess_card_id].mark_color(color_button_id)
 
+    def get_guess(self):
+        cards = []
+        for card in self.guess_cards:
+            if not card.clicked_color or not card.text:
+                return
+            cards.append(f"{card.clicked_color.color}{card.text}")
+        return '["' + '", "'.join(cards) + '"]'
+
     def blit(self):
         if self.is_open:
             client.state_manager.screen.blit(self.guess_popup_background.image, self.guess_popup_background.rect)

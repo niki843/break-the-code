@@ -245,6 +245,15 @@ class NewGame(GameWindow):
             and event.button == client.LEFT_BUTTON_CLICK
         ):
             self.guess_tiles_popup_group.mark_color(tile.name)
+        elif (
+            tile.name == "guess_popup_submit_button"
+            and event.button == client.LEFT_BUTTON_CLICK
+        ):
+            cards_guess = self.guess_tiles_popup_group.get_guess()
+            if not cards_guess:
+                return
+            client.server_communication_manager.guess_cards(cards_guess)
+            self.guess_tiles_popup_group.close(self.tiles_group)
 
     def blit(self):
         super().blit()

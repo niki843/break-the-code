@@ -184,6 +184,7 @@ class GameSession:
         if is_guess_correct:
             self.end_game_and_send_messages(player)
             print(f"Player {player.get_name()} wins!")
+            return
 
         player.is_eliminated = True
         websockets.broadcast(

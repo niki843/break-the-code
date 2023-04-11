@@ -29,6 +29,7 @@ class ServerCommunicationManager(Singleton):
     PLAY_CHOICE_CARD = (
         '{{"type": "play_tile", "condition_card_id": {0}, "card_number_choice": {1}}}'
     )
+    GUESS_CARDS = '{{"type": "guess_numbers", "player_guess": {0}}}'
 
     def __init__(self):
         # Connect to server
@@ -75,3 +76,6 @@ class ServerCommunicationManager(Singleton):
         client.LOOP.create_task(
             send_message(self.PLAY_CHOICE_CARD.format(card_id, choice))
         )
+
+    def guess_cards(self, cards_guess):
+        client.LOOP.create_task(send_message(self.GUESS_CARDS.format(cards_guess)))
