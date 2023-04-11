@@ -28,7 +28,7 @@ class NewGame(GameWindow):
 
         self.guess_button = None
 
-        self.shown_cards = []
+        self.player_on_hand_id = None
 
         self.build()
 
@@ -172,6 +172,9 @@ class NewGame(GameWindow):
 
         self.tiles_group.add(new_card)
 
+        next_player_id = self.player_info_group.player_ids.index(self.player_on_hand_id) + 1 - len(self.player_info_group.player_ids)
+        self.player_on_hand_id = self.player_info_group.player_ids[next_player_id]
+
     def draw_condition_card(self, card_id):
         card = self.non_played_condition_cards.pop(card_id)
 
@@ -196,6 +199,22 @@ class NewGame(GameWindow):
     def build_guess_popup(self):
         self.guess_tiles_popup_group = GuessTilesPopupGroup("guess_tiles_group")
 
+    def show_player_eliminated(self, player_id):
+        if player_id == client.state_manager.player_id:
+            print("You are eliminated!")
+            client.state_manager.is_player_eliminated = True
+        else:
+            print(f"Player {player_id} is eliminated!")
+
+    def show_player_won(self, player_id):
+        if player_id == client.state_manager.player_id:
+            print("You won!")
+        else:
+            print(f"Player {player_id} won!")
+
+        self.event_handler.menu.open()
+        self.close()
+
     def open(self, **kwargs):
         super().open()
         client.server_communication_manager.send_start_game_message()
@@ -203,15 +222,23 @@ class NewGame(GameWindow):
 
         self.player_info_group = kwargs.get("player_info_group")
 
+        self.player_on_hand_id = self.player_info_group.player_ids[0]
+
         client.state_manager.game_type = GameTypes.FOUR_PLAYER if self.player_info_group.connected_players == 4 else GameTypes.THREE_PLAYER
 
         for card in cr.cards:
             self.non_played_condition_cards[card.id] = card
 
+    def close(self):
+        super().close()
+        client.state_manager.is_player_eliminated = False
+
     def activate_tile(self, tile, event):
         if (
             tile.name.startswith("condition_card")
             and event.button == client.LEFT_BUTTON_CLICK
+            and not client.state_manager.is_player_eliminated
+            and client.state_manager.player_id == self.player_on_hand_id
         ):
             card_id = self.condition_cards_group.get_card_id(tile)
             card = self.current_drawn_condition_cards.get(int(card_id))
@@ -227,6 +254,7 @@ class NewGame(GameWindow):
         elif (
             tile.name == self.guess_button.name
             and event.button == client.LEFT_BUTTON_CLICK
+            and not client.state_manager.is_player_eliminated
         ):
             self.guess_tiles_popup_group.open(self.tiles_group)
         elif (
