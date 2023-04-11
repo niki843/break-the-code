@@ -16,18 +16,10 @@ class PlayerNumberTilesGroup:
         self.cards_amount = 4 if self.is_four_player_game else 5
 
         self.number_cards = number_cards or []
-        self.left_letter_cards = []
-        self.top_letter_cards = []
-        self.bottom_letter_cards = []
-        self.right_letter_cards = []
 
-        self.player_id_text_bubble_map = {}
         self.player_id_player_map = {}
 
-        self.text_bubble_displayed_time = None
-
         self.load_players(player_id_name_map)
-        # self.load_number_card_icons()
 
     def load_players(self, player_id_name_map):
         all_positions = [Position.BOTTOM, Position.LEFT, Position.TOP, Position.RIGHT]
