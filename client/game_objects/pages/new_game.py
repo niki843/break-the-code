@@ -44,8 +44,6 @@ class NewGame(GameWindow):
 
         self.build_guess_tile()
 
-        self.build_guess_popup()
-
     def resize(self):
         super().resize()
 
@@ -77,6 +75,7 @@ class NewGame(GameWindow):
         self.condition_cards_group.resize()
 
     def load_number_cards(self, number_cards):
+        self.number_cards = []
         for card in number_cards:
             self.number_cards.append(
                 Tile(
@@ -288,6 +287,8 @@ class NewGame(GameWindow):
         self.player_on_hand_id = self.player_info_group.player_ids[0]
 
         client.state_manager.game_type = GameTypes.FOUR_PLAYER if self.player_info_group.connected_players == 4 else GameTypes.THREE_PLAYER
+
+        self.build_guess_popup()
 
         for card in cr.cards:
             self.non_played_condition_cards[card.id] = card
