@@ -31,7 +31,6 @@ class InputBoxTile(ToggleTile, InputBox):
         )
         InputBox.__init__(
             self,
-            screen,
             initial_text,
             text_size_percentage_from_screen_height,
             max_char,

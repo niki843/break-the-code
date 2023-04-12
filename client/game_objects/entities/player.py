@@ -14,7 +14,6 @@ class Player:
         self.username = username
         self.image_tile = image_tile
         self.username_text_tile = InputBox(
-            client.state_manager.screen,
             self.username,
             2,
         )

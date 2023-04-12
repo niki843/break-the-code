@@ -197,6 +197,8 @@ class EventHandler(Singleton):
             )
         if message_type == "player_eliminated":
             self.current_window.show_player_eliminated(message.get("player_id"))
+        if message_type == "end_game":
+            self.current_window.show_player_won(message.get("winner_id"), message.get("message"))
 
     def open_full_screen(self):
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)

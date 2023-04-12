@@ -58,7 +58,6 @@ class GuessCardTile(InputBoxTile):
             color_button.priority = 1
 
     def center_color_buttons(self):
-        print("[CENTER] Centering")
         centerx = self.rect.centerx - self.image.get_width() * 0.25
         centery = self.rect.bottom - self.image.get_height() * 0.1
         for button in self.color_buttons:

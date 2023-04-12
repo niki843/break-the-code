@@ -5,7 +5,6 @@ from client.utils import common
 class InputBox:
     def __init__(
         self,
-        screen,
         initial_text="",
         text_size_percentage_from_screen_height=20,
         max_char=20,
@@ -17,7 +16,6 @@ class InputBox:
         self.font = None
         self.text_surface = None
         self.text_rect = None
-        self.screen = screen
         self.max_char = max_char
 
         self.resize_text()
@@ -43,7 +41,7 @@ class InputBox:
 
     def resize_text(self):
         text_size = int(
-            self.screen.get_height()
+            client.state_manager.screen.get_height()
             * common.get_percentage_multiplier_from_percentage(
                 self.text_size_percentage
             )
