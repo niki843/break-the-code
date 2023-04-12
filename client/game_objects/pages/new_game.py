@@ -235,7 +235,6 @@ class NewGame(GameWindow):
             common.get_image("back_pressed.png"),
             shrink_percent=1,
         )
-        self.back_to_menu_button.priority = 2
 
         self.tiles_group.add(self.back_to_menu_button)
         self.set_back_to_menu_size()
@@ -296,7 +295,7 @@ class NewGame(GameWindow):
     def close(self):
         super().close()
         client.state_manager.is_player_eliminated = False
-        self.tiles_group.remove(self.guess_button)
+        self.tiles_group.remove(self.back_to_menu_button)
 
         self.end_game_message = None
         self.back_to_menu_button = None
@@ -306,6 +305,8 @@ class NewGame(GameWindow):
 
         self.played_condition_cards = {}
         self.current_drawn_condition_cards = {}
+
+        client.server_communication_manager.send_exit_game_message()
 
     def activate_tile(self, tile, event):
         if (
