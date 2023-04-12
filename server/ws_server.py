@@ -111,16 +111,9 @@ async def handle_user_input(player_id, websocket, game_session):
             return
 
         try:
-            msg = await websocket.recv()
-            try:
-                msg_deserialized = json.loads(msg)
-            except JSONDecodeError:
-                await send_message(
-                    websocket,
-                    message_type="error",
-                    message="The json you sent is not in the correct format!",
-                    error_type="incorrect_json",
-                )
+            msg_deserialized = decode_json_and_send_message(await websocket.recv(), websocket)
+
+            if not msg_deserialized:
                 continue
 
             msg_type = msg_deserialized.get("type")
@@ -344,12 +337,30 @@ async def send_message_and_close_connection(websocket):
     print("CLOSED CONNECTION")
 
 
+def decode_json_and_send_message(message, websocket):
+    try:
+        event_msg = json.loads(message)
+    except JSONDecodeError:
+        await send_message(
+            websocket,
+            message_type="error",
+            message="The json you sent is not in the correct format!",
+            error_type="incorrect_json",
+        )
+        return
+    return event_msg
+
+
 # Handles all new incoming requests and distributes to appropriate functions
 async def handler(websocket):
     CURRENT_WEBSOCKET_CONNECTIONS.append(websocket)
 
     async for message in websocket:
-        event_msg = json.loads(message)
+        event_msg = decode_json_and_send_message(message, websocket)
+
+        if not event_msg:
+            continue
+
         event_msg_type = event_msg.get("type")
 
         if event_msg_type == "get_current_games":

@@ -300,6 +300,12 @@ class NewGame(GameWindow):
         self.end_game_message = None
         self.back_to_menu_button = None
 
+        self.non_played_condition_cards.update(self.played_condition_cards)
+        self.non_played_condition_cards.update(self.current_drawn_condition_cards)
+
+        self.played_condition_cards = {}
+        self.current_drawn_condition_cards = {}
+
     def activate_tile(self, tile, event):
         if (
             tile.name.startswith("condition_card")
