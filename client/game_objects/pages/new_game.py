@@ -296,6 +296,7 @@ class NewGame(GameWindow):
     def close(self):
         super().close()
         client.state_manager.is_player_eliminated = False
+        self.tiles_group.remove(self.guess_button)
 
         self.end_game_message = None
         self.back_to_menu_button = None
