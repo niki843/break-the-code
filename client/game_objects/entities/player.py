@@ -152,3 +152,9 @@ class Player:
         self.text_bubble_tile.center_text()
 
         self.message_displayed_time = time.time()
+
+    def give_info_message(self, text):
+        self.text_bubble_tile.replace_text(text)
+        self.text_bubble_tile.center_text()
+
+        self.message_displayed_time = time.time()

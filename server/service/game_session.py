@@ -45,7 +45,6 @@ class GameSession:
             player = self.__connected_players.get(player_id)
             self.__connected_players_status[player_id] = PlayerStatus.ONLINE
             self.__connected_player_connections[player] = websocket
-            player.is_eliminated = False
             await self.send_current_cards_message_to_reconnected_player(
                 websocket, player
             )
@@ -224,18 +223,12 @@ class GameSession:
     def next_player(self):
         players_list = list(self.__connected_players.keys())
 
-        current_player_index = players_list.index(self.__current_player_at_hand_id) + 1
-        current_player_index = (
-            current_player_index if current_player_index < len(players_list) else 0
-        )
+        current_player_index = (players_list.index(self.__current_player_at_hand_id) + 1) - len(players_list)
         self.__current_player_at_hand_id = players_list[current_player_index]
-        print(f"Player at hand: {self.__current_player_at_hand_id}")
 
-        if (
-            self.__connected_players_status[self.__current_player_at_hand_id] == PlayerStatus.DISCONNECTED
-            or self.__connected_players[self.__current_player_at_hand_id].is_eliminated
-        ):
+        if self.__connected_players.get(self.__current_player_at_hand_id).is_eliminated:
             self.next_player()
+        print(f"Player at hand: {self.__current_player_at_hand_id}")
 
     def validate_current_player(self, player_id):
         if player_id != self.__current_player_at_hand_id:
@@ -296,7 +289,7 @@ class GameSession:
         return self.room_name
 
     def get_current_player(self):
-        return copy.deepcopy(self.__connected_players[self.__current_player_at_hand_id])
+        return self.__connected_players[self.__current_player_at_hand_id]
 
     def get_player_name_by_id(self, player_id):
         return self.__connected_players.get(player_id).get_name()

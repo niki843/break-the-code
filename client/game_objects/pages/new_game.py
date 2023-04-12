@@ -36,6 +36,8 @@ class NewGame(GameWindow):
 
         self.player_on_hand_id = None
 
+        self.eliminated_player_ids = []
+
         self.build()
 
     def build(self):
@@ -253,10 +255,17 @@ class NewGame(GameWindow):
         if player_id == client.state_manager.player_id:
             client.state_manager.is_player_eliminated = True
 
+        self.player_number_tiles_group.give_info_message(player_id, "I've tried to guess the cards incorrectly")
         self.next_player()
         self.remove_player(player_id)
 
+        # This if should really always be True but just wanted to make sure
+        if player_id not in self.eliminated_player_ids:
+            print(f"Eliminating player {player_id}")
+            self.eliminated_player_ids.append(player_id)
+
     def show_player_won(self, player_id, message):
+        self.player_number_tiles_group.give_info_message(player_id, "I've guessed the cards correctly")
         if player_id == client.state_manager.player_id:
             self.build_end_game_message("You won!")
             self.build_back_to_menu_button()
@@ -266,11 +275,15 @@ class NewGame(GameWindow):
             self.build_back_to_menu_button()
 
     def remove_player(self, player_id):
+        if self.player_on_hand_id == player_id:
+            self.next_player()
         id_name_map = self.player_info_group.get_player_name_id_map()
         self.player_info_group.remove_player(id_name_map.get(player_id))
 
     def add_player(self, player_id, player_name):
-        self.player_info_group.add_player_tile(player_id, player_name)
+        if player_id not in self.eliminated_player_ids:
+            print(f"Adding player {player_id}")
+            self.player_info_group.add_player_tile(player_id, player_name)
 
     def next_player(self):
         next_player_id = self.player_info_group.player_ids.index(self.player_on_hand_id) + 1 - len(self.player_info_group.player_ids)

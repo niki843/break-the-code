@@ -105,6 +105,11 @@ class PlayerNumberTilesGroup:
 
         player.give_condition_card_response(card, matching_cards, card_number_choice)
 
+    def give_info_message(self, player_id, message):
+        player = self.player_id_player_map.get(player_id)
+
+        player.give_info_message(message)
+
     def resize(self):
         for player in self.player_id_player_map.values():
             player.image_tile.resize()

@@ -127,9 +127,11 @@ class PlayerInfoGroup:
         ]
         if len(name_tile) == 0:
             print("stop in the name of love")
+            return
         name_tile = name_tile[0]
         index = self.player_name_tiles.index(name_tile)
         self.player_name_tiles.pop(index)
+        self.player_ids.pop(index)
 
         player_name_tiles = self.player_name_tiles
         player_ids = self.player_ids

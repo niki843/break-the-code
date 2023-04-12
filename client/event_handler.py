@@ -180,7 +180,7 @@ class EventHandler(Singleton):
             self.current_window.update_game_session_id(message.get("game_session_id"))
         if message_type == "host_disconnected":
             self.current_window.replace_host(message.get("player_id"))
-        if message_type == "player_disconnected":
+        if message_type == "player_removed":
             self.current_window.remove_player(message.get("player_id"))
         if message_type == "start_game":
             self.current_window.start_game()
@@ -199,6 +199,8 @@ class EventHandler(Singleton):
             self.current_window.show_player_eliminated(message.get("player_id"))
         if message_type == "end_game":
             self.current_window.show_player_won(message.get("winner_id"), message.get("message"))
+        if message_type == "player_disconnected":
+            print("Waiting 30 second for player to join")
 
     def open_full_screen(self):
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)

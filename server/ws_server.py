@@ -111,7 +111,7 @@ async def handle_user_input(player_id, websocket, game_session):
             return
 
         try:
-            msg_deserialized = decode_json_and_send_message(await websocket.recv(), websocket)
+            msg_deserialized = await decode_json_and_send_message(await websocket.recv(), websocket)
 
             if not msg_deserialized:
                 continue
@@ -337,7 +337,7 @@ async def send_message_and_close_connection(websocket):
     print("CLOSED CONNECTION")
 
 
-def decode_json_and_send_message(message, websocket):
+async def decode_json_and_send_message(message, websocket):
     try:
         event_msg = json.loads(message)
     except JSONDecodeError:
@@ -356,7 +356,7 @@ async def handler(websocket):
     CURRENT_WEBSOCKET_CONNECTIONS.append(websocket)
 
     async for message in websocket:
-        event_msg = decode_json_and_send_message(message, websocket)
+        event_msg = await decode_json_and_send_message(message, websocket)
 
         if not event_msg:
             continue

@@ -22,12 +22,14 @@ def third_card(player):
 
 def fourth_card(player):
     check_player_has_cards(player)
-    return len(get_card_index_list_from_property(player, "color", Colors.COLOR_BLACK))
+    cards_list = get_card_index_list_from_property(player, "color", Colors.COLOR_BLACK)
+    return len(cards_list) if cards_list else None
 
 
 def fifth_card(player):
     check_player_has_cards(player)
-    return len(get_card_index_list_from_property(player, "color", Colors.COLOR_WHITE))
+    cards_list = get_card_index_list_from_property(player, "color", Colors.COLOR_WHITE)
+    return len(cards_list) if cards_list else None
 
 
 def sixth_card(player):
