@@ -55,7 +55,7 @@ class NewGame(GameWindow):
 
         self.set_guess_tile_size()
 
-        self.guess_tiles_popup_group.resize()
+        self.set_guess_tiles_group_size()
 
         self.set_end_game_message_size()
         self.set_back_to_menu_size()
@@ -208,10 +208,16 @@ class NewGame(GameWindow):
     def build_guess_popup(self):
         self.guess_tiles_popup_group = GuessTilesPopupGroup("guess_tiles_group")
 
-    def build_end_game_message(self, message):
+    def set_guess_tiles_group_size(self):
+        if not self.guess_tiles_popup_group:
+            return
+
+        self.guess_tiles_popup_group.resize()
+
+    def build_end_game_message(self, size, message):
         self.end_game_message = InputBox(
             message,
-            20,
+            size,
             40
         )
 
@@ -267,11 +273,11 @@ class NewGame(GameWindow):
     def show_player_won(self, player_id, message):
         self.player_number_tiles_group.give_info_message(player_id, "I've guessed the cards correctly")
         if player_id == client.state_manager.player_id:
-            self.build_end_game_message("You won!")
+            self.build_end_game_message(20, "You won!")
             self.build_back_to_menu_button()
             client.state_manager.is_player_eliminated = True
         else:
-            self.build_end_game_message(message)
+            self.build_end_game_message(10, message)
             self.build_back_to_menu_button()
 
     def remove_player(self, player_id):
