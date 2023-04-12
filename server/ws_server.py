@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import asyncio
+from json import JSONDecodeError
 
 import websockets
 import json
@@ -110,8 +111,19 @@ async def handle_user_input(player_id, websocket, game_session):
             return
 
         try:
-            msg = json.loads(await websocket.recv())
-            msg_type = msg.get("type")
+            msg = await websocket.recv()
+            try:
+                msg_deserialized = json.loads(msg)
+            except JSONDecodeError:
+                await send_message(
+                    websocket,
+                    message_type="error",
+                    message="The json you sent is not in the correct format!",
+                    error_type="incorrect_json",
+                )
+                continue
+
+            msg_type = msg_deserialized.get("type")
 
             # When we receive a close connection request
             # we send a message confirming a close the connection
@@ -145,8 +157,8 @@ async def handle_user_input(player_id, websocket, game_session):
                     websocket,
                     player_id,
                     game_session,
-                    msg.get("condition_card_id"),
-                    msg.get("card_number_choice", None),
+                    msg_deserialized.get("condition_card_id"),
+                    msg_deserialized.get("card_number_choice", None),
                 )
             elif (
                 msg_type == "guess_numbers"
@@ -156,11 +168,11 @@ async def handle_user_input(player_id, websocket, game_session):
                     websocket,
                     player_id,
                     game_session,
-                    msg.get("player_guess"),
+                    msg_deserialized.get("player_guess"),
                 )
             elif msg_type == "chat_message":
                 await game_session.send_message_to_all_others(
-                    player_id, msg.get("content", None)
+                    player_id, msg_deserialized.get("content", None)
                 )
             else:
                 await send_message(
@@ -180,7 +192,8 @@ async def handle_user_input(player_id, websocket, game_session):
                 game_session.get_state() == GameState.END
                 or game_session.are_all_players_disconnected()
             ):
-                del GAME_SESSIONS[game_session.id]
+                if GAME_SESSIONS.get(game_session.id):
+                    del GAME_SESSIONS[game_session.id]
                 return
 
             if (

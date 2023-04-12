@@ -249,7 +249,7 @@ class GameSession:
                 json.dumps(
                     {
                         "type": "end_game",
-                        "message": f"End game winner {player.get_name()}",
+                        "message": f"Winner {player.get_name()}",
                         "winner_id": player.get_id(),
                     }
                 ),
@@ -331,7 +331,7 @@ class GameSession:
 
     def player_not_reconnect_broadcast(self, player_id):
         event = {
-            "type": "player_disconnected",
+            "type": "player_removed",
             "message": f"Player {self.get_player_name_by_id(player_id)} did not connect replacing with bot.",
             "player_id": str(player_id),
         }

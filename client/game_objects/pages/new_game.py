@@ -181,8 +181,7 @@ class NewGame(GameWindow):
 
         self.tiles_group.add(new_card)
 
-        next_player_id = self.player_info_group.player_ids.index(self.player_on_hand_id) + 1 - len(self.player_info_group.player_ids)
-        self.player_on_hand_id = self.player_info_group.player_ids[next_player_id]
+        self.next_player()
 
     def draw_condition_card(self, card_id):
         card = self.non_played_condition_cards.pop(card_id)
@@ -254,18 +253,30 @@ class NewGame(GameWindow):
 
     def show_player_eliminated(self, player_id):
         if player_id == client.state_manager.player_id:
-            print("You are eliminated!")
             client.state_manager.is_player_eliminated = True
-        else:
-            print(f"Player {player_id} is eliminated!")
+
+        self.next_player()
+        self.remove_player(player_id)
 
     def show_player_won(self, player_id, message):
         if player_id == client.state_manager.player_id:
             self.build_end_game_message("You won!")
             self.build_back_to_menu_button()
+            client.state_manager.is_player_eliminated = True
         else:
             self.build_end_game_message(message)
             self.build_back_to_menu_button()
+
+    def remove_player(self, player_id):
+        id_name_map = self.player_info_group.get_player_name_id_map()
+        self.player_info_group.remove_player(id_name_map.get(player_id))
+
+    def add_player(self, player_id, player_name):
+        self.player_info_group.add_player_tile(player_id, player_name)
+
+    def next_player(self):
+        next_player_id = self.player_info_group.player_ids.index(self.player_on_hand_id) + 1 - len(self.player_info_group.player_ids)
+        self.player_on_hand_id = self.player_info_group.player_ids[next_player_id]
 
     def open(self, **kwargs):
         super().open()
