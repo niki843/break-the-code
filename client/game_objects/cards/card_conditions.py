@@ -1,5 +1,5 @@
 import client
-from client.game_objects.custom_exceptions.player_cards_missing import (
+from client.custom_exceptions import (
     PlayerCardsMissingException,
 )
 from server.utils.enums import Colors

@@ -1,6 +1,6 @@
 import pygame
 import client
-from client.game_objects import custom_exceptions
+from client import custom_exceptions
 from client.game_objects.tiles.input_box_tile import InputBoxTile
 from client.game_objects.tiles.slider import Slider
 from client.game_objects.tiles.tile import Tile

@@ -1,8 +1,6 @@
-import time
-
 import client
 from client.game_objects.cards.card_reader import CardReader
-from client.game_objects.custom_exceptions.no_such_card_exception import (
+from client.custom_exceptions.no_such_card_exception import (
     NoSuchCardException,
 )
 from client.game_objects.groups.condition_cards_group import ConditionCardsGroup

@@ -1,6 +1,6 @@
 import pygame
 
-from client.game_objects.custom_exceptions.player_limit_exceeded_exception import (
+from client.custom_exceptions.player_limit_exceeded_exception import (
     PlayerLimitExceededException,
 )
 from client.game_objects.tiles.plain_text_box import PlainTextTile

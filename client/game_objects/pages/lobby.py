@@ -1,13 +1,13 @@
 from copy import copy
 
 import client
-from client.game_objects.custom_exceptions.game_sessionId_not_provided_exception import (
+from client.custom_exceptions.game_sessionId_not_provided_exception import (
     GameSessionIdNotProvidedException,
 )
-from client.game_objects.custom_exceptions.player_not_found_exception import (
+from client.custom_exceptions.player_not_found_exception import (
     PlayerNotFoundException,
 )
-from client.game_objects.custom_exceptions.player_usernames_not_provided_exception import (
+from client.custom_exceptions.player_usernames_not_provided_exception import (
     PlayerUsernamesNotProvidedException,
 )
 from client.game_objects.pages.game_window import GameWindow
