@@ -1,5 +1,7 @@
 import numpy
+import time
 
+import client
 from client.game_objects.tiles.tile import Tile
 from client.utils import common
 
@@ -14,6 +16,9 @@ class ConditionCardsGroup:
         self.center_card = None
         self.load_center_card()
         self.load_new_condition_card_tiles(condition_cards)
+
+        self.old_tile = None
+        self.old_tile_displayed_time = None
 
     def load_center_card(self):
         self.center_card = Tile(
@@ -82,6 +87,7 @@ class ConditionCardsGroup:
         ].rect.centerx
 
     def replace_card(self, old_card_tile, new_card_tile):
+        self.old_tile = old_card_tile
         self.condition_card_id_tile_map.pop(self.get_card_id(old_card_tile))
         self.condition_card_tiles[
             self.condition_card_tiles.index(old_card_tile)
@@ -89,6 +95,16 @@ class ConditionCardsGroup:
         self.condition_card_id_tile_map[self.get_card_id(new_card_tile)] = new_card_tile
         new_card_tile.rect.centerx = old_card_tile.rect.centerx
         new_card_tile.rect.centery = old_card_tile.rect.centery
+
+        self.maximize_old_tile()
+
+    def maximize_old_tile(self):
+        self.old_tile.size_percent = 30
+        self.old_tile.resize()
+        self.old_tile.rect.centerx = client.state_manager.screen_rect.centerx
+        self.old_tile.rect.centery = client.state_manager.screen_rect.centery
+
+        self.old_tile_displayed_time = time.time()
 
     def remove_card(self, card_tile):
         self.condition_card_tiles.pop(self.condition_card_tiles.index(card_tile))
@@ -110,6 +126,9 @@ class ConditionCardsGroup:
         self.screen.blit(self.center_card.image, self.center_card.rect)
         for card in self.condition_card_tiles:
             self.screen.blit(card.image, card.rect)
+
+        if self.old_tile and time.time() - self.old_tile_displayed_time <= 5:
+            self.screen.blit(self.old_tile.image, self.old_tile.rect)
 
     def resize(self):
         self.center_card.resize()
