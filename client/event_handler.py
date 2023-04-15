@@ -200,7 +200,7 @@ class EventHandler(Singleton):
         if message_type == "end_game":
             self.current_window.show_player_won(message.get("winner_id"), message.get("message"))
         if message_type == "player_disconnected":
-            print("Waiting 30 second for player to join")
+            self.current_window.set_player_disconnected(message.get("player_id"))
 
     def open_full_screen(self):
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)

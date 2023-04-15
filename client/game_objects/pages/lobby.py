@@ -136,7 +136,7 @@ class Lobby(GameWindow):
         self.player_info_group.clear_players()
 
     def replace_host(self, player_id):
-        self.remove_player(client.state_manager.host_id)
+        self.set_player_disconnected(client.state_manager.host_id)
         client.state_manager.set_host(
             player_id, self.players_id_username_map.get(player_id)
         )
@@ -147,7 +147,7 @@ class Lobby(GameWindow):
         if not client.state_manager.host_username:
             raise PlayerNotFoundException()
 
-    def remove_player(self, player_id):
+    def set_player_disconnected(self, player_id):
         self.player_info_group.remove_player(
             self.players_id_username_map.get(player_id)
         )
