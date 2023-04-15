@@ -74,9 +74,9 @@ class NewGame(GameWindow):
 
         self.condition_cards_group.resize()
 
-    def load_number_cards(self, number_cards):
+    def load_number_cards(self, cards, **kwargs):
         self.number_cards = []
-        for card in number_cards:
+        for card in cards:
             self.number_cards.append(
                 Tile(
                     "number_card",
@@ -132,11 +132,11 @@ class NewGame(GameWindow):
             client.state_manager.screen.get_height() * 0.05
         )
 
-    def load_condition_cards(self, card_ids):
+    def load_condition_cards(self, condition_card_ids, **kwargs):
         if self.current_drawn_condition_cards or self.played_condition_cards:
             return
 
-        for card_id in card_ids:
+        for card_id in condition_card_ids:
             if card_id in self.current_drawn_condition_cards:
                 continue
             card = self.non_played_condition_cards.pop(int(card_id))
@@ -146,7 +146,7 @@ class NewGame(GameWindow):
         self.tiles_group.add(self.condition_cards_group.condition_card_tiles)
 
     def replace_card_and_give_result(
-        self, card_id, next_card_id, player_results, card_number_choice
+        self, card_id, next_card_id, player_results, card_number_choice=None, **kwargs
     ):
         played_card = self.remove_played_card(card_id)
 
@@ -255,7 +255,7 @@ class NewGame(GameWindow):
         )
         self.back_to_menu_button.rect.centerx = client.state_manager.screen_rect.centerx
 
-    def show_player_eliminated(self, player_id):
+    def show_player_eliminated(self, player_id, **kwargs):
         if player_id == client.state_manager.player_id:
             client.state_manager.is_player_eliminated = True
 
@@ -268,9 +268,9 @@ class NewGame(GameWindow):
             print(f"Eliminating player {player_id}")
             self.eliminated_player_ids.append(player_id)
 
-    def show_player_won(self, player_id, message):
-        self.player_number_tiles_group.give_info_message(player_id, "I've guessed the cards correctly")
-        if player_id == client.state_manager.player_id:
+    def show_player_won(self, winner_id, message, **kwargs):
+        self.player_number_tiles_group.give_info_message(winner_id, "I've guessed the cards correctly")
+        if winner_id == client.state_manager.player_id:
             self.build_end_game_message(20, "You won!")
             self.build_back_to_menu_button()
             client.state_manager.is_player_eliminated = True
@@ -278,13 +278,18 @@ class NewGame(GameWindow):
             self.build_end_game_message(10, message)
             self.build_back_to_menu_button()
 
-    def remove_player(self, player_id):
+    def show_end_game_no_winners(self, **kwargs):
+        self.build_end_game_message(10, "All players eliminated, no winners!")
+        self.build_back_to_menu_button()
+        client.state_manager.is_player_eliminated = True
+
+    def remove_player(self, player_id, **kwargs):
         if self.player_on_hand_id == player_id:
             self.next_player()
         id_name_map = self.player_info_group.get_player_name_id_map()
         self.player_info_group.remove_player(id_name_map.get(player_id))
 
-    def add_player(self, player_id, player_name):
+    def add_player(self, player_id, player_name, **kwargs):
         if player_id not in self.eliminated_player_ids:
             print(f"Adding player {player_id}")
             self.player_info_group.add_player_tile(player_id, player_name)
@@ -293,7 +298,7 @@ class NewGame(GameWindow):
         next_player_id = self.player_info_group.player_ids.index(self.player_on_hand_id) + 1 - len(self.player_info_group.player_ids)
         self.player_on_hand_id = self.player_info_group.player_ids[next_player_id]
 
-    def set_player_disconnected(self, played_id):
+    def set_player_disconnected(self, played_id, **kwargs):
         print("Player disconnected")
 
     def open(self, **kwargs):

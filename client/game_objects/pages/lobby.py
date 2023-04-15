@@ -121,11 +121,11 @@ class Lobby(GameWindow):
                 self.player_info_group.get_player_name_id_map()
             )
 
-    def add_player(self, player_id, player_name):
+    def add_player(self, player_id, player_name, **kwargs):
         self.players_id_username_map[player_id] = player_name
         self.player_info_group.add_player_tile(player_id, player_name)
 
-    def update_game_session_id(self, game_session_id):
+    def update_game_session_id(self, game_session_id, **kwargs):
         self.game_session_id = game_session_id
 
     def set_player_info_group(self, player_info_group):
@@ -135,7 +135,7 @@ class Lobby(GameWindow):
     def close(self):
         self.player_info_group.clear_players()
 
-    def replace_host(self, player_id):
+    def replace_host(self, player_id, **kwargs):
         self.set_player_disconnected(client.state_manager.host_id)
         client.state_manager.set_host(
             player_id, self.players_id_username_map.get(player_id)
@@ -147,13 +147,13 @@ class Lobby(GameWindow):
         if not client.state_manager.host_username:
             raise PlayerNotFoundException()
 
-    def set_player_disconnected(self, player_id):
+    def set_player_disconnected(self, player_id, **kwargs):
         self.player_info_group.remove_player(
             self.players_id_username_map.get(player_id)
         )
         self.players_id_username_map.pop(player_id)
 
-    def start_game(self):
+    def start_game(self, **kwargs):
         player_info_group = copy(self.player_info_group)
         self.close()
         self.event_handler.new_game.open(

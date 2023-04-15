@@ -2,7 +2,6 @@ import pygame
 import asyncio
 
 import client
-from client.game_objects.tiles.tile import Tile
 from client.server_communication_manager import ServerCommunicationManager
 from client.state_manager import StateManager
 from client.utils import common

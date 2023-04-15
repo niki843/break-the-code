@@ -151,9 +151,9 @@ class JoinGame(GameWindow):
         self.tiles_group.add(self.game_session_group.slider)
         self.tiles_group.add(self.game_session_group.slider.slider_handle)
 
-    def update_game_sessions(self, game_sessions_response):
+    def update_game_sessions(self, game_sessions, **kwargs):
         removed_game_sessions = self.game_session_group.game_sessions_by_id.copy()
-        for game_session_id, game_session in game_sessions_response.items():
+        for game_session_id, game_session in game_sessions.items():
             if not self.game_session_group.tile_exists(game_session_id):
                 game_session = self.game_session_group.add_game_session(
                     active_players=game_session.get("connected_players"),

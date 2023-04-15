@@ -11,6 +11,23 @@ from client.utils import common
 from client.utils.singelton import Singleton
 
 
+REQUEST_TYPE_WINDOW_FUNCTION_MAP = {
+    "send_game_sessions": "update_game_sessions",
+    "player_joined": "add_player",
+    "game_created": "update_game_session_id",
+    "host_disconnected": "replace_host",
+    "player_removed": "remove_player",
+    "start_game": "start_game",
+    "give_condition_cards": "load_condition_cards",
+    "give_number_cards": "load_number_cards",
+    "card_condition_result": "replace_card_and_give_result",
+    "player_eliminated": "show_player_eliminated",
+    "end_game": "show_player_won",
+    "end_game_no_winners": "show_end_game_no_winners",
+    "player_disconnected": "set_player_disconnected",
+}
+
+
 class EventHandler(Singleton):
     def __init__(self):
         self.game_windows = []
@@ -169,42 +186,18 @@ class EventHandler(Singleton):
 
     def handle_server_message(self, message):
         message_type = message.get("type")
-        if message_type == "send_game_sessions":
-            self.current_window.update_game_sessions(message.get("game_sessions"))
+
         if message_type == "player_joined":
-            if not client_init.state_manager.player_id == message.get("player_id"):
-                self.current_window.add_player(
-                    message.get("player_id"), message.get("player_name")
-                )
-        if message_type == "game_created":
-            self.current_window.update_game_session_id(message.get("game_session_id"))
-        if message_type == "host_disconnected":
-            self.current_window.replace_host(message.get("player_id"))
-        if message_type == "player_removed":
-            self.current_window.remove_player(message.get("player_id"))
-        if message_type == "start_game":
-            self.current_window.start_game()
-        if message_type == "give_condition_cards":
-            self.current_window.load_condition_cards(message.get("condition_card_ids"))
-        if message_type == "give_number_cards":
-            self.current_window.load_number_cards(message.get("cards"))
-        if message_type == "card_condition_result":
-            self.current_window.replace_card_and_give_result(
-                message.get("card_id"),
-                message.get("next_card_id"),
-                message.get("player_results"),
-                message.get("card_number_choice"),
-            )
-        if message_type == "player_eliminated":
-            self.current_window.show_player_eliminated(message.get("player_id"))
-        if message_type == "end_game":
-            self.current_window.show_player_won(message.get("winner_id"), message.get("message"))
-        if message_type == "player_disconnected":
-            self.current_window.set_player_disconnected(message.get("player_id"))
+            if client_init.state_manager.player_id == message.get("player_id"):
+                return
+
+        window_function = REQUEST_TYPE_WINDOW_FUNCTION_MAP.get(message_type)
+        if window_function:
+            getattr(self.current_window, window_function)(**message)
 
     def open_full_screen(self):
-        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-        self.change_screen(self.screen)
+        screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        self.change_screen(screen)
         self.settings.resolution_slider.handle_position = (
             self.settings.SCREEN_SIZE_CAPTIONS.index("fullscreen")
         )
@@ -213,10 +206,10 @@ class EventHandler(Singleton):
         client_init.IS_FULLSCREEN_ENABLED = True
 
     def open_windowed_screen(self):
-        self.screen = pygame.display.set_mode((1280, 720), pygame.HWSURFACE)
-        self.change_screen(self.screen)
+        screen = pygame.display.set_mode(client_init.DEFAULT_RESOLUTION_TUPLE, pygame.HWSURFACE)
+        self.change_screen(screen)
         self.settings.resolution_slider.handle_position = (
-            self.settings.SCREEN_SIZE_CAPTIONS.index("1280x720")
+            self.settings.SCREEN_SIZE_CAPTIONS.index(client_init.DEFAULT_RESOLUTION_STR)
         )
         self.settings.resolution_slider.set_slider_handle_position()
         self.join_game.reset_selected_game_session()

@@ -1,8 +1,6 @@
 import os
 import asyncio
 
-from client.state_manager import StateManager
-
 IMG_PATH = f".{os.path.sep}resources{os.path.sep}images{os.path.sep}"
 FONT_PATH = f".{os.path.sep}resources{os.path.sep}fonts{os.path.sep}"
 MUSIC_PATH = f".{os.path.sep}resources{os.path.sep}music{os.path.sep}"
@@ -43,9 +41,12 @@ IMAGE_CACHE = {}
 state_manager = None
 server_communication_manager = None
 
+DEFAULT_RESOLUTION_STR = "1280x720"
+DEFAULT_RESOLUTION_TUPLE = (1280, 720)
+
 # IMPORTANT!!! This is how the game will know if the game should stop running
 GAME_RUNNING = True
 
-# Game constatnts shared between the server and client
+# Game constants shared between the server and client
 MISSING_PROPERTY_DEFAULT = -1
 CARD_INDEX_TO_LETTER_MAP = {0: "a", 1: "b", 2: "c", 3: "d", 4: "e"}
