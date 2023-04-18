@@ -44,6 +44,11 @@ server_communication_manager = None
 DEFAULT_RESOLUTION_STR = "1280x720"
 DEFAULT_RESOLUTION_TUPLE = (1280, 720)
 
+DEFAULT_MUSIC = "main_music.mp3"
+DEFAULT_THUMBNAIL = "logo_thumbnail.png"
+
+GAME_NAME = "Break The Code"
+
 # IMPORTANT!!! This is how the game will know if the game should stop running
 GAME_RUNNING = True
 

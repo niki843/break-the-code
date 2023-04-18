@@ -13,7 +13,7 @@ def start_game():
     pygame.fastevent.init()
     pygame.mixer.init()
 
-    pygame.mixer.music.load(f"{client.MUSIC_PATH}main_music.mp3")
+    pygame.mixer.music.load(f"{client.MUSIC_PATH}{client.DEFAULT_MUSIC}")
     pygame.mixer.music.set_volume(0.2)
     # Play the music on re-wind
     pygame.mixer.music.play(-1)
@@ -21,10 +21,10 @@ def start_game():
     # Disable the default cursor
     pygame.mouse.set_visible(False)
 
-    screen = pygame.display.set_mode((1280, 720), pygame.HWSURFACE | pygame.DOUBLEBUF)
-    pygame.display.set_caption("Break The Code")
+    screen = pygame.display.set_mode(client.DEFAULT_RESOLUTION_TUPLE, pygame.HWSURFACE | pygame.DOUBLEBUF)
+    pygame.display.set_caption(client.GAME_NAME)
 
-    thumbnail = common.get_image("logo_thumbnail.png")
+    thumbnail = common.get_image(client.DEFAULT_THUMBNAIL)
     pygame.display.set_icon(thumbnail)
 
     client.state_manager = StateManager(screen)
