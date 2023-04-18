@@ -15,12 +15,12 @@ class GuessCardTile(InputBoxTile):
         surface,
         screen,
         size_percent,
-        tile_addition_width,
-        tile_addition_height,
         next_surface,
         initial_text="",
         text_size_percentage_from_screen_height=20,
         max_char=20,
+        tile_addition_width_percent=0,
+        tile_addition_height_percent=0,
     ):
         super().__init__(
             name,
@@ -28,12 +28,12 @@ class GuessCardTile(InputBoxTile):
             surface,
             screen,
             size_percent,
-            tile_addition_width,
-            tile_addition_height,
             next_surface,
             initial_text,
             text_size_percentage_from_screen_height,
             max_char,
+            tile_addition_width_percent,
+            tile_addition_height_percent,
         )
 
         self.guess_card_id = guess_card_id
@@ -50,8 +50,6 @@ class GuessCardTile(InputBoxTile):
                 common.get_image(f"{color}_card_transparent.png"),
                 self.screen,
                 2,
-                0,
-                0,
                 common.get_image(f"red-circle.png"),
             )
             setattr(color_button, "color", index)

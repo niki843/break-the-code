@@ -9,26 +9,26 @@ class BubbleBoxTile(MultilineTextTile):
         surface,
         screen,
         size_percent,
-        tile_addition_width,
-        tile_addition_height,
         text_to_display: str,
         text_size_percent: float,
+        tile_addition_width_percent=0,
+        tile_addition_height_percent=0
     ):
         super().__init__(
             name,
             surface,
             screen,
             size_percent,
-            tile_addition_width,
-            tile_addition_height,
             text_to_display,
             text_size_percent,
             0,
+            tile_addition_width_percent,
+            tile_addition_height_percent
         )
 
     def center_text(self, align_type=AlignType.CENTER):
         displayed_surfaces = self.text_surfaces[
-            self.start_line : self.start_line + self.max_lines_to_display
+            self.start_line: self.start_line + self.max_lines_to_display
         ]
 
         if len(displayed_surfaces) % 2 == 0:

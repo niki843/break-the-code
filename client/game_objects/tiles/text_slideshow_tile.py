@@ -22,14 +22,14 @@ class TextSlideshowTile(Tile):
         the main surface on which the game is being displayed
     size_percent : str
         percent representation of what the size of the image compared to the surface would be
-    tile_addition_width : int
-        used for additional pixels to the width of the image that's being used
-    tile_addition_height : int
-        used for additional pixels to the height of the image that's being used
     initial_text : str
         the first string that will be displayed in the image box
     slide_values : list
         a list with the values that will be displayed in the image box
+    tile_addition_width_percent : int
+        used for addition to the width of the image that's being used, uses percent of the screen width
+    tile_addition_height_percent : int
+        used for addition to the height of the image that's being used, uses percent of the screen height
     """
 
     def __init__(
@@ -41,19 +41,19 @@ class TextSlideshowTile(Tile):
         screen,
         size_percent,
         arrow_size_percent,
-        tile_addition_width,
-        tile_addition_height,
         initial_text,
         slide_values: list,
         horizontal=False,
+        tile_addition_width_percent=0,
+        tile_addition_height_percent=0,
     ):
         super().__init__(
             name,
             surface,
             screen,
             size_percent,
-            tile_addition_width,
-            tile_addition_height,
+            tile_addition_width_percent,
+            tile_addition_height_percent,
         )
 
         self.slide_values = slide_values
@@ -120,17 +120,13 @@ class TextSlideshowTile(Tile):
             right_arrow_name,
             right_top_arrow_surface,
             self.screen,
-            self.arrow_size_percent,
-            0,
-            0,
+            self.arrow_size_percent
         )
         self.left_arrow = Tile(
             left_arrow_name,
             left_bottom_arrow_surface,
             self.screen,
             self.arrow_size_percent,
-            0,
-            0,
         )
 
     def next_text(self):

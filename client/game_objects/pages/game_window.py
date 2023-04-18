@@ -3,7 +3,6 @@ import pygame
 import client
 from pygame.sprite import LayeredUpdates
 
-from client.game_objects.tiles.multiline_text_tile import MultilineTextTile
 from client.game_objects.groups.player_info_group import PlayerInfoGroup
 from client.game_objects.tiles.tile import Tile
 from client.utils import common
@@ -26,8 +25,6 @@ class GameWindow:
             common.get_image("cursor.png"),
             client.state_manager.screen,
             2,
-            0,
-            0,
         )
 
     def activate_tile(self, tile, event):
@@ -53,7 +50,7 @@ class GameWindow:
 
     def load_background_and_resize(self, surface):
         self.background_image = Tile(
-            "background", surface, client.state_manager.screen, 100, 0, 0
+            "background", surface, client.state_manager.screen, 100
         )
         self.set_background_size()
 
@@ -68,9 +65,7 @@ class GameWindow:
             "back",
             back_surface,
             client.state_manager.screen,
-            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
-            0,
-            0,
+            client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL
         )
 
         self.set_back_tile()
@@ -92,7 +87,7 @@ class GameWindow:
         surface = common.get_image("menu_field_cropped.png")
 
         self.tiles_background = Tile(
-            "tiles_background", surface, client.state_manager.screen, 84, 0, 0
+            "tiles_background", surface, client.state_manager.screen, 84
         )
         self.set_tiles_background_size()
 
@@ -105,16 +100,12 @@ class GameWindow:
 
     def build_game_info_box(self):
         surface = common.get_image("game_info_menu.png")
-        self.game_info_box = MultilineTextTile(
-            "game_info",
-            surface,
-            client.state_manager.screen,
-            30,
-            0,
-            20,
-            "",
-            6,
-            0,
+        self.game_info_box = Tile(
+            name="game_info",
+            surface=surface,
+            screen=client.state_manager.screen,
+            size_percent=30,
+            tile_addition_height_percent=1.6,
         )
 
         self.set_game_info_size()
@@ -126,7 +117,6 @@ class GameWindow:
         self.game_info_box.resize()
         self.game_info_box.rect.centerx = client.state_manager.screen_rect.centerx
         self.game_info_box.rect.centery = client.state_manager.screen_rect.centery
-        self.game_info_box.center_text()
 
     def build_player_info_group(self):
         left, top = self.get_player_info_initial_position()

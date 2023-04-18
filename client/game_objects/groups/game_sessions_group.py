@@ -16,13 +16,13 @@ class GameSessionsGroup(Tile):
         screen,
         size_percent,
         text_size_percent,
-        tile_addition_width,
-        tile_addition_height,
         next_surface,
         max_game_sessions_to_display: int,
         first_element_left_location,
         first_element_top_location,
         slider_position_right,
+        tile_addition_width_percent=0,
+        tile_addition_height_percent=0,
     ):
         transparent_background = common.generate_transparent_image(1700, 1300)
 
@@ -31,14 +31,12 @@ class GameSessionsGroup(Tile):
             transparent_background,
             screen,
             46,
-            0,
-            0,
         )
         self.rect.left = first_element_left_location
         self.rect.top = first_element_top_location
 
-        self.game_session_tile_addition_width = tile_addition_width
-        self.game_session_tile_addition_height = tile_addition_height
+        self.game_session_tile_addition_width_percent = tile_addition_width_percent
+        self.game_session_tile_addition_height_percent = tile_addition_height_percent
         self.game_session_size_percent = size_percent
         self.game_session_tile_surface = surface
 
@@ -59,18 +57,18 @@ class GameSessionsGroup(Tile):
         self.shown_game_sessions = []
 
         self.slider = Slider(
-            "game_sessions_slider",
-            common.get_image("scroll_bar.png"),
-            screen,
-            0.9,
-            3,
-            -25,
-            "game_session_slider_handle",
-            common.get_image("slider_button.png"),
-            1,
-            0,
-            0,
-            False,
+            name="game_sessions_slider",
+            surface=common.get_image("scroll_bar.png"),
+            screen=screen,
+            size_percent=0.9,
+            handle_name="game_session_slider_handle",
+            handle_surface=common.get_image("slider_button.png"),
+            handle_size_percent=0.9,
+            delimiters_count=0,
+            handle_position=0,
+            horizontal=False,
+            tile_addition_width_percent=0.2,
+            tile_addition_height_percent=-3.4,
         )
         self.position_slider()
         self.slider.update()
@@ -85,13 +83,13 @@ class GameSessionsGroup(Tile):
             self.screen,
             self.game_session_size_percent,
             self.text_size_percent,
-            self.game_session_tile_addition_width,
-            self.game_session_tile_addition_height,
             self.next_surface,
             active_players,
             player_id_usernames_map,
             game_id,
             game_session_name,
+            self.game_session_tile_addition_width_percent,
+            self.game_session_tile_addition_height_percent,
         )
 
         self.game_sessions_by_id[game_id] = game_session

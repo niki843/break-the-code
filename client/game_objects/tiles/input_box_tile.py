@@ -11,12 +11,12 @@ class InputBoxTile(ToggleTile, InputBox):
         surface,
         screen,
         size_percent,
-        tile_addition_width,
-        tile_addition_height,
         next_surface,
         initial_text="",
         text_size_percentage_from_screen_height=20,
         max_char=20,
+        tile_addition_width_percent=0,
+        tile_addition_height_percent=0,
     ):
         ToggleTile.__init__(
             self,
@@ -25,9 +25,9 @@ class InputBoxTile(ToggleTile, InputBox):
             surface,
             screen,
             size_percent,
-            tile_addition_width,
-            tile_addition_height,
             next_surface,
+            tile_addition_width_percent=tile_addition_width_percent,
+            tile_addition_height_percent=tile_addition_height_percent,
         )
         InputBox.__init__(
             self,

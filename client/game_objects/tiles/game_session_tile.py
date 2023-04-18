@@ -11,13 +11,13 @@ class GameSessionTile(ToggleTile):
         screen,
         size_percent,
         text_size_percent,
-        tile_addition_width,
-        tile_addition_height,
         next_surface,
         active_players,
         player_id_usernames_map,
         game_session_id,
         game_session_name="Unknown",
+        tile_addition_width_percent=0,
+        tile_addition_height_percent=0,
     ):
         ToggleTile.__init__(
             self,
@@ -26,25 +26,26 @@ class GameSessionTile(ToggleTile):
             surface,
             screen,
             size_percent,
-            tile_addition_width,
-            tile_addition_height,
             next_surface,
+            tile_addition_width_percent=tile_addition_width_percent,
+            tile_addition_height_percent=tile_addition_height_percent,
         )
         self.player_id_usernames_map = player_id_usernames_map
         self.active_players = active_players
         self.game_session_name = game_session_name
         self.game_session_id = game_session_id
+        self.player_usernames = player_id_usernames_map.values()
 
         self.text_box = PlainTextTile(
             "game_session_name",
             surface,
             screen,
             size_percent,
-            tile_addition_width,
-            tile_addition_height,
             game_session_name,
             text_size_percent,
             20,
+            tile_addition_width_percent,
+            tile_addition_height_percent,
         )
 
     def update_players(self, players_id_name_map):

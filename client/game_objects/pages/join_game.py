@@ -72,8 +72,7 @@ class JoinGame(GameWindow):
             surface,
             client.state_manager.screen,
             client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
-            10,
-            0,
+            0.01,
         )
 
         self.tiles_group.add(self.join_game_tile)
@@ -98,8 +97,6 @@ class JoinGame(GameWindow):
             surface=surface,
             screen=client.state_manager.screen,
             size_percent=25,
-            tile_addition_width=0,
-            tile_addition_height=0,
         )
 
         self.set_game_info_label_size()
@@ -125,7 +122,6 @@ class JoinGame(GameWindow):
             client.state_manager.screen.get_height() * 0.04
         )
         self.game_info_box.rect.centerx = self.game_info_tile.rect.centerx
-        self.game_info_box.center_text()
 
     def build_game_sessions_group(self):
         left, top, right = self.get_game_sessions_group_position()
@@ -138,8 +134,6 @@ class JoinGame(GameWindow):
             client.state_manager.screen,
             44,
             40,
-            0,
-            0,
             common.get_image("game_session_selected.png"),
             6,
             left,
@@ -221,7 +215,7 @@ class JoinGame(GameWindow):
             self.game_info_tile.image, self.game_info_tile.rect
         )
 
-        self.game_info_box.blit()
+        client.state_manager.screen.blit(self.game_info_box.image, self.game_info_box.rect)
 
         self.game_session_group.blit()
 

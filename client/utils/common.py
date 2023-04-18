@@ -75,13 +75,11 @@ def load_tiny_tile(tile_name, img_path, screen):
         get_image(img_path),
         screen,
         client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_TINY,
-        0,
-        0,
     )
 
 
 def load_tile(tile_name, surface, size, screen):
-    return Tile(tile_name, surface, screen, size, 0, 0)
+    return Tile(tile_name, surface, screen, size)
 
 
 def load_rotated_left_tile(tile_name, img_path, size, screen):

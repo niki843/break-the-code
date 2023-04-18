@@ -87,8 +87,6 @@ class NewGame(GameWindow):
                     ),
                     client.state_manager.screen,
                     5,
-                    0,
-                    0,
                 )
             )
         self.build_player_number_group()
@@ -173,8 +171,6 @@ class NewGame(GameWindow):
             common.get_image(f"card{next_card_id}.png"),
             client.state_manager.screen,
             17,
-            0,
-            0,
         )
         old_card = self.condition_cards_group.get_tile_by_id(str(card_id))
 
@@ -238,8 +234,6 @@ class NewGame(GameWindow):
             common.get_image("back.png"),
             client.state_manager.screen,
             client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
-            0,
-            0,
             common.get_image("back_pressed.png"),
             shrink_percent=1,
         )

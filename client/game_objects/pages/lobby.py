@@ -59,8 +59,6 @@ class Lobby(GameWindow):
             surface,
             client.state_manager.screen,
             client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
-            0,
-            0,
             next_surface,
             shrink_percent=1,
         )
@@ -190,7 +188,7 @@ class Lobby(GameWindow):
         client.state_manager.screen.blit(
             self.tiles_background.image, self.tiles_background.rect
         )
-        self.game_info_box.blit()
+        client.state_manager.screen.blit(self.game_info_box.image, self.game_info_box.rect)
         self.player_info_group.blit()
 
         if client.state_manager.am_i_host():

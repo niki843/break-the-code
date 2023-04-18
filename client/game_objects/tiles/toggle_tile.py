@@ -9,19 +9,19 @@ class ToggleTile(Tile):
         current_surface,
         screen,
         size_percent,
-        tile_addition_width,
-        tile_addition_height,
         next_surface,
         shrink_percent=0,
         is_on=True,
+        tile_addition_width_percent=0,
+        tile_addition_height_percent=0,
     ):
         super().__init__(
             name,
             current_surface,
             screen,
             size_percent,
-            tile_addition_width,
-            tile_addition_height,
+            tile_addition_width_percent,
+            tile_addition_height_percent,
         )
 
         self.next_surface = Tile(
@@ -29,8 +29,8 @@ class ToggleTile(Tile):
             next_surface,
             screen,
             size_percent - shrink_percent,
-            tile_addition_width,
-            tile_addition_height,
+            tile_addition_width_percent,
+            tile_addition_height_percent,
         )
 
         self.is_on = is_on

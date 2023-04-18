@@ -85,7 +85,7 @@ class Settings(GameWindow):
         surface = common.get_image("settings_top.png")
 
         self.settings_label_tile = Tile(
-            "settings_label", surface, client.state_manager.screen, 30, 0, 0
+            "settings_label", surface, client.state_manager.screen, 30
         )
         self.set_settings_label_size()
 
@@ -103,7 +103,7 @@ class Settings(GameWindow):
         surface = common.get_image("res_description.png")
 
         self.resolution_label_tile = Tile(
-            "resolution_label", surface, client.state_manager.screen, 21, 0, 0
+            "resolution_label", surface, client.state_manager.screen, 21
         )
         self.set_resolution_label_size()
 
@@ -137,8 +137,6 @@ class Settings(GameWindow):
             surface=slider_surface,
             screen=client.state_manager.screen,
             size_percent=60,
-            tile_addition_width=0,
-            tile_addition_height=0,
             handle_name="resolution_slider_handle",
             handle_surface=slider_handle,
             handle_size_percent=2,
@@ -163,7 +161,7 @@ class Settings(GameWindow):
         surface = common.get_image("music_description.png")
 
         self.music_label_tile = Tile(
-            "music_label", surface, client.state_manager.screen, 11, 0, 0
+            "music_label", surface, client.state_manager.screen, 11
         )
         self.set_music_label_size()
 
@@ -186,8 +184,6 @@ class Settings(GameWindow):
             surface=slider_surface,
             screen=client.state_manager.screen,
             size_percent=60,
-            tile_addition_width=0,
-            tile_addition_height=0,
             handle_name="music_slider_handle",
             handle_surface=slider_handle,
             handle_size_percent=2,
@@ -212,7 +208,7 @@ class Settings(GameWindow):
         surface = common.get_image("change_nickname_description.png")
 
         self.username_label = Tile(
-            "username_label", surface, client.state_manager.screen, 33, 0, 0
+            "username_label", surface, client.state_manager.screen, 33
         )
         self.set_username_label_size()
 
@@ -236,11 +232,10 @@ class Settings(GameWindow):
             surface,
             client.state_manager.screen,
             50,
-            client.TILE_WIDTH_ADDITION,
-            client.TILE_HEIGHT_ADDITION,
             next_surface,
             self.current_username,
             text_size_percentage_from_screen_height=5,
+            tile_addition_width_percent=client.TILE_WIDTH_ADDITION_PERCENT,
         )
 
         self.set_username_text_box_size()
@@ -268,8 +263,6 @@ class Settings(GameWindow):
             current_surface=surface,
             screen=client.state_manager.screen,
             size_percent=client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
-            tile_addition_width=0,
-            tile_addition_height=0,
             next_surface=next_surface,
             shrink_percent=1,
         )

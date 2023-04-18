@@ -22,10 +22,10 @@ class Slider(Tile):
         the main surface on which the game is being displayed
     size_percent : str
         percent representation of what the size of the image compared to the surface would be
-    tile_addition_width : int
-        used for additional pixels to the width of the image that's being used
-    tile_addition_height : int
-        used for additional pixels to the height of the image that's being used
+    tile_addition_width_percent : int
+        used for addition to the width of the image that's being used, uses percent of the screen width
+    tile_addition_height_percent : int
+        used for addition to the height of the image that's being used, uses percent of the screen height
     handle_name : str
         the name for the handle tile
     handle_surface : pygame.Surface
@@ -44,25 +44,25 @@ class Slider(Tile):
         surface,
         screen,
         size_percent,
-        tile_addition_width,
-        tile_addition_height,
         handle_name,
         handle_surface,
         handle_size_percent,
         delimiters_count,
         handle_position,
         horizontal=True,
+        tile_addition_width_percent=0,
+        tile_addition_height_percent=0,
     ):
         super().__init__(
             name,
             surface,
             screen,
             size_percent,
-            tile_addition_width,
-            tile_addition_height,
+            tile_addition_width_percent,
+            tile_addition_height_percent,
         )
         self.slider_handle = Tile(
-            handle_name, handle_surface, screen, handle_size_percent, 0, 0
+            handle_name, handle_surface, screen, handle_size_percent
         )
 
         self.actual_percentage = []

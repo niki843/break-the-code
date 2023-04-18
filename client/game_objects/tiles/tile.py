@@ -19,10 +19,10 @@ class Tile(sprite.Sprite):
         the main surface on which the game is being displayed
     size_percent : str
         percent representation of what the size of the image compared to the surface would be
-    tile_addition_width : int
-        used for additional pixels to the width of the image that's being used
-    tile_addition_height : int
-        used for additional pixels to the height of the image that's being used
+    tile_addition_width_percent : int
+        used for addition to the width of the image that's being used, uses percent of the screen width
+    tile_addition_height_percent : int
+        used for addition to the height of the image that's being used, uses percent of the screen height
     """
 
     def __init__(
@@ -31,8 +31,8 @@ class Tile(sprite.Sprite):
         surface,
         screen,
         size_percent,
-        tile_addition_width,
-        tile_addition_height,
+        tile_addition_width_percent=0,
+        tile_addition_height_percent=0,
     ):
         pygame.sprite.Sprite.__init__(self)
 
@@ -45,8 +45,8 @@ class Tile(sprite.Sprite):
 
         self.screen = screen
         self.size_percent = size_percent
-        self.tile_addition_width = tile_addition_width
-        self.tile_addition_height = tile_addition_height
+        self.tile_addition_width_percent = tile_addition_width_percent
+        self.tile_addition_height_percent = tile_addition_height_percent
 
         self.standard_tile_width = None
         self.standard_tile_height = None
@@ -68,8 +68,8 @@ class Tile(sprite.Sprite):
         self.image = pygame.transform.scale(
             self.original_image,
             (
-                int(self.standard_tile_width) + self.tile_addition_width,
-                int(self.standard_tile_height) + self.tile_addition_height,
+                int(self.standard_tile_width) + (self.screen.get_width() * common.get_percentage_multiplier_from_percentage(self.tile_addition_width_percent)),
+                int(self.standard_tile_height) + (self.screen.get_height() * common.get_percentage_multiplier_from_percentage(self.tile_addition_height_percent)),
             ),
         )
 

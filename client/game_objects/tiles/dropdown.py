@@ -12,16 +12,16 @@ class Dropdown:
         dropdown_name_text_map,
         screen,
         size_percent,
-        tile_addition_width,
-        tile_addition_height,
+        tile_addition_width_percent=0,
+        tile_addition_height_percent=0,
     ):
         self.first_tile = self.create_dropdown_tile(
             first_tile_name,
             screen,
             surface,
             size_percent,
-            tile_addition_width,
-            tile_addition_height,
+            tile_addition_width_percent,
+            tile_addition_height_percent,
             first_tile_text,
         )
         self.first_tile.priority = 1
@@ -30,9 +30,7 @@ class Dropdown:
             "dropdown_arrow",
             common.get_image("dropdown.png"),
             screen,
-            size_percent - 6,
-            0,
-            0,
+            size_percent - 6
         )
 
         self.dropdown_surfaces = []
@@ -45,8 +43,8 @@ class Dropdown:
                 screen,
                 surface,
                 size_percent,
-                tile_addition_width,
-                tile_addition_height,
+                tile_addition_width_percent,
+                tile_addition_height_percent,
                 text,
             )
             tile.priority = 1
@@ -58,8 +56,8 @@ class Dropdown:
         screen,
         surface,
         size_percent,
-        tile_addition_width,
-        tile_addition_height,
+        tile_addition_width_percent,
+        tile_addition_height_percent,
         first_tile_text,
     ):
         return PlainTextTile(
@@ -67,11 +65,11 @@ class Dropdown:
             surface,
             screen,
             size_percent,
-            tile_addition_width,
-            tile_addition_height,
             text_to_display=first_tile_text,
             text_size_percent=70,
             max_characters_on_line=1,
+            tile_addition_width_percent=tile_addition_width_percent,
+            tile_addition_height_percent=tile_addition_height_percent,
         )
 
     def center_dropdown(self):

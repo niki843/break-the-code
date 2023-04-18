@@ -20,12 +20,12 @@ class ImageSlideshowTile(Tile):
         the main surface on which the game is being displayed
     size_percent : str
         percent representation of what the size of the image compared to the surface would be
-    tile_addition_width : int
-        used for additional pixels to the width of the image that's being used
-    tile_addition_height : int
-        used for additional pixels to the height of the image that's being used
     slide_surfaces : list
         a list of the names of the pngs that will be displayed for next and previous
+    tile_addition_width_percent : int
+        used for addition to the width of the image that's being used, uses percent of the screen width
+    tile_addition_height_percent : int
+        used for addition to the height of the image that's being used, uses percent of the screen height
     """
 
     def __init__(
@@ -34,17 +34,17 @@ class ImageSlideshowTile(Tile):
         surface,
         screen,
         size_percent,
-        tile_addition_width,
-        tile_addition_height,
         slide_surfaces: list,
+        tile_addition_width_percent=0,
+        tile_addition_height_percent=0,
     ):
         super().__init__(
             name,
             surface,
             screen,
             size_percent,
-            tile_addition_width,
-            tile_addition_height,
+            tile_addition_width_percent,
+            tile_addition_height_percent,
         )
 
         self.surface = surface
@@ -73,17 +73,13 @@ class ImageSlideshowTile(Tile):
             "screen_size_right_arrow",
             right_arrow_surface,
             self.screen,
-            client.ARROW_WITH_PERCENTAGE_FROM_SCREEN,
-            0,
-            0,
+            client.ARROW_WITH_PERCENTAGE_FROM_SCREEN
         )
         self.left_arrow = Tile(
             "screen_size_left_arrow",
             pygame.transform.flip(right_arrow_surface, True, True),
             self.screen,
-            client.ARROW_WITH_PERCENTAGE_FROM_SCREEN,
-            0,
-            0,
+            client.ARROW_WITH_PERCENTAGE_FROM_SCREEN
         )
 
     def build_next_tiles(

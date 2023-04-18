@@ -47,14 +47,12 @@ class PlayerNumberTilesGroup:
                 client.state_manager.screen,
             )
             text_bubble = BubbleBoxTile(
-                "text_bubble",
-                common.get_image(f"result_bubble_{position}.png"),
-                client.state_manager.screen,
-                size_by_position[position][0],
-                0,
-                0,
-                "",
-                size_by_position[position][1],
+                name="text_bubble",
+                surface=common.get_image(f"result_bubble_{position}.png"),
+                screen=client.state_manager.screen,
+                size_percent=size_by_position[position][0],
+                text_to_display="",
+                text_size_percent=size_by_position[position][1],
             )
 
             cards = self.number_cards

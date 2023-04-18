@@ -26,8 +26,6 @@ class ConditionCardsGroup:
             common.get_image("card_back.png"),
             self.screen,
             17,
-            0,
-            0,
         )
 
     def center_center_card(self):
@@ -43,8 +41,6 @@ class ConditionCardsGroup:
                 common.get_image(f"card{card.id}.png"),
                 self.screen,
                 17,
-                0,
-                0,
             )
             self.condition_card_tiles.append(tile)
             self.condition_card_id_tile_map[str(card.id)] = tile

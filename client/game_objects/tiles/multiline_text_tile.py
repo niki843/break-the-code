@@ -11,19 +11,19 @@ class MultilineTextTile(Tile):
         surface,
         screen,
         size_percent,
-        tile_addition_width,
-        tile_addition_height,
         text_to_display: str,
         text_size_percent: float,
         start_line: int,
+        tile_addition_width_percent=0,
+        tile_addition_height_percent=0,
     ):
         super().__init__(
             name=name,
             surface=surface,
             screen=screen,
             size_percent=size_percent,
-            tile_addition_width=tile_addition_width,
-            tile_addition_height=tile_addition_height,
+            tile_addition_width_percent=tile_addition_width_percent,
+            tile_addition_height_percent=tile_addition_height_percent,
         )
 
         self.text = text_to_display

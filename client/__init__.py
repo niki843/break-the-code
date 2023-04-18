@@ -5,8 +5,8 @@ IMG_PATH = f".{os.path.sep}resources{os.path.sep}images{os.path.sep}"
 FONT_PATH = f".{os.path.sep}resources{os.path.sep}fonts{os.path.sep}"
 MUSIC_PATH = f".{os.path.sep}resources{os.path.sep}music{os.path.sep}"
 
-TILE_WIDTH_ADDITION = 50
-TILE_HEIGHT_ADDITION = 0
+TILE_WIDTH_ADDITION_PERCENT = 3.9
+TILE_HEIGHT_ADDITION_PERCENT = 0
 
 BETWEEN_TILES_SPACING = 10
 

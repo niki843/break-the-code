@@ -68,8 +68,7 @@ class Menu(GameWindow):
             surface,
             client.state_manager.screen,
             client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_MEDIUM,
-            client.TILE_WIDTH_ADDITION,
-            client.TILE_HEIGHT_ADDITION,
+            client.TILE_WIDTH_ADDITION_PERCENT,
         )
         self.set_join_game_size()
 
@@ -89,8 +88,7 @@ class Menu(GameWindow):
             surface,
             client.state_manager.screen,
             client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_MEDIUM,
-            client.TILE_WIDTH_ADDITION,
-            client.TILE_HEIGHT_ADDITION,
+            client.TILE_WIDTH_ADDITION_PERCENT,
         )
         self.set_new_game_size()
 
@@ -112,8 +110,7 @@ class Menu(GameWindow):
             surface,
             client.state_manager.screen,
             client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_MEDIUM,
-            client.TILE_WIDTH_ADDITION,
-            client.TILE_HEIGHT_ADDITION,
+            client.TILE_WIDTH_ADDITION_PERCENT,
         )
         self.set_settings_size()
 
@@ -135,8 +132,7 @@ class Menu(GameWindow):
             surface,
             client.state_manager.screen,
             client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_MEDIUM,
-            client.TILE_WIDTH_ADDITION,
-            client.TILE_HEIGHT_ADDITION,
+            client.TILE_WIDTH_ADDITION_PERCENT,
         )
         self.set_quit_game_size()
 
@@ -163,8 +159,6 @@ class Menu(GameWindow):
             blurr,
             client.state_manager.screen,
             100,
-            0,
-            0,
         )
 
         self.tiles_group.add(self.blured_tile)
@@ -186,8 +180,6 @@ class Menu(GameWindow):
             surface,
             client.state_manager.screen,
             55,
-            0,
-            0,
         )
         # Set it as a higher priority than anything behind
         self.game_session_name_box.priority = 1
@@ -216,8 +208,6 @@ class Menu(GameWindow):
             surface,
             client.state_manager.screen,
             43,
-            0,
-            0,
             next_surface,
             "Game-Name",
             text_size_percentage_from_screen_height=5,
@@ -245,15 +235,13 @@ class Menu(GameWindow):
             self.game_session_name_text.image.get_height(),
         )
         self.number_players_label = PlainTextTile(
-            "number_of_players",
-            transparent_image,
-            client.state_manager.screen,
-            40,
-            0,
-            0,
-            "Number of players:",
-            45,
-            20,
+            name="number_of_players",
+            surface=transparent_image,
+            screen=client.state_manager.screen,
+            size_percent=40,
+            text_to_display="Number of players:",
+            text_size_percent=45,
+            max_characters_on_line=20,
         )
 
         self.set_number_players_label_size()
@@ -280,8 +268,6 @@ class Menu(GameWindow):
             dropdown_name_text_map=name_text_map,
             screen=client.state_manager.screen,
             size_percent=9,
-            tile_addition_width=0,
-            tile_addition_height=0,
         )
         self.players_count_tile = self.number_players_dropdown.first_tile
 
@@ -308,15 +294,13 @@ class Menu(GameWindow):
             self.game_session_name_text.image.get_height(),
         )
         self.private_game_label = PlainTextTile(
-            "private_game",
-            transparent_image,
-            client.state_manager.screen,
-            40,
-            0,
-            0,
-            "Private game:",
-            45,
-            20,
+            name="private_game",
+            surface=transparent_image,
+            screen=client.state_manager.screen,
+            size_percent=40,
+            text_to_display="Private game:",
+            text_size_percent=45,
+            max_characters_on_line=20,
         )
 
         self.set_private_game_label_size()
@@ -342,8 +326,6 @@ class Menu(GameWindow):
             current_surface=surface,
             screen=client.state_manager.screen,
             size_percent=8,
-            tile_addition_width=0,
-            tile_addition_height=0,
             next_surface=next_surface,
             shrink_percent=0,
             is_on=False
@@ -375,8 +357,6 @@ class Menu(GameWindow):
             current_surface=surface,
             screen=client.state_manager.screen,
             size_percent=client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
-            tile_addition_width=0,
-            tile_addition_height=0,
             next_surface=next_surface,
             shrink_percent=1,
         )
@@ -404,8 +384,6 @@ class Menu(GameWindow):
             current_surface=surface,
             screen=client.state_manager.screen,
             size_percent=client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
-            tile_addition_width=0,
-            tile_addition_height=0,
             next_surface=next_surface,
             shrink_percent=1,
         )

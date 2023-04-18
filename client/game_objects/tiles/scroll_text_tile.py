@@ -17,10 +17,10 @@ class ScrollTextTile(MultilineTextTile):
         handle_surface,
         screen,
         size_percent,
-        tile_addition_width,
-        tile_addition_height,
         text_to_display: str,
         text_size_percentage: int,
+        tile_addition_width_percent=0,
+        tile_addition_height_percent=0,
     ):
         MultilineTextTile.__init__(
             self,
@@ -28,11 +28,11 @@ class ScrollTextTile(MultilineTextTile):
             surface=main_background_surface,
             screen=screen,
             size_percent=size_percent,
-            tile_addition_width=tile_addition_width,
-            tile_addition_height=tile_addition_height,
             text_to_display=text_to_display,
             text_size_percent=text_size_percentage,
             start_line=0,
+            tile_addition_width_percent=tile_addition_width_percent,
+            tile_addition_height_percent=tile_addition_height_percent,
         )
 
         self.load_text()
@@ -47,8 +47,6 @@ class ScrollTextTile(MultilineTextTile):
             surface=slider_surface,
             screen=screen,
             size_percent=1,
-            tile_addition_width=0,
-            tile_addition_height=0,
             handle_name=handle_name,
             handle_surface=handle_surface,
             handle_size_percent=self.image.get_width() * 0.2,

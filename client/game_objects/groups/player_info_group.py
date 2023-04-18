@@ -44,8 +44,6 @@ class PlayerInfoGroup:
             common.get_image(self.player_images.pop(0)),
             self.screen,
             5,
-            0,
-            0,
         )
 
         self.player_image_tiles.append(image_tile)
@@ -53,15 +51,13 @@ class PlayerInfoGroup:
         surface = pygame.Surface([50, 12], pygame.SRCALPHA, 32)
         surface = surface.convert_alpha()
         text_tile = PlainTextTile(
-            f"player_{len(self.player_name_tiles) + 1}_text",
-            surface,
-            self.screen,
-            22,
-            0,
-            0,
-            player_name or "",
-            40,
-            15,
+            name=f"player_{len(self.player_name_tiles) + 1}_text",
+            surface=surface,
+            screen=self.screen,
+            size_percent=22,
+            text_to_display=player_name or "",
+            text_size_percent=40,
+            max_characters_on_line=15,
         )
         self.player_name_tiles.append(text_tile)
         self.player_ids.append(player_id)
