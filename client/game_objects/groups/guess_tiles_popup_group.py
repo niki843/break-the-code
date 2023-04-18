@@ -105,7 +105,7 @@ class GuessTilesPopupGroup:
 
     def build_submit_button(self):
         self.submit_button = common.load_tile(
-            "guess_popup_submit_button",
+            self.SUBMIT_BUTTON_NAME,
             common.get_image("submit.png"),
             12,
             client.state_manager.screen,
