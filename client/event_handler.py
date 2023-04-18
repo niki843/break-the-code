@@ -198,9 +198,7 @@ class EventHandler(Singleton):
     def open_full_screen(self):
         screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         self.change_screen(screen)
-        self.settings.resolution_slider.handle_position = (
-            self.settings.SCREEN_SIZE_CAPTIONS.index("fullscreen")
-        )
+        self.settings.resolution_slider.handle_position = len(self.settings.SCREEN_SIZE_CAPTIONS) - 1
         self.settings.resolution_slider.set_slider_handle_position()
         self.join_game.reset_selected_game_session()
         client_init.IS_FULLSCREEN_ENABLED = True
