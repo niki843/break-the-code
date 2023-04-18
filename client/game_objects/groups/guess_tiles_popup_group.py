@@ -74,8 +74,8 @@ class GuessTilesPopupGroup:
             self.guess_cards.append(
                 GuessCardTile(
                     i,
-                    self.GUESS_CARD_NAME.format({i}),
-                    self.GUESS_CARD_NAME.format({i}),
+                    self.GUESS_CARD_NAME.format(i),
+                    self.GUESS_CARD_NAME.format(i),
                     common.get_image("user_number_1.png"),
                     client.state_manager.screen,
                     8,

@@ -169,7 +169,7 @@ class NewGame(GameWindow):
         self.draw_condition_card(next_card_id)
 
         new_card = Tile(
-            self.CONDITION_CARD_NAME.format({next_card_id}),
+            self.CONDITION_CARD_NAME.format(next_card_id),
             common.get_image(f"card{next_card_id}.png"),
             client.state_manager.screen,
             17,
