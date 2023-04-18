@@ -85,7 +85,10 @@ class Settings(GameWindow):
         surface = common.get_image("settings_top.png")
 
         self.settings_label_tile = Tile(
-            "settings_label", surface, client.state_manager.screen, 30
+            name="settings_label",
+            surface=surface,
+            screen=client.state_manager.screen,
+            size_percent=30
         )
         self.set_settings_label_size()
 
@@ -103,7 +106,10 @@ class Settings(GameWindow):
         surface = common.get_image("res_description.png")
 
         self.resolution_label_tile = Tile(
-            "resolution_label", surface, client.state_manager.screen, 21
+            name="resolution_label",
+            surface=surface,
+            screen=client.state_manager.screen,
+            size_percent=21
         )
         self.set_resolution_label_size()
 
@@ -130,7 +136,7 @@ class Settings(GameWindow):
             max_desktop_res[0] == client.state_manager.screen.get_width()
             and max_desktop_res[1] == client.state_manager.screen.get_height()
         ):
-            self.current_resolution = "fullscreen"
+            self.current_resolution = self.SCREEN_SIZE_CAPTIONS[-1]
 
         self.resolution_slider = Slider(
             name="resolution_slider",
@@ -382,7 +388,7 @@ class Settings(GameWindow):
                 self.event_handler.wait_text_input(self.username_input_box)
 
     def change_screen_resolution_and_rebuild(self, resolution: str):
-        if resolution == "fullscreen":
+        if resolution == self.SCREEN_SIZE_CAPTIONS[-1]:
             self.event_handler.change_screen(
                 pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
             )
