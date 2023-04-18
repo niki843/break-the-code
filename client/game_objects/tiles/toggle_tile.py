@@ -13,6 +13,7 @@ class ToggleTile(Tile):
         tile_addition_height,
         next_surface,
         shrink_percent=0,
+        is_on=True,
     ):
         super().__init__(
             name,
@@ -32,6 +33,7 @@ class ToggleTile(Tile):
             tile_addition_height,
         )
 
+        self.is_on = is_on
         self.values = (self, self.next_surface)
 
     def next_value(self):
@@ -53,6 +55,8 @@ class ToggleTile(Tile):
         self.next_surface.original_image = temp_original_image
         self.next_surface.rect = temp_rect
         self.next_surface.name = temp_name
+
+        self.is_on = not self.is_on
 
     def resize(self):
         super().resize()

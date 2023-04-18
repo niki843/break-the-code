@@ -11,6 +11,8 @@ from client.utils import common
 
 
 class Menu(GameWindow):
+    PRIVATE_GAME_TOGGLE_NAME = "toggle_button_{0}"
+
     def __init__(self, event_handler):
         super().__init__(event_handler)
         self.new_game_tile = None
@@ -335,8 +337,8 @@ class Menu(GameWindow):
         next_surface = common.get_image("toggle_on.png")
 
         self.private_game_toggle_button = ToggleTile(
-            name="toggle_button_off",
-            next_name="toggle_button_on",
+            name=self.PRIVATE_GAME_TOGGLE_NAME.format("off"),
+            next_name=self.PRIVATE_GAME_TOGGLE_NAME.format("on"),
             current_surface=surface,
             screen=client.state_manager.screen,
             size_percent=8,
@@ -344,6 +346,7 @@ class Menu(GameWindow):
             tile_addition_height=0,
             next_surface=next_surface,
             shrink_percent=0,
+            is_on=False
         )
 
         self.set_toggle_size()
@@ -418,6 +421,99 @@ class Menu(GameWindow):
         self.create_button.rect.bottom = self.cancel_button.rect.bottom
         self.create_button.rect.right = self.game_session_name_text.rect.right
 
+    def open_game_name_popup(self):
+        self.build_blurred_background()
+        self.build_game_session_name_box()
+        self.build_game_name_text_box()
+        self.build_number_players_label()
+        self.build_number_players_dropdown_box()
+        self.build_private_game_label()
+        self.build_private_game_toggle()
+        self.build_cancel_button_tile()
+        self.build_create_button_tile()
+
+    def close_game_name_popup(self):
+        self.tiles_group.remove(self.blured_tile)
+        self.tiles_group.remove(self.game_session_name_box)
+        self.tiles_group.remove(self.game_session_name_text)
+        self.tiles_group.remove(self.number_players_label)
+        self.tiles_group.remove(self.number_players_dropdown)
+        self.tiles_group.remove(self.cancel_button)
+        self.tiles_group.remove(self.create_button)
+        self.tiles_group.remove(self.private_game_toggle_button)
+        self.blured_tile = None
+        self.game_session_name_box = None
+        self.game_session_name_text = None
+        self.cancel_button = None
+        self.create_button = None
+        self.private_game_toggle_button = None
+        self.number_players_label = None
+        self.number_players_dropdown = None
+        self.private_game_label = None
+        self.is_private_game = False
+        self.players_count = "4"
+
+    def activate_tile(self, tile, event):
+        match event.button:
+            case client.LEFT_BUTTON_CLICK:
+                self.tile_left_button_click_event(tile)
+            case client.SCROLL_UP:
+                pass
+            case client.SCROLL_DOWN:
+                pass
+
+    def tile_left_button_click_event(self, tile):
+        match tile.name:
+            case self.new_game_tile.name:
+                self.open_game_name_popup()
+            case self.join_game_tile.name:
+                self.event_handler.join_game.open()
+            case self.settings_tile.name:
+                self.event_handler.settings.open()
+            case self.quit_tile.name:
+                pygame.event.post(pygame.event.Event(pygame.QUIT))
+            case self.game_session_name_text.name:
+                if self.game_session_name_text.text == "Game-Name":
+                    self.game_session_name_text.new_line()
+                self.game_session_name_text.mark_clicked()
+                self.event_handler.wait_text_input(self.game_session_name_text)
+
+                # so because we have a recursion in event_handler.handle_mouse_click and event_handle.wait_text_input
+                # we need to check if the button that was clicked was cancel or apply if it was we don't need to set
+                # the game_session_name
+                self.game_session_name = (
+                    self.game_session_name_text.text
+                    if self.game_session_name_text
+                    else None
+                )
+            case name if name.startswith(self.PRIVATE_GAME_TOGGLE_NAME.format("")):
+                self.private_game_toggle_button.next_value()
+                self.is_private_game = self.private_game_toggle_button.is_on
+            case self.cancel_button.name:
+                self.cancel_button.next_value()
+                self.event_handler.handle_save_button(self.cancel_button)
+                self.close_game_name_popup()
+            case self.create_button.name:
+                self.create_button.next_value()
+                self.event_handler.handle_save_button(self.create_button)
+                game_session_name = self.game_session_name_text.text
+                self.close_game_name_popup()
+                self.event_handler.lobby.open(game_name=game_session_name, create_game=True)
+            case self.number_players_dropdown.first_tile.name:
+                for surface in self.number_players_dropdown.dropdown_surfaces:
+                    self.tiles_group.add(surface)
+
+                if tile.text != self.number_players_dropdown.first_tile.text:
+                    self.number_players_dropdown.mark_clicked(tile)
+                    self.players_count = int(self.number_players_dropdown.first_tile.text)
+                    return
+
+                self.number_players_dropdown.drop_elements()
+
+                if not self.number_players_dropdown.active:
+                    for surface in self.number_players_dropdown.dropdown_surfaces:
+                        self.tiles_group.remove(surface)
+
     def blit(self):
         # Refresh the object on the screen so any runtime changes will be reflected
         super().blit()
@@ -454,97 +550,3 @@ class Menu(GameWindow):
                 self.private_game_toggle_button.image,
                 self.private_game_toggle_button.rect,
             )
-
-    def open_game_name_popup(self):
-        self.build_blurred_background()
-        self.build_game_session_name_box()
-        self.build_game_name_text_box()
-        self.build_number_players_label()
-        self.build_number_players_dropdown_box()
-        self.build_private_game_label()
-        self.build_private_game_toggle()
-        self.build_cancel_button_tile()
-        self.build_create_button_tile()
-
-    def close_game_name_popup(self):
-        self.tiles_group.remove(self.blured_tile)
-        self.tiles_group.remove(self.game_session_name_box)
-        self.tiles_group.remove(self.game_session_name_text)
-        self.tiles_group.remove(self.number_players_label)
-        self.tiles_group.remove(self.number_players_dropdown)
-        self.tiles_group.remove(self.cancel_button)
-        self.tiles_group.remove(self.create_button)
-        self.tiles_group.remove(self.private_game_toggle_button)
-        self.blured_tile = None
-        self.game_session_name_box = None
-        self.game_session_name_text = None
-        self.cancel_button = None
-        self.create_button = None
-        self.private_game_toggle_button = None
-        self.number_players_label = None
-        self.number_players_dropdown = None
-        self.private_game_label = None
-        self.is_private_game = False
-        self.players_count = "4"
-
-    def activate_tile(self, tile, event):
-        if tile.name == "new_game" and event.button == client.LEFT_BUTTON_CLICK:
-            self.open_game_name_popup()
-        elif tile.name == "join_game" and event.button == client.LEFT_BUTTON_CLICK:
-            self.event_handler.join_game.open()
-        elif tile.name == "settings" and event.button == client.LEFT_BUTTON_CLICK:
-            self.event_handler.settings.open()
-        elif tile.name == "quit_game" and event.button == client.LEFT_BUTTON_CLICK:
-            pygame.event.post(pygame.event.Event(pygame.QUIT))
-        elif (
-            tile.name == "game_name_input" and event.button == client.LEFT_BUTTON_CLICK
-        ):
-            if self.game_session_name_text.text == "Game-Name":
-                self.game_session_name_text.new_line()
-            self.game_session_name_text.mark_clicked()
-            self.event_handler.wait_text_input(self.game_session_name_text)
-
-            # so because we have a recursion in event_handler.handle_mouse_click and event_handle.wait_text_input
-            # we need to check if the button that was clicked was cancel or apply if it was we don't need to set
-            # the game_session_name
-            self.game_session_name = (
-                self.game_session_name_text.text
-                if self.game_session_name_text
-                else None
-            )
-        elif (
-            tile.name == "toggle_button_on" and event.button == client.LEFT_BUTTON_CLICK
-        ):
-            self.is_private_game = True
-            self.private_game_toggle_button.next_value()
-        elif (
-            tile.name == "toggle_button_off"
-            and event.button == client.LEFT_BUTTON_CLICK
-        ):
-            self.is_private_game = False
-            self.private_game_toggle_button.next_value()
-        elif tile.name == "cancel_button" and event.button == client.LEFT_BUTTON_CLICK:
-            self.cancel_button.next_value()
-            self.event_handler.handle_save_button(self.cancel_button)
-            self.close_game_name_popup()
-        elif tile.name == "apply_button" and event.button == client.LEFT_BUTTON_CLICK:
-            self.create_button.next_value()
-            self.event_handler.handle_save_button(self.create_button)
-            game_session_name = self.game_session_name_text.text
-            self.close_game_name_popup()
-            self.event_handler.lobby.open(game_name=game_session_name, create_game=True)
-        elif tile.name == "players_count":
-
-            for surface in self.number_players_dropdown.dropdown_surfaces:
-                self.tiles_group.add(surface)
-
-            if tile.text != self.number_players_dropdown.first_tile.text:
-                self.number_players_dropdown.mark_clicked(tile)
-                self.players_count = int(self.number_players_dropdown.first_tile.text)
-                return
-
-            self.number_players_dropdown.drop_elements()
-
-            if not self.number_players_dropdown.active:
-                for surface in self.number_players_dropdown.dropdown_surfaces:
-                    self.tiles_group.remove(surface)

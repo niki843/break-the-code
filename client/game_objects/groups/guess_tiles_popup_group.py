@@ -5,6 +5,9 @@ from client.utils.enums import GameTypes
 
 
 class GuessTilesPopupGroup:
+    GUESS_CARD_NAME = "guess_card-{0}"
+    SUBMIT_BUTTON_NAME = "guess_popup_submit_button"
+
     def __init__(self, group_name):
         self.name = group_name
 
@@ -44,7 +47,7 @@ class GuessTilesPopupGroup:
 
     def build_guess_popup_background(self):
         self.guess_popup_background = common.load_tile(
-            "guess_popup_backgound",
+            self.SUBMIT_BUTTON_NAME,
             common.get_image("menu_field_cropped.png"),
             50 if client.state_manager.game_type == GameTypes.THREE_PLAYER else 40,
             client.state_manager.screen,
@@ -57,8 +60,12 @@ class GuessTilesPopupGroup:
             return
 
         self.guess_popup_background.resize()
-        self.guess_popup_background.rect.centerx = client.state_manager.screen_rect.centerx
-        self.guess_popup_background.rect.centery = client.state_manager.screen_rect.centery
+        self.guess_popup_background.rect.centerx = (
+            client.state_manager.screen_rect.centerx
+        )
+        self.guess_popup_background.rect.centery = (
+            client.state_manager.screen_rect.centery
+        )
 
     def build_guess_cards(self):
         cards_amm = 5 if client.state_manager.game_type == GameTypes.THREE_PLAYER else 4
@@ -67,8 +74,8 @@ class GuessTilesPopupGroup:
             self.guess_cards.append(
                 GuessCardTile(
                     i,
-                    f"guess_card-{i}",
-                    f"guess_card-{i}",
+                    self.GUESS_CARD_NAME.format({i}),
+                    self.GUESS_CARD_NAME.format({i}),
                     common.get_image("user_number_1.png"),
                     client.state_manager.screen,
                     8,
@@ -95,9 +102,7 @@ class GuessTilesPopupGroup:
             card.rect.left = left
             card.rect.centery = centery
 
-            left = card.rect.right + (
-                client.state_manager.screen.get_width() * 0.017
-            )
+            left = card.rect.right + (client.state_manager.screen.get_width() * 0.017)
             card.center_color_buttons()
 
     def build_submit_button(self):
@@ -121,7 +126,9 @@ class GuessTilesPopupGroup:
         )
 
     def mark_color(self, tile_name):
-        guess_card_id, color_button_id = self.__get_color_button_id_and_card_id(tile_name)
+        guess_card_id, color_button_id = self.__get_color_button_id_and_card_id(
+            tile_name
+        )
 
         self.guess_cards[guess_card_id].mark_color(color_button_id)
 
@@ -135,18 +142,24 @@ class GuessTilesPopupGroup:
 
     def blit(self):
         if self.is_open:
-            client.state_manager.screen.blit(self.guess_popup_background.image, self.guess_popup_background.rect)
+            client.state_manager.screen.blit(
+                self.guess_popup_background.image, self.guess_popup_background.rect
+            )
 
             for guess_card in self.guess_cards:
                 guess_card.blit()
                 for color_button in guess_card.color_buttons:
-                    client.state_manager.screen.blit(color_button.image, color_button.rect)
+                    client.state_manager.screen.blit(
+                        color_button.image, color_button.rect
+                    )
 
-            client.state_manager.screen.blit(self.submit_button.image, self.submit_button.rect)
+            client.state_manager.screen.blit(
+                self.submit_button.image, self.submit_button.rect
+            )
 
     @staticmethod
     def __get_color_button_id_and_card_id(tile_name):
-        all_elements = tile_name.split('-')
+        all_elements = tile_name.split("-")
         color_button_id = int(all_elements[1])
         guess_card_id = int(all_elements[3])
 

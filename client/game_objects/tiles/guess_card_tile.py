@@ -5,6 +5,7 @@ from client.utils import common
 
 class GuessCardTile(InputBoxTile):
     COLOR_BUTTONS = ["black", "white", "green"]
+    COLOR_BUTTON_NAME = "color_button-{0}-guess_card-{1}"
 
     def __init__(
         self,
@@ -44,8 +45,8 @@ class GuessCardTile(InputBoxTile):
     def load_color_buttons(self):
         for index, color in enumerate(self.COLOR_BUTTONS):
             color_button = ToggleTile(
-                f"color_button-{index}-guess_card-{self.guess_card_id}",
-                f"color_button-{index}-guess_card-{self.guess_card_id}",
+                self.COLOR_BUTTON_NAME.format(index, self.guess_card_id),
+                self.COLOR_BUTTON_NAME.format(index, self.guess_card_id),
                 common.get_image(f"{color}_card_transparent.png"),
                 self.screen,
                 2,
@@ -69,7 +70,10 @@ class GuessCardTile(InputBoxTile):
 
     def mark_color(self, color_button_id):
         color_button = self.color_buttons[color_button_id]
-        if self.clicked_color and not self.clicked_color.name == f"color_button-{color_button_id}":
+        if (
+            self.clicked_color
+            and not self.clicked_color.name == f"color_button-{color_button_id}"
+        ):
             self.clicked_color.next_value()
             self.clicked_color = None
 

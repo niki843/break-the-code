@@ -263,8 +263,8 @@ class Settings(GameWindow):
         next_surface = common.get_image("apply_pressed.png")
 
         self.apply_button = ToggleTile(
-            name="apply_button_on",
-            next_name="apply_button_off",
+            name="apply_button",
+            next_name="apply_button",
             current_surface=surface,
             screen=client.state_manager.screen,
             size_percent=client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
@@ -332,59 +332,61 @@ class Settings(GameWindow):
         client.state_manager.screen.blit(self.back_tile.image, self.back_tile.rect)
 
     def activate_tile(self, tile, event):
-        if (
-            tile.name == "resolution_slider_handle"
-            and event.button == client.LEFT_BUTTON_CLICK
-        ):
-            self.event_handler.handle_slider_clicked(self.resolution_slider)
+        match event.button:
+            case client.LEFT_BUTTON_CLICK:
+                self.tile_left_button_click_event(tile)
+            case client.SCROLL_UP:
+                pass
+            case client.SCROLL_DOWN:
+                pass
 
-            try:
-                self.current_resolution = self.SCREEN_SIZE_CAPTIONS[
-                    self.resolution_slider.get_index()
-                ]
-            except IndexError:
-                raise custom_exceptions.ScreenResolutionIndexError()
+    def tile_left_button_click_event(self, tile):
+        match tile.name:
+            case self.resolution_slider.slider_handle.name:
+                self.event_handler.handle_slider_clicked(self.resolution_slider)
 
-            self.change_screen_resolution_and_rebuild(self.current_resolution)
-        if (
-            tile.name == "music_slider_handle"
-            and event.button == client.LEFT_BUTTON_CLICK
-        ):
-            self.event_handler.handle_slider_clicked(self.music_slider)
+                try:
+                    self.current_resolution = self.SCREEN_SIZE_CAPTIONS[
+                        self.resolution_slider.get_index()
+                    ]
+                except IndexError:
+                    raise custom_exceptions.ScreenResolutionIndexError()
 
-            try:
-                self.current_volume = int(self.music_slider.get_index() * 10)
-            except IndexError:
-                raise custom_exceptions.VolumeIndexError()
+                self.change_screen_resolution_and_rebuild(self.current_resolution)
+            case self.music_slider.slider_handle.name:
+                self.event_handler.handle_slider_clicked(self.music_slider)
 
-            if self.current_volume > 0:
-                pygame.mixer.music.set_volume(self.current_volume / 100)
-                if not self.music_state_on:
-                    self.music_state_on = True
-                    pygame.mixer.music.play(-1)
+                try:
+                    self.current_volume = int(self.music_slider.get_index() * 10)
+                except IndexError:
+                    raise custom_exceptions.VolumeIndexError()
 
-            if self.current_volume <= 0:
-                self.music_state_on = False
-                pygame.mixer.music.stop()
-        if (
-            tile.name == "apply_button_on" or tile.name == "apply_button_off"
-        ) and event.button == client.LEFT_BUTTON_CLICK:
-            self.apply_button.next_value()
-            # Save the username if only it's not empty
-            if len(self.username_input_box.text) > 0:
-                self.current_username = self.username_input_box.text
-                common.change_username(self.username_input_box.text)
-            self.event_handler.handle_save_button(self.apply_button)
-        if tile.name == "back" and event.button == client.LEFT_BUTTON_CLICK:
-            self.username_input_box.text = self.current_username
-            self.username_input_box.resize_text()
-            self.username_input_box.center()
-            if self.username_input_box.active:
+                if self.current_volume > 0:
+                    pygame.mixer.music.set_volume(self.current_volume / 100)
+                    if not self.music_state_on:
+                        self.music_state_on = True
+                        pygame.mixer.music.play(-1)
+
+                if self.current_volume <= 0:
+                    self.music_state_on = False
+                    pygame.mixer.music.stop()
+            case self.apply_button.name:
+                self.apply_button.next_value()
+                # Save the username if only it's not empty
+                if len(self.username_input_box.text) > 0:
+                    self.current_username = self.username_input_box.text
+                    common.change_username(self.username_input_box.text)
+                self.event_handler.handle_save_button(self.apply_button)
+            case self.back_tile.name:
+                self.username_input_box.text = self.current_username
+                self.username_input_box.resize_text()
+                self.username_input_box.center()
+                if self.username_input_box.active:
+                    self.username_input_box.mark_clicked()
+                self.event_handler.menu.open()
+            case self.username_input_box.name:
                 self.username_input_box.mark_clicked()
-            self.event_handler.menu.open()
-        if tile.name == "name_input" and event.button == client.LEFT_BUTTON_CLICK:
-            self.username_input_box.mark_clicked()
-            self.event_handler.wait_text_input(self.username_input_box)
+                self.event_handler.wait_text_input(self.username_input_box)
 
     def change_screen_resolution_and_rebuild(self, resolution: str):
         if resolution == "fullscreen":

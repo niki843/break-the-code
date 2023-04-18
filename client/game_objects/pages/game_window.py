@@ -27,7 +27,7 @@ class GameWindow:
             client.state_manager.screen,
             2,
             0,
-            0
+            0,
         )
 
     def activate_tile(self, tile, event):
@@ -169,9 +169,7 @@ class GameWindow:
         self.cursor.rect.left = self.cursor.rect.left - (
             self.cursor.image.get_width() * 0.14
         )
-        client.state_manager.screen.blit(
-            self.cursor.image, self.cursor.rect
-        )
+        client.state_manager.screen.blit(self.cursor.image, self.cursor.rect)
 
     def open(self, **kwargs):
         self.event_handler.change_window(self)

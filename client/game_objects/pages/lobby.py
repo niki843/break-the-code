@@ -161,16 +161,28 @@ class Lobby(GameWindow):
         )
 
     def activate_tile(self, tile, event):
-        if tile.name == self.back_tile.name:
-            client.server_communication_manager.send_exit_game_message()
-            self.close()
-            self.event_handler.menu.open()
-        if (
-            tile.name == self.start_game_tile.name
-            and client.state_manager.am_i_host()
-            and len(self.players_id_username_map.keys()) >= 3
-        ):
-            self.start_game()
+        match event.button:
+            case client.LEFT_BUTTON_CLICK:
+                self.tile_left_button_click_event(tile)
+            case client.SCROLL_UP:
+                pass
+            case client.SCROLL_DOWN:
+                pass
+
+    def tile_left_button_click_event(self, tile):
+        match tile.name:
+            case self.back_tile.name:
+                client.server_communication_manager.send_exit_game_message()
+                self.close()
+                self.event_handler.menu.open()
+            case self.start_game_tile.name:
+                if (
+                    not client.state_manager.am_i_host()
+                    or len(self.players_id_username_map.keys()) < 3
+                ):
+                    return
+
+                self.start_game()
 
     def blit(self):
         super().blit()

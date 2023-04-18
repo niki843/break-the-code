@@ -131,9 +131,13 @@ class PlayerNumberTilesGroup:
             for card in player.cards:
                 client.state_manager.screen.blit(card.image, card.rect)
 
-            if player.message_displayed_time and time.time() - player.message_displayed_time <= 5:
+            if (
+                player.message_displayed_time
+                and time.time() - player.message_displayed_time <= 5
+            ):
                 player.text_bubble_tile.blit()
 
             client.state_manager.screen.blit(
-                player.username_text_tile.text_surface, player.username_text_tile.text_rect
+                player.username_text_tile.text_surface,
+                player.username_text_tile.text_rect,
             )

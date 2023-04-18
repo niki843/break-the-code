@@ -243,40 +243,41 @@ class JoinGame(GameWindow):
             self.game_sessions_loop.cancel()
 
     def activate_tile(self, tile, event):
-        if tile.name == "back":
-            self.event_handler.menu.open()
-            self.close()
-        if tile.name == "handle" and event.button == client.LEFT_BUTTON_CLICK:
-            self.event_handler.handle_slider_clicked(self.scroll_text_tile)
-        if (
-            tile.name == "game_session_tile"
-            and event.button == client.LEFT_BUTTON_CLICK
-        ):
-            self.player_info_group.clear_players()
+        match event.button:
+            case client.LEFT_BUTTON_CLICK:
+                self.tile_left_button_click_event(tile)
+            case client.SCROLL_UP:
+                self.tile_scroll_up_event(tile)
+            case client.SCROLL_DOWN:
+                self.tile_scroll_down_event(tile)
 
-            if self.clicked_game_session_tile:
-                self.clicked_game_session_tile.next_value()
+    def tile_left_button_click_event(self, tile):
+        match tile.name:
+            case self.back_tile.name:
+                self.event_handler.menu.open()
+                self.close()
+            case self.game_session_group.slider.slider_handle.name:
+                self.event_handler.handle_slider_clicked(self.scroll_text_tile)
+            case self.game_session_group.tile_name:
+                self.player_info_group.clear_players()
 
-            if self.clicked_game_session_tile == tile:
-                self.clicked_game_session_tile = None
-                return
+                if self.clicked_game_session_tile:
+                    self.clicked_game_session_tile.next_value()
 
-            self.clicked_game_session_tile = tile
-            tile.next_value()
-            for player_id, player_name in tile.player_id_usernames_map.items():
-                self.player_info_group.add_player_tile(player_id, player_name)
+                if self.clicked_game_session_tile == tile:
+                    self.clicked_game_session_tile = None
+                    return
 
-        if (
-            tile.name == self.join_game_tile.name
-            and event.button == client.LEFT_BUTTON_CLICK
-        ):
-            if (
-                self.clicked_game_session_tile
-                and self.clicked_game_session_tile.active_players < 4
-            ):
-                # Keeping it as a different variable because it will get reset when we call the close function
-                clicked_game_session_tile = self.clicked_game_session_tile
-                player_info_group = copy.copy(self.player_info_group)
+                self.clicked_game_session_tile = tile
+                tile.next_value()
+                for player_id, player_name in tile.player_id_usernames_map.items():
+                    self.player_info_group.add_player_tile(player_id, player_name)
+            case self.join_game_tile.name:
+                if (
+                    not self.clicked_game_session_tile
+                    or self.clicked_game_session_tile.active_players >= 4
+                ):
+                    return
 
                 # One last call to server to update the game session players
                 self.event_handler.get_game_sessions()
@@ -289,8 +290,12 @@ class JoinGame(GameWindow):
                     self.reset_selected_game_session()
                     return
 
-                if self.clicked_game_session_tile.active_players > 4:
+                if self.clicked_game_session_tile.active_players >= 4:
                     return
+
+                # Keeping it as a different variable because it will get reset when we call the close function
+                clicked_game_session_tile = self.clicked_game_session_tile
+                player_info_group = copy.copy(self.player_info_group)
 
                 # calling close before anything else to stop the automated server call for refreshing game sessions
                 self.close()
@@ -302,33 +307,24 @@ class JoinGame(GameWindow):
                     game_session_name=clicked_game_session_tile.game_session_name,
                 )
 
-        if (
-            tile.name
-            in (
-                self.game_session_group.name,
-                self.game_session_group.tile_name,
-                self.game_session_group.next_tile_name,
-                self.game_session_group.slider.name,
-                self.game_session_group.slider.slider_handle.name,
-            )
-            and event.button == client.SCROLL_UP
-        ):
-            self.game_session_group.slider.previous_handle_position()
-            self.game_session_group.scroll_up()
-        if (
-            tile.name
-            in (
-                self.game_session_group.name,
-                self.game_session_group.tile_name,
-                self.game_session_group.next_tile_name,
-                self.game_session_group.slider.name,
-                self.game_session_group.slider.slider_handle.name,
-            )
-            and event.button == client.SCROLL_DOWN
-        ):
-            self.game_session_group.slider.next_handle_position()
-            self.game_session_group.scroll_down()
-            self.tiles_group.add(self.game_session_group.shown_game_sessions[-1])
+    def tile_scroll_up_event(self, tile):
+        match tile.name:
+            case self.game_session_group.name | self.game_session_group.tile_name \
+                 | self.game_session_group.next_tile_name | self.game_session_group.slider.name \
+                 | self.game_session_group.slider.slider_handle.name:
+                # Scroll up the game sessions group
+                self.game_session_group.slider.previous_handle_position()
+                self.game_session_group.scroll_up()
+
+    def tile_scroll_down_event(self, tile):
+        match tile.name:
+            case self.game_session_group.name | self.game_session_group.tile_name \
+                 | self.game_session_group.next_tile_name | self.game_session_group.slider.name \
+                 | self.game_session_group.slider.slider_handle.name:
+                # Scroll down the game sessions group
+                self.game_session_group.slider.next_handle_position()
+                self.game_session_group.scroll_down()
+                self.tiles_group.add(self.game_session_group.shown_game_sessions[-1])
 
     def reset_selected_game_session(self):
         if self.clicked_game_session_tile:

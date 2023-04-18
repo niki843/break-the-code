@@ -206,7 +206,9 @@ class EventHandler(Singleton):
         client_init.IS_FULLSCREEN_ENABLED = True
 
     def open_windowed_screen(self):
-        screen = pygame.display.set_mode(client_init.DEFAULT_RESOLUTION_TUPLE, pygame.HWSURFACE)
+        screen = pygame.display.set_mode(
+            client_init.DEFAULT_RESOLUTION_TUPLE, pygame.HWSURFACE
+        )
         self.change_screen(screen)
         self.settings.resolution_slider.handle_position = (
             self.settings.SCREEN_SIZE_CAPTIONS.index(client_init.DEFAULT_RESOLUTION_STR)

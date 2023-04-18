@@ -15,6 +15,8 @@ from client.utils.enums import Colors, GameTypes
 
 
 class NewGame(GameWindow):
+    CONDITION_CARD_NAME = "condition_card-{0}"
+
     def __init__(self, event_handler):
         super().__init__(event_handler)
 
@@ -167,7 +169,7 @@ class NewGame(GameWindow):
         self.draw_condition_card(next_card_id)
 
         new_card = Tile(
-            f"condition_card-{next_card_id}",
+            self.CONDITION_CARD_NAME.format({next_card_id}),
             common.get_image(f"card{next_card_id}.png"),
             client.state_manager.screen,
             17,
@@ -299,7 +301,15 @@ class NewGame(GameWindow):
         self.player_on_hand_id = self.player_info_group.player_ids[next_player_id]
 
     def set_player_disconnected(self, played_id, **kwargs):
-        print("Player disconnected")
+        print(f"Player disconnected {played_id}")
+
+    def can_player_use_server_actions(self):
+        if (
+                client.state_manager.is_player_eliminated
+                or client.state_manager.player_id != self.player_on_hand_id
+        ):
+            return False
+        return True
 
     def open(self, **kwargs):
         super().open()
@@ -334,60 +344,53 @@ class NewGame(GameWindow):
         client.server_communication_manager.send_exit_game_message()
 
     def activate_tile(self, tile, event):
-        if (
-            tile.name.startswith("condition_card")
-            and event.button == client.LEFT_BUTTON_CLICK
-            and not client.state_manager.is_player_eliminated
-            and client.state_manager.player_id == self.player_on_hand_id
-        ):
-            card_id = self.condition_cards_group.get_card_id(tile)
-            card = self.current_drawn_condition_cards.get(int(card_id))
-            if card.has_user_choice:
-                client.server_communication_manager.play_choice_condition_card(
-                    card.id, card.choices[0]
-                )
-                return
-            client.server_communication_manager.play_condition_card(card.id)
+        match event.button:
+            case client.LEFT_BUTTON_CLICK:
+                self.tile_left_button_click_event(tile)
+            case client.SCROLL_UP:
+                pass
+            case client.SCROLL_DOWN:
+                pass
 
-            if self.guess_tiles_popup_group.is_open:
+    def tile_left_button_click_event(self, tile):
+        match tile.name:
+            case name if name.startswith(self.CONDITION_CARD_NAME.format("")):
+                if not self.can_player_use_server_actions():
+                    return
+
+                card_id = self.condition_cards_group.get_card_id(tile)
+                card = self.current_drawn_condition_cards.get(int(card_id))
+
+                if card.has_user_choice:
+                    client.server_communication_manager.play_choice_condition_card(
+                        card.id, card.choices[0]
+                    )
+                    return
+
+                client.server_communication_manager.play_condition_card(card.id)
+
+                if self.guess_tiles_popup_group.is_open:
+                    self.guess_tiles_popup_group.close(self.tiles_group)
+            case self.guess_button.name:
+                if self.guess_tiles_popup_group.is_open:
+                    self.guess_tiles_popup_group.close(self.tiles_group)
+                self.guess_tiles_popup_group.open(self.tiles_group)
+            case self.background_image.name:
                 self.guess_tiles_popup_group.close(self.tiles_group)
-        elif (
-            tile.name == self.guess_button.name
-            and event.button == client.LEFT_BUTTON_CLICK
-            and not client.state_manager.is_player_eliminated
-        ):
-            self.guess_tiles_popup_group.open(self.tiles_group)
-        elif (
-            tile.name == self.background_image.name
-            and event.button == client.LEFT_BUTTON_CLICK
-        ):
-            self.guess_tiles_popup_group.close(self.tiles_group)
-        elif (
-            tile.name.startswith("guess_card")
-            and event.button == client.LEFT_BUTTON_CLICK
-        ):
-            tile.mark_clicked()
-            self.event_handler.wait_text_input(tile)
-        elif (
-            tile.name.startswith("color_button")
-            and event.button == client.LEFT_BUTTON_CLICK
-        ):
-            self.guess_tiles_popup_group.mark_color(tile.name)
-        elif (
-            tile.name == "guess_popup_submit_button"
-            and event.button == client.LEFT_BUTTON_CLICK
-        ):
-            cards_guess = self.guess_tiles_popup_group.get_guess()
-            if not cards_guess:
-                return
-            client.server_communication_manager.guess_cards(cards_guess)
-            self.guess_tiles_popup_group.close(self.tiles_group)
-        elif (
-            tile.name == "back_to_menu_button"
-            and event.button == client.LEFT_BUTTON_CLICK
-        ):
-            self.close()
-            self.event_handler.menu.open()
+            case name if name.startswith(self.guess_tiles_popup_group.GUESS_CARD_NAME.format("")):
+                tile.mark_clicked()
+                self.event_handler.wait_text_input(tile)
+            case name if name.startswith("color_button"):
+                self.guess_tiles_popup_group.mark_color(name)
+            case GuessTilesPopupGroup.SUBMIT_BUTTON_NAME:
+                cards_guess = self.guess_tiles_popup_group.get_guess()
+                if not cards_guess:
+                    return
+                client.server_communication_manager.guess_cards(cards_guess)
+                self.guess_tiles_popup_group.close(self.tiles_group)
+            case self.back_to_menu_button.name:
+                self.close()
+                self.event_handler.menu.open()
 
     def blit(self):
         super().blit()
