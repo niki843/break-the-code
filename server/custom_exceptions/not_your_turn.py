@@ -1,8 +1,9 @@
-class NotYourTurn(Exception):
-    def __init__(self, player_name, message="{} it's not your turn"):
-        self.player_name = player_name
-        self.message = message
-        super().__init__(self.message.format(self.player_name))
+from server.custom_exceptions.GameExcpetion import GameException
 
-    def __str__(self):
-        return self.message.format(self.player_name)
+
+class NotYourTurnException(GameException):
+    MESSAGE = "It's not your turn"
+    ERROR_TYPE = "not_your_turn"
+
+    def __init__(self, player_id, message=MESSAGE, error_type=ERROR_TYPE):
+        super().__init__(player_id, message, error_type)
