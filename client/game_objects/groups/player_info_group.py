@@ -155,3 +155,6 @@ class PlayerInfoGroup:
             "user3_1.png",
             "user4_1.png",
         ]
+
+    def get_host(self):
+        return self.player_ids[0], self.player_name_tiles[0].original_text

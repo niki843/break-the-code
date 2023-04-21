@@ -20,7 +20,6 @@ class JoinGame(GameWindow):
 
         self.game_info_tile = None
         self.game_info_box = None
-        self.game_sessions_loop = None
 
         self.game_session_tiles = OrderedDict()
         self.clicked_game_session_tile = None
@@ -28,11 +27,6 @@ class JoinGame(GameWindow):
         self.game_session_group = None
 
         self.build()
-
-    async def call_get_game_sessions(self):
-        while True:
-            client.server_communication_manager.get_current_game()
-            await asyncio.sleep(5)
 
     def build(self):
         self.build_clear_background()
@@ -146,40 +140,45 @@ class JoinGame(GameWindow):
         self.tiles_group.add(self.game_session_group.slider.slider_handle)
 
     def update_game_sessions(self, game_sessions, **kwargs):
-        removed_game_sessions = self.game_session_group.game_sessions_by_id.copy()
         for game_session_id, game_session in game_sessions.items():
-            if not self.game_session_group.tile_exists(game_session_id):
-                game_session = self.game_session_group.add_game_session(
-                    active_players=game_session.get("connected_players"),
-                    player_id_usernames_map=game_session.get("player_id_name_map"),
-                    game_id=game_session_id,
-                    game_session_name=game_session.get("room_name"),
-                )
-                game_session.priority = 1
-                continue
-            removed_game_sessions.pop(game_session_id)
-            self.game_session_group.update_players(
-                game_session_id, game_session.get("player_id_name_map")
+            game_session = self.game_session_group.add_game_session(
+                active_players=game_session.get("connected_players"),
+                player_id_usernames_map=game_session.get("player_id_name_map"),
+                game_id=game_session_id,
+                game_session_name=game_session.get("room_name"),
             )
-
-            # Refresh players if the count is not the same and the game_session tile is clicked
-            if (
-                self.clicked_game_session_tile
-                and game_session_id == self.clicked_game_session_tile.game_session_id
-            ):
-                self.player_info_group.clear_players()
-                for (player_id, player_name) in game_session.get(
-                    "player_id_name_map"
-                ).items():
-                    self.player_info_group.add_player_tile(player_id, player_name)
-
-        for removed_game_session_id in removed_game_sessions.keys():
-            self.tiles_group.remove(
-                self.game_session_group.game_sessions_by_id.get(removed_game_session_id)
-            )
-            self.game_session_group.delete_game_session(removed_game_session_id)
-
+            game_session.priority = 1
         self.tiles_group.add(self.game_session_group.shown_game_sessions)
+
+    def add_game_session_id(self, game_session_id, game_session_name, host_id, host_name, **kwargs):
+        game_session = self.game_session_group.add_game_session(
+            active_players=1,
+            player_id_usernames_map={host_id: host_name},
+            game_id=game_session_id,
+            game_session_name=game_session_name,
+        )
+        game_session.priority = 1
+        self.tiles_group.add(self.game_session_group.shown_game_sessions)
+
+    def remove_game_session(self, game_session_id, **kwargs):
+        self.tiles_group.remove(
+            self.game_session_group.game_sessions_by_id.get(game_session_id)
+        )
+        self.game_session_group.delete_game_session(game_session_id)
+        self.tiles_group.add(self.game_session_group.shown_game_sessions)
+
+    def add_player(self, game_session_id, player_id, player_name, **kwargs):
+        if self.clicked_game_session_tile.game_session_id == game_session_id:
+            self.player_info_group.add_player_tile(player_id, player_name)
+
+        self.game_session_group.add_player(game_session_id, player_id, player_name)
+
+    def remove_player(self, game_session_id, player_id, **kwargs):
+        if self.clicked_game_session_tile.game_session_id == game_session_id:
+            player_name = self.player_info_group.get_player_name_id_map().get(player_id)
+            self.player_info_group.remove_player(player_name)
+
+        self.game_session_group.remove_player(game_session_id, player_id)
 
     def set_game_sessions_group_size(self):
         self.game_session_group.resize()
@@ -223,7 +222,7 @@ class JoinGame(GameWindow):
 
     def open(self):
         super().open()
-        self.game_sessions_loop = client.LOOP.create_task(self.call_get_game_sessions())
+        client.server_communication_manager.get_current_game()
 
     def close(self):
         if self.clicked_game_session_tile:
@@ -232,9 +231,6 @@ class JoinGame(GameWindow):
 
         for game_session in self.game_session_group.game_sessions:
             self.tiles_group.remove(game_session)
-        self.game_session_group.clear()
-        if not self.game_sessions_loop.cancelled():
-            self.game_sessions_loop.cancel()
 
     def activate_tile(self, tile, event):
         match event.button:
@@ -271,20 +267,6 @@ class JoinGame(GameWindow):
                     not self.clicked_game_session_tile
                     or self.clicked_game_session_tile.active_players >= 4
                 ):
-                    return
-
-                # One last call to server to update the game session players
-                self.event_handler.get_game_sessions()
-
-                # Make sure that the game is actually there
-                if (
-                    self.clicked_game_session_tile
-                    not in self.game_session_group.game_sessions
-                ):
-                    self.reset_selected_game_session()
-                    return
-
-                if self.clicked_game_session_tile.active_players >= 4:
                     return
 
                 # Keeping it as a different variable because it will get reset when we call the close function
