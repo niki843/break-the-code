@@ -242,7 +242,7 @@ async def handle_user_input(player_id, websocket, game_session):
                     return
 
                 game_session.player_not_reconnect_broadcast(player_id)
-                game_session.get_current_player().is_eliminated = True
+                game_session.get_player_by_id(player_id).is_eliminated = True
                 if game_session.get_current_player().get_id() == player_id:
                     game_session.next_player()
                 return
