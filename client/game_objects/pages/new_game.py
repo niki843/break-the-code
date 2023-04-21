@@ -294,8 +294,8 @@ class NewGame(GameWindow):
         next_player_id = self.player_info_group.player_ids.index(self.player_on_hand_id) + 1 - len(self.player_info_group.player_ids)
         self.player_on_hand_id = self.player_info_group.player_ids[next_player_id]
 
-    def set_player_disconnected(self, played_id, **kwargs):
-        print(f"Player disconnected {played_id}")
+    def set_player_disconnected(self, player_id, **kwargs):
+        print(f"Player disconnected {player_id}")
 
     def can_player_use_server_actions(self):
         if (

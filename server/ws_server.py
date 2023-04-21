@@ -195,8 +195,8 @@ async def handle_user_input(player_id, websocket, game_session):
                 if GAME_SESSIONS.get(game_session.id):
                     broadcast_message(
                         CLIENT_JOIN_GAME_QUEUE,
-                        message_type="game_session_closed",
-                        message="All players disconnected deleting game session",
+                        message_type=GameSession.GAME_SESSION_CLOSED_MESSAGE_TYPE,
+                        message=GameSession.GAME_SESSION_CLOSED_WHEN_PENDING_MESSAGE,
                         game_session_id=game_session.id,
                         player_id=player_id
                     )

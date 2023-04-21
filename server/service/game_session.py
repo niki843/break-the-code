@@ -12,6 +12,9 @@ from server.utils.validate import is_valid_uuid
 
 
 class GameSession:
+    GAME_SESSION_CLOSED_MESSAGE_TYPE = "game_session_closed"
+    GAME_SESSION_CLOSED_WHEN_PENDING_MESSAGE = "All players disconnected deleting game session"
+
     def __init__(self, session_id: str, player_id: str, player_name: str, websocket, room_name):
         if not is_valid_uuid(player_id):
             raise custom_exceptions.InvalidPlayerIdException(player_id)

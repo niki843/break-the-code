@@ -20,6 +20,7 @@ async def send_message(message):
 class ServerCommunicationManager(Singleton):
 
     GET_CURRENT_GAMES_MESSAGE = '{"type": "get_current_games"}'
+    EXIT_GET_CURRENT_GAMES_STATE = '{"type": "exit_get_current_games"}'
     CLOSE_CONNECTION_MESSAGE = '{"type": "close_connection"}'
     EXIT_GAME = '{"type": "exit_game"}'
     START_GAME = '{"type": "start_game"}'
@@ -37,6 +38,9 @@ class ServerCommunicationManager(Singleton):
 
     def get_current_game(self):
         client.LOOP.create_task(send_message(self.GET_CURRENT_GAMES_MESSAGE))
+
+    def exit_get_current_games_state(self):
+        client.LOOP.create_task(send_message(self.EXIT_GET_CURRENT_GAMES_STATE))
 
     def close_connection(self):
         client.LOOP.create_task(send_message(self.CLOSE_CONNECTION_MESSAGE))

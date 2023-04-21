@@ -140,6 +140,7 @@ class JoinGame(GameWindow):
         self.tiles_group.add(self.game_session_group.slider.slider_handle)
 
     def update_game_sessions(self, game_sessions, **kwargs):
+        self.game_session_group.clear()
         for game_session_id, game_session in game_sessions.items():
             game_session = self.game_session_group.add_game_session(
                 active_players=game_session.get("connected_players"),
@@ -225,6 +226,8 @@ class JoinGame(GameWindow):
         client.server_communication_manager.get_current_game()
 
     def close(self):
+        client.server_communication_manager.exit_get_current_games_state()
+
         if self.clicked_game_session_tile:
             self.clicked_game_session_tile.next_value()
             self.reset_selected_game_session()
