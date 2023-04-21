@@ -3,10 +3,8 @@ import server
 from copy import deepcopy
 from types import SimpleNamespace
 
+from server import custom_exceptions
 from server.cards.card_reader import CardReader
-from server.custom_exceptions.incorrect_amount_of_cards_in_guess import IncorrectAmountOfCardsInGuess
-from server.custom_exceptions.incorrect_card import IncorrectCardPlayed
-from server.custom_exceptions.incorrect_number_card_value import IncorrectNumberCardValue
 from server.utils.enums import Colors, GameTypes, EndGame
 
 
@@ -40,7 +38,7 @@ class GameBuilder:
         if not any(
             condition_card_id == card.id for card in self.__current_condition_cards
         ):
-            raise IncorrectCardPlayed(player.get_id())
+            raise custom_exceptions.CardNotDrawnException(player.get_id())
 
         for card in self.__current_condition_cards:
             if card.id == condition_card_id:
@@ -63,12 +61,12 @@ class GameBuilder:
         if (self.game_type == GameTypes.FOUR_PLAYER and len(player_guess) != 4) or (
             self.game_type == GameTypes.THREE_PLAYER and len(player_guess) != 5
         ):
-            raise IncorrectAmountOfCardsInGuess(player_id)
+            raise custom_exceptions.IncorrectAmountOfCardsInGuessException(player_id)
 
         is_correct_guess = True
         for count, card in enumerate(self.number_cards):
             if len(player_guess[count]) != 2:
-                raise IncorrectNumberCardValue(player_id)
+                raise custom_exceptions.IncorrectNumberCardValueException(player_id)
 
             if (
                 int(player_guess[count][0]) != card.color.value

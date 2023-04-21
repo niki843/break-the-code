@@ -1,12 +1,14 @@
-class IncorrectAmountOfCardsInGuess(Exception):
+from server.custom_exceptions.game_excpetion import GameException
+
+
+class IncorrectAmountOfCardsInGuessException(GameException):
+    MESSAGE = "The cards you tried to guess is not the right amount for the game, 4 for Four players, 5 for Three"
+    ERROR_TYPE = "incorrect_amount_of_cards"
+
     def __init__(
         self,
         player_name,
-        message="{} the cards you tried to guess is not the right amount for the game, 3 for Four players, 4 for Three",
+        message=MESSAGE,
+        error_type=ERROR_TYPE
     ):
-        self.player_name = player_name
-        self.message = message
-        super().__init__(self.message.format(self.player_name))
-
-    def __str__(self):
-        return self.message.format(self.player_name)
+        super().__init__(player_name, message, error_type)

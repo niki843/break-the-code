@@ -2,14 +2,10 @@ import json
 
 import websockets
 import copy
+import server
 
-from server import CARDS_REQUIRING_USER_INPUT_MAP
+from server import custom_exceptions
 from server.entity.player import Player
-from server.custom_exceptions.incorrect_card_number_input import IncorrectCardNumberInput
-from server.custom_exceptions.invalid_id import InvalidPlayerId
-from server.custom_exceptions.not_your_turn import NotYourTurn
-from server.custom_exceptions.session_full import SessionFull
-from server.custom_exceptions.session_in_progress import SessionInProgress
 from server.utils.game_builder import GameBuilder
 from server.utils.enums import GameState, EndGame, PlayerStatus
 from server.utils.validate import is_valid_uuid
@@ -18,7 +14,7 @@ from server.utils.validate import is_valid_uuid
 class GameSession:
     def __init__(self, session_id: str, player_id: str, player_name: str, websocket, room_name):
         if not is_valid_uuid(player_id):
-            raise InvalidPlayerId(player_id)
+            raise custom_exceptions.InvalidPlayerIdException(player_id)
 
         self.id = session_id
         self.room_name = room_name
@@ -51,14 +47,14 @@ class GameSession:
             return
 
         if self.__state != GameState.PENDING:
-            raise SessionInProgress(self.id)
+            raise custom_exceptions.SessionInProgress(self.id)
 
         # Check if game session is full
         if len(self.__connected_players.keys()) > 3:
-            raise SessionFull(self.id)
+            raise custom_exceptions.SessionFullException(self.id)
 
         if not is_valid_uuid(player_id):
-            raise InvalidPlayerId(player_id)
+            raise custom_exceptions.InvalidPlayerIdException(player_id)
 
         player = Player(player_id, name=player_name)
 
@@ -109,11 +105,11 @@ class GameSession:
         self.validate_current_player(player_id)
 
         if (
-            condition_card_id in CARDS_REQUIRING_USER_INPUT_MAP.keys()
+            condition_card_id in server.CARDS_REQUIRING_USER_INPUT_MAP.keys()
             and card_number_choice
-            not in CARDS_REQUIRING_USER_INPUT_MAP[condition_card_id]
+            not in server.CARDS_REQUIRING_USER_INPUT_MAP[condition_card_id]
         ):
-            raise IncorrectCardNumberInput(self.get_player_name_by_id(player_id))
+            raise custom_exceptions.IncorrectConditionCardAdditionalInputException(player_id)
 
         card, new_card, end_game = self.__game_board.play_condition_card(
             self.__connected_players[player_id], condition_card_id
@@ -232,7 +228,7 @@ class GameSession:
 
     def validate_current_player(self, player_id):
         if player_id != self.__current_player_at_hand_id:
-            raise NotYourTurn(player_id)
+            raise custom_exceptions.NotYourTurnException(player_id)
 
     def end_game_and_send_messages(self, player=None):
         self.__state = GameState.END

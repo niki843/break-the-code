@@ -1,5 +1,5 @@
 import server
-from server.custom_exceptions.player_cards_missing import PlayerCardsMissingException
+from server import custom_exceptions
 from server.utils.enums import Colors
 
 
@@ -247,7 +247,7 @@ def get_sum_for_color(player, color):
 
 def check_player_has_cards(player):
     if not player.get_cards():
-        raise PlayerCardsMissingException(player.get_name())
+        raise custom_exceptions.PlayerCardsMissingException(player.get_name())
 
 
 CARD_ID_TO_CONDITION_MAP = {

@@ -1,29 +1,14 @@
-#!/usr/bin/env python
-
 import asyncio
 from json import JSONDecodeError
 
 import websockets
 import json
 import uuid
+import server
+import custom_exceptions
 
 from websockets.exceptions import ConnectionClosed
-
-from server.custom_exceptions.incorrect_amount_of_cards_in_guess import (
-    IncorrectAmountOfCardsInGuess,
-)
-from server.custom_exceptions.incorrect_card import IncorrectCardPlayed
-from server.custom_exceptions.incorrect_card_number_input import (
-    IncorrectCardNumberInput,
-)
-from server.custom_exceptions.incorrect_number_card_value import (
-    IncorrectNumberCardValue,
-)
-from server.custom_exceptions.not_your_turn import NotYourTurn
-from server.custom_exceptions.player_left_the_game_exception import PlayerLeftTheGameException
 from server.service.game_session import GameSession
-from server.custom_exceptions.invalid_id import InvalidPlayerId
-from server.custom_exceptions.session_full import SessionFull
 
 from server.utils.enums import GameState, PlayerStatus
 
@@ -33,6 +18,10 @@ GAME_SESSIONS = {}
 
 # Can be used to send message to all players
 CURRENT_WEBSOCKET_CONNECTIONS = []
+
+# Waiting for join_game clients
+CLIENT_JOIN_GAME_QUEUE = []
+
 
 # This will keep the player id of disconnected players
 # mapped to game session ids
@@ -51,20 +40,20 @@ async def create_game(websocket, player_id, player_name, room_name):
             websocket=websocket,
             room_name=room_name,
         )
-    except InvalidPlayerId:
+    except custom_exceptions.InvalidPlayerIdException as ex:
         await send_message(
             websocket,
-            message_type="error",
-            message="The player id that was provided is not valid",
-            error_type="player_id_not_valid",
+            message_type=ex.name,
+            message=ex.message,
+            error_type=ex.error_type,
         )
 
     GAME_SESSIONS[started_game_session_id] = current_game_session
 
     await send_message(
         websocket,
-        message_type="game_created",
-        message="Successfully created a new game session.",
+        message_type=server.GAME_CREATED_MESSAGE_TYPE,
+        message=server.GAME_SESSION_CREATED_MESSAGE,
         game_session_id=started_game_session_id,
     )
 
@@ -75,32 +64,38 @@ async def join_game(websocket, game_session_id, player_id, player_name):
     if game_session_id not in GAME_SESSIONS.keys():
         await send_message(
             websocket,
-            message_type="error",
-            message="This game session could not be found!",
-            error_type="session_not_found",
+            message_type=server.ERROR_MESSAGE_TYPE,
+            message=server.GAME_SESSION_NOT_FOUND_MESSAGE,
+            error_type=server.ERROR_TYPE_SESSION_NOT_FOUND,
         )
 
     current_game_session = GAME_SESSIONS[game_session_id]
 
     try:
         await current_game_session.join_player(player_id, player_name, websocket)
-    except SessionFull:
+    except custom_exceptions.SessionFullException as ex:
         await send_message(
             websocket,
-            message_type="error",
-            message="The game session is full",
-            error_type="session_full",
+            message_type=ex.name,
+            message=ex.message,
+            error_type=ex.error_type,
         )
-    except InvalidPlayerId:
+    except custom_exceptions.InvalidPlayerIdException as ex:
         await send_message(
             websocket,
-            message_type="error",
-            message="The player id that was provided is not valid",
-            error_type="player_id_not_valid",
+            message_type=ex.name,
+            message=ex.message,
+            error_type=ex.error_type,
         )
 
     # Notify all players of new player joining
     await current_game_session.send_joined_message(player_id, player_name)
+    await websockets.broadcast(
+        CLIENT_JOIN_GAME_QUEUE,
+        message_type=server.PLAYER_JOINED_MESSAGE_TYPE,
+        message=server.PLAYER_JOINED_MESSAGE,
+        game_session_id=game_session_id
+    )
 
     await handle_user_input(player_id, websocket, current_game_session)
 
@@ -127,13 +122,13 @@ async def handle_user_input(player_id, websocket, game_session):
                 continue
 
             if msg_type == "exit_game":
-                raise PlayerLeftTheGameException(player_id)
+                raise custom_exceptions.PlayerLeftTheGameException(player_id)
 
             if game_session.get_player_by_id(player_id).is_eliminated:
                 await send_message(
                     websocket,
-                    message_type="player_eliminated",
-                    message="You are eliminated and can't play anymore",
+                    message_type=server.PLAYER_ELIMINATED_MESSAGE_TYPE,
+                    message=server.PLAYER_ELIMINATED_MESSAGE,
                 )
                 continue
 
@@ -170,8 +165,8 @@ async def handle_user_input(player_id, websocket, game_session):
             else:
                 await send_message(
                     websocket=websocket,
-                    message_type="incorrect_input",
-                    message=f"Incorrect input type for the state {msg_type}",
+                    message_type=server.INCORRECT_INPUT_MESSAGE_TYPE,
+                    message=server.INCORRECT_TYPE_MESSAGE,
                 )
 
             # end the game session and delete it from list
@@ -179,7 +174,7 @@ async def handle_user_input(player_id, websocket, game_session):
                 GAME_SESSIONS.pop(game_session.id, None)
                 return
 
-        except (ConnectionClosed, PlayerLeftTheGameException) as e:
+        except (ConnectionClosed, custom_exceptions.PlayerLeftTheGameException) as e:
             # If the game has ended or all players are disconnected, delete the game session from the dict
             if (
                 game_session.get_state() == GameState.END
@@ -205,7 +200,7 @@ async def handle_user_input(player_id, websocket, game_session):
                 game_session.remove_player(player_id)
                 return
 
-            if not isinstance(e, PlayerLeftTheGameException):
+            if not isinstance(e, custom_exceptions.PlayerLeftTheGameException):
                 print(f"Waiting 30 seconds for player {player_id} to reconnect.")
                 await asyncio.sleep(30)
 
@@ -243,25 +238,25 @@ async def validate_and_start_game(websocket, player_id, game_session):
     if not player_id == game_session.get_host().id:
         await send_message(
             websocket,
-            message_type="error",
-            message="Only the host can start the game",
-            error_type="insufficient_permissions",
+            message_type=server.ERROR_MESSAGE_TYPE,
+            message=server.ONLY_HOST_CAN_START_MESSAGE,
+            error_type=server.ERROR_TYPE_INSUFFICIENT_PERMISSION,
         )
         return
     if not game_session.get_state() == GameState.PENDING:
         await send_message(
             websocket,
-            message_type="error",
-            message="The game can not be started from the current state",
-            error_type="game_state_error",
+            message_type=server.ERROR_MESSAGE_TYPE,
+            message=server.GAME_STARTING_FROM_WRONG_STATE_MESSAGE,
+            error_type=server.ERROR_TYPE_GAME_STATE,
         )
         return
     if game_session.get_players_count() < 3:
         await send_message(
             websocket,
-            message_type="error",
-            message="The game can not be started with less than 3 players",
-            error_type="game_state_error",
+            message_type=server.ERROR_MESSAGE_TYPE,
+            message=server.NOT_ENOUGH_PLAYERS_MESSAGE,
+            error_type=server.ERROR_TYPE_GAME_STATE,
         )
         return
 
@@ -278,52 +273,52 @@ async def validate_and_play_condition_card_request(
         await game_session.play_condition_card_and_change_player(
             player_id, condition_card_id, card_number_choice
         )
-    except NotYourTurn:
+    except custom_exceptions.NotYourTurnException as ex:
         await send_message(
             websocket,
-            message_type="error",
-            message="It's not your turn!",
-            error_type="not_your_turn",
+            message_type=ex.name,
+            message=ex.message,
+            error_type=ex.error_type,
         )
-    except IncorrectCardPlayed:
+    except custom_exceptions.CardNotDrawnException as ex:
         await send_message(
             websocket,
-            message_type="error",
-            message="The card you requested is not in the current drawn cards",
-            error_type="incorrect_card_player",
+            message_type=ex.name,
+            message=ex.message,
+            error_type=ex.error_type,
         )
-    except IncorrectCardNumberInput:
+    except custom_exceptions.IncorrectConditionCardAdditionalInputException as ex:
         await send_message(
             websocket,
-            message_type="error",
-            message="The card number you provided is not accepted by the card condition",
-            error_type="incorrect_card_number_input",
+            message_type=ex.name,
+            message=ex.message,
+            error_type=ex.error_type,
         )
 
 
 async def validate_and_guess_numbers(websocket, player_id, game_session, player_guess):
     try:
         await game_session.guess_number_and_change_player(player_id, player_guess)
-    except IncorrectNumberCardValue as e:
+    except custom_exceptions.IncorrectNumberCardValueException as ex:
         await send_message(
             websocket,
-            message_type="error",
-            message="Incorrect number of cards",
-            error_type="incorrect_number_card_value",
+            message_type=ex.name,
+            message=ex.message,
+            error_type=ex.error_type,
         )
-    except IncorrectAmountOfCardsInGuess as e:
+    except custom_exceptions.IncorrectAmountOfCardsInGuessException as ex:
         await send_message(
             websocket,
-            message_type="error",
-            message="Incorrect amount of cards",
-            error_type="incorrect_amount_of_cards",
+            message_type=ex.name,
+            message=ex.message,
+            error_type=ex.error_type,
         )
-    except NotYourTurn as e:
+    except custom_exceptions.NotYourTurnException as ex:
         await send_message(
             websocket,
-            message_type="error",
-            message="It's not your turn!",
-            error_type="not_your_turn",
+            message_type=ex.name,
+            message=ex.message,
+            error_type=ex.error_type,
         )
 
 
@@ -343,7 +338,7 @@ async def decode_json_and_send_message(message, websocket):
     except JSONDecodeError:
         await send_message(
             websocket,
-            message_type="error",
+            message_type=server.ERROR_MESSAGE_TYPE,
             message="The json you sent is not in the correct format!",
             error_type="incorrect_json",
         )
@@ -364,6 +359,7 @@ async def handler(websocket):
         event_msg_type = event_msg.get("type")
 
         if event_msg_type == "get_current_games":
+            CLIENT_JOIN_GAME_QUEUE.append(websocket)
             game_sessions = {}
             for game_session in GAME_SESSIONS.values():
                 if game_session.get_state() == GameState.PENDING:
@@ -382,6 +378,7 @@ async def handler(websocket):
             continue
 
         if event_msg and event_msg_type == "join_game":
+            CLIENT_JOIN_GAME_QUEUE.remove(websocket)
             print("JOINING GAME")
             await join_game(
                 websocket,
@@ -392,6 +389,7 @@ async def handler(websocket):
             continue
 
         if event_msg and event_msg_type == "new_game":
+            CLIENT_JOIN_GAME_QUEUE.remove(websocket)
             print("NEW GAME CREATION")
             await create_game(
                 websocket, event_msg.get("player_id"), event_msg.get("player_name"), event_msg.get("room_name"),
@@ -399,6 +397,7 @@ async def handler(websocket):
             continue
 
         if event_msg and event_msg_type == "close_connection":
+            CLIENT_JOIN_GAME_QUEUE.remove(websocket)
             await send_message_and_close_connection(websocket)
             return
 

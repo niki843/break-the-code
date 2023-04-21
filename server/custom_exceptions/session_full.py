@@ -1,5 +1,9 @@
-class SessionFull(Exception):
-    def __init__(self, session_id, message="Session with id `{}` is full"):
-        self.session_id = session_id
-        self.message = message
-        super().__init__(self.message.format(self.session_id))
+from server.custom_exceptions.game_excpetion import GameException
+
+
+class SessionFullException(GameException):
+    MESSAGE = "The game session is full"
+    ERROR_TYPE = "session_full"
+
+    def __init__(self, session_id, message=MESSAGE, error_type=ERROR_TYPE):
+        super().__init__(session_id, message, error_type)
