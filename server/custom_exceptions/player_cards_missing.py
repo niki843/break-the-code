@@ -1,7 +1,7 @@
-from server.custom_exceptions import GameExcpetion
+from server.custom_exceptions.game_excpetion import GameException
 
 
-class PlayerCardsMissingException(GameExcpetion):
+class PlayerCardsMissingException(GameException):
     MESSAGE = "{} hasn't got his cards loaded"
     ERROR_TYPE = "player_cards_missing"
 

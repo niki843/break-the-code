@@ -1,4 +1,4 @@
-from server.custom_exceptions.GameExcpetion import GameException
+from server.custom_exceptions.game_excpetion import GameException
 
 
 class NotYourTurnException(GameException):
