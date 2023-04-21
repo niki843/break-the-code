@@ -100,8 +100,8 @@ class Lobby(GameWindow):
             self.game_session_name = kwargs.get("game_session_name")
 
             client.state_manager.set_host(
-                list(self.players_id_username_map.values())[0],
                 list(self.players_id_username_map.keys())[0],
+                list(self.players_id_username_map.values())[0],
             )
 
             if not self.game_session_id:
@@ -123,7 +123,7 @@ class Lobby(GameWindow):
         self.players_id_username_map[player_id] = player_name
         self.player_info_group.add_player_tile(player_id, player_name)
 
-    def update_game_session_id(self, game_session_id, **kwargs):
+    def add_game_session_id(self, game_session_id, **kwargs):
         self.game_session_id = game_session_id
 
     def set_player_info_group(self, player_info_group):

@@ -204,6 +204,12 @@ class GameSessionsGroup(Tile):
         self.game_sessions_by_id.get(game_session_id).update_players(players)
         self.update_players_count(game_session_id, len(players.keys()))
 
+    def remove_player(self, game_session_id, player_id):
+        self.game_sessions_by_id.get(game_session_id).remove_player(player_id)
+
+    def add_player(self, game_session_id, player_id, player_name):
+        self.game_sessions_by_id.get(game_session_id).add_player(player_id, player_name)
+
     def blit(self):
         self.screen.blit(self.image, self.rect)
         for tile in self.shown_game_sessions:

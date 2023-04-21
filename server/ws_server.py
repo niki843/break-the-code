@@ -8,6 +8,8 @@ import server
 import custom_exceptions
 
 from websockets.exceptions import ConnectionClosed
+
+from server.custom_exceptions.game_excpetion import GameException
 from server.service.game_session import GameSession
 
 from server.utils.enums import GameState, PlayerStatus
@@ -54,7 +56,16 @@ async def create_game(websocket, player_id, player_name, room_name):
         websocket,
         message_type=server.GAME_CREATED_MESSAGE_TYPE,
         message=server.GAME_SESSION_CREATED_MESSAGE,
+        game_session_id=started_game_session_id
+    )
+    broadcast_message(
+        CLIENT_JOIN_GAME_QUEUE,
+        message_type=server.GAME_CREATED_MESSAGE_TYPE,
+        message=server.GAME_SESSION_CREATED_MESSAGE,
         game_session_id=started_game_session_id,
+        game_session_name=room_name,
+        host_id=player_id,
+        host_name=player_name
     )
 
     await handle_user_input(player_id, websocket, current_game_session)
@@ -90,11 +101,13 @@ async def join_game(websocket, game_session_id, player_id, player_name):
 
     # Notify all players of new player joining
     await current_game_session.send_joined_message(player_id, player_name)
-    await websockets.broadcast(
+    broadcast_message(
         CLIENT_JOIN_GAME_QUEUE,
         message_type=server.PLAYER_JOINED_MESSAGE_TYPE,
         message=server.PLAYER_JOINED_MESSAGE,
-        game_session_id=game_session_id
+        game_session_id=game_session_id,
+        player_id=player_id,
+        player_name=player_name,
     )
 
     await handle_user_input(player_id, websocket, current_game_session)
@@ -120,8 +133,7 @@ async def handle_user_input(player_id, websocket, game_session):
             if msg_type == "close_connection":
                 await send_message_and_close_connection(websocket)
                 continue
-
-            if msg_type == "exit_game":
+            elif msg_type == "exit_game":
                 raise custom_exceptions.PlayerLeftTheGameException(player_id)
 
             if game_session.get_player_by_id(player_id).is_eliminated:
@@ -181,6 +193,13 @@ async def handle_user_input(player_id, websocket, game_session):
                 or game_session.are_all_players_disconnected()
             ):
                 if GAME_SESSIONS.get(game_session.id):
+                    broadcast_message(
+                        CLIENT_JOIN_GAME_QUEUE,
+                        message_type="game_session_closed",
+                        message="All players disconnected deleting game session",
+                        game_session_id=game_session.id,
+                        player_id=player_id
+                    )
                     del GAME_SESSIONS[game_session.id]
                 return
 
@@ -198,6 +217,14 @@ async def handle_user_input(player_id, websocket, game_session):
             # If the game has not started we don't need to wait for re-connection
             if game_session.get_state() != GameState.IN_PROGRESS:
                 game_session.remove_player(player_id)
+                if not game_session.get_state() in (GameState.END, GameState.END_ALL_CARDS_PLAYED):
+                    broadcast_message(
+                        CLIENT_JOIN_GAME_QUEUE,
+                        message_type="player_removed",
+                        message="Player removed",
+                        game_session_id=game_session.id,
+                        player_id=player_id,
+                    )
                 return
 
             if not isinstance(e, custom_exceptions.PlayerLeftTheGameException):
@@ -232,6 +259,18 @@ async def send_message(websocket, message_type, message, **kwargs):
     }
     event.update(kwargs)
     await websocket.send(json.dumps(event))
+
+
+def broadcast_message(websocket_connections, message_type, message, **kwargs):
+    if not websocket_connections:
+        return
+
+    event = {
+        "type": message_type,
+        "message": message,
+    }
+    event.update(kwargs)
+    websockets.broadcast(websocket_connections, json.dumps(event))
 
 
 async def validate_and_start_game(websocket, player_id, game_session):
@@ -325,8 +364,8 @@ async def validate_and_guess_numbers(websocket, player_id, game_session, player_
 async def send_message_and_close_connection(websocket):
     await send_message(
         websocket,
-        message_type="connection_closed",
-        message="Closing the current connection",
+        message_type=server.CONNECTION_CLOSED_MESSAGE_TYPE,
+        message=server.CONNECTION_CLOSED_MESSAGE,
     )
     await websocket.close()
     print("CLOSED CONNECTION")
@@ -338,12 +377,20 @@ async def decode_json_and_send_message(message, websocket):
     except JSONDecodeError:
         await send_message(
             websocket,
-            message_type=server.ERROR_MESSAGE_TYPE,
-            message="The json you sent is not in the correct format!",
-            error_type="incorrect_json",
+            message_type=GameException.NAME,
+            message=server.JSON_DECODE_ERROR_MESSAGE,
+            error_type=server.ERROR_TYPE_INCORRECT_JSON_FORMAT,
         )
         return
     return event_msg
+
+
+def remove_player_from_join_game_queue(websocket):
+    # Remove the player from the join game queue
+    try:
+        CLIENT_JOIN_GAME_QUEUE.remove(websocket)
+    except ValueError:
+        pass
 
 
 # Handles all new incoming requests and distributes to appropriate functions
@@ -358,48 +405,51 @@ async def handler(websocket):
 
         event_msg_type = event_msg.get("type")
 
-        if event_msg_type == "get_current_games":
-            CLIENT_JOIN_GAME_QUEUE.append(websocket)
-            game_sessions = {}
-            for game_session in GAME_SESSIONS.values():
-                if game_session.get_state() == GameState.PENDING:
-                    game_sessions[game_session.id] = {
-                                "room_name": game_session.get_room_name(),
-                                "connected_players": game_session.get_players_count(),
-                                "player_id_name_map": game_session.get_player_id_name_map()
-                            }
-            print("SENDING OUT GAME SESSIONS")
-            await send_message(
-                websocket,
-                "send_game_sessions",
-                "Sending out game sessions",
-                game_sessions=game_sessions,
-            )
-            continue
+        match event_msg_type:
+            case "get_current_games":
+                # Add player to join_game_queue and send all updates until he joins a game
+                CLIENT_JOIN_GAME_QUEUE.append(websocket)
 
-        if event_msg and event_msg_type == "join_game":
-            CLIENT_JOIN_GAME_QUEUE.remove(websocket)
-            print("JOINING GAME")
-            await join_game(
-                websocket,
-                event_msg.get("game_session_id"),
-                event_msg.get("player_id"),
-                event_msg.get("player_name"),
-            )
-            continue
-
-        if event_msg and event_msg_type == "new_game":
-            CLIENT_JOIN_GAME_QUEUE.remove(websocket)
-            print("NEW GAME CREATION")
-            await create_game(
-                websocket, event_msg.get("player_id"), event_msg.get("player_name"), event_msg.get("room_name"),
-            )
-            continue
-
-        if event_msg and event_msg_type == "close_connection":
-            CLIENT_JOIN_GAME_QUEUE.remove(websocket)
-            await send_message_and_close_connection(websocket)
-            return
+                # Send all the current games to the player
+                game_sessions = {}
+                for game_session in GAME_SESSIONS.values():
+                    if game_session.get_state() == GameState.PENDING:
+                        game_sessions[game_session.id] = {
+                                    "room_name": game_session.get_room_name(),
+                                    "connected_players": game_session.get_players_count(),
+                                    "player_id_name_map": game_session.get_player_id_name_map()
+                                }
+                print("SENDING OUT GAME SESSIONS")
+                await send_message(
+                    websocket,
+                    "send_game_sessions",
+                    "Sending out game sessions",
+                    game_sessions=game_sessions,
+                )
+                continue
+            case "exit_get_current_games":
+                remove_player_from_join_game_queue(websocket)
+            case "join_game":
+                remove_player_from_join_game_queue(websocket)
+                print("JOINING GAME")
+                await join_game(
+                    websocket,
+                    event_msg.get("game_session_id"),
+                    event_msg.get("player_id"),
+                    event_msg.get("player_name"),
+                )
+                continue
+            case "new_game":
+                remove_player_from_join_game_queue(websocket)
+                print("NEW GAME CREATION")
+                await create_game(
+                    websocket, event_msg.get("player_id"), event_msg.get("player_name"), event_msg.get("room_name"),
+                )
+                continue
+            case "close_connection":
+                remove_player_from_join_game_queue(websocket)
+                await send_message_and_close_connection(websocket)
+                return
 
 
 async def main():

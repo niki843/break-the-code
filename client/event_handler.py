@@ -14,7 +14,7 @@ from client.utils.singelton import Singleton
 REQUEST_TYPE_WINDOW_FUNCTION_MAP = {
     "send_game_sessions": "update_game_sessions",
     "player_joined": "add_player",
-    "game_created": "update_game_session_id",
+    "game_created": "add_game_session_id",
     "host_disconnected": "replace_host",
     "player_removed": "remove_player",
     "start_game": "start_game",
@@ -25,6 +25,7 @@ REQUEST_TYPE_WINDOW_FUNCTION_MAP = {
     "end_game": "show_player_won",
     "end_game_no_winners": "show_end_game_no_winners",
     "player_disconnected": "set_player_disconnected",
+    "game_session_closed": "remove_game_session"
 }
 
 
@@ -139,27 +140,6 @@ class EventHandler(Singleton):
                     mouse_clicked = False
             self.current_window.blit()
             self.current_window.position_and_blit_cursor()
-
-    def get_game_sessions(self):
-        # This functions calls the server one last time to make sure that the players count is correct
-        client_init.server_communication_manager.get_current_game()
-
-        waiting_for_server_response = True
-        while waiting_for_server_response:
-            events = pygame.event.get()
-            pygame.display.flip()
-            for event in events:
-                if event.type == client.EVENT_TYPE:
-                    message = event.message
-                    message_type = message.get("type")
-                    if message_type == "send_game_sessions":
-                        self.current_window.update_game_sessions(
-                            message.get("game_sessions")
-                        )
-                        waiting_for_server_response = False
-            self.current_window.blit()
-            self.current_window.position_and_blit_cursor()
-            common.run_once(LOOP)
 
     def change_window(self, new_window):
         self.current_window = new_window
