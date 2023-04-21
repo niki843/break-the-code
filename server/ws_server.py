@@ -358,48 +358,54 @@ async def handler(websocket):
 
         event_msg_type = event_msg.get("type")
 
-        if event_msg_type == "get_current_games":
-            CLIENT_JOIN_GAME_QUEUE.append(websocket)
-            game_sessions = {}
-            for game_session in GAME_SESSIONS.values():
-                if game_session.get_state() == GameState.PENDING:
-                    game_sessions[game_session.id] = {
-                                "room_name": game_session.get_room_name(),
-                                "connected_players": game_session.get_players_count(),
-                                "player_id_name_map": game_session.get_player_id_name_map()
-                            }
-            print("SENDING OUT GAME SESSIONS")
-            await send_message(
-                websocket,
-                "send_game_sessions",
-                "Sending out game sessions",
-                game_sessions=game_sessions,
-            )
-            continue
+        match event_msg_type:
+            case "get_current_games":
+                # Add player to join_game_queue and send all updates until he joins a game
+                CLIENT_JOIN_GAME_QUEUE.append(websocket)
 
-        if event_msg and event_msg_type == "join_game":
-            CLIENT_JOIN_GAME_QUEUE.remove(websocket)
-            print("JOINING GAME")
-            await join_game(
-                websocket,
-                event_msg.get("game_session_id"),
-                event_msg.get("player_id"),
-                event_msg.get("player_name"),
-            )
-            continue
-
-        if event_msg and event_msg_type == "new_game":
-            CLIENT_JOIN_GAME_QUEUE.remove(websocket)
-            print("NEW GAME CREATION")
-            await create_game(
-                websocket, event_msg.get("player_id"), event_msg.get("player_name"), event_msg.get("room_name"),
-            )
-            continue
-
-        if event_msg and event_msg_type == "close_connection":
-            CLIENT_JOIN_GAME_QUEUE.remove(websocket)
-            await send_message_and_close_connection(websocket)
-            return
+                # Send all the current games to the player
+                game_sessions = {}
+                for game_session in GAME_SESSIONS.values():
+                    if game_session.get_state() == GameState.PENDING:
+                        game_sessions[game_session.id] = {
+                                    "room_name": game_session.get_room_name(),
+                                    "connected_players": game_session.get_players_count(),
+                                    "player_id_name_map": game_session.get_player_id_name_map()
+                                }
+                print("SENDING OUT GAME SESSIONS")
+                await send_message(
+                    websocket,
+                    "send_game_sessions",
+                    "Sending out game sessions",
+                    game_sessions=game_sessions,
+                )
+                continue
+            case "exit_get_current_games":
+                # Remove the player from the join game queue
+                CLIENT_JOIN_GAME_QUEUE.remove(websocket)
+            case "join_game":
+                # Remove the player from the join game queue
+                CLIENT_JOIN_GAME_QUEUE.remove(websocket)
+                print("JOINING GAME")
+                await join_game(
+                    websocket,
+                    event_msg.get("game_session_id"),
+                    event_msg.get("player_id"),
+                    event_msg.get("player_name"),
+                )
+                continue
+            case "new_game":
+                # Remove the player from the join game queue
+                CLIENT_JOIN_GAME_QUEUE.remove(websocket)
+                print("NEW GAME CREATION")
+                await create_game(
+                    websocket, event_msg.get("player_id"), event_msg.get("player_name"), event_msg.get("room_name"),
+                )
+                continue
+            case "close_connection":
+                CLIENT_JOIN_GAME_QUEUE.remove(websocket)
+                await send_message_and_close_connection(websocket)
+                return
 
 
 async def main():
