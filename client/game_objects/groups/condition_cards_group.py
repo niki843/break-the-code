@@ -125,6 +125,11 @@ class ConditionCardsGroup:
 
         if self.old_tile and time.time() - self.old_tile_displayed_time <= 5:
             self.screen.blit(self.old_tile.image, self.old_tile.rect)
+        elif self.old_tile and self.old_tile.rect.left <= client.state_manager.screen_rect.right:
+            self.old_tile.rect.left += 6
+            self.screen.blit(self.old_tile.image, self.old_tile.rect)
+        elif self.old_tile:
+            self.old_tile = None
 
     def resize(self):
         self.center_card.resize()

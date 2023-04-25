@@ -303,6 +303,8 @@ class NewGame(GameWindow):
                 or client.state_manager.player_id != self.player_on_hand_id
         ):
             return False
+        if self.condition_cards_group.old_tile:
+            return False
         return True
 
     def open(self, **kwargs):
