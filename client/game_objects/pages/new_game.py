@@ -37,6 +37,9 @@ class NewGame(GameWindow):
         self.player_notes_button = None
         self.player_notes = None
 
+        self.played_cards_button = None
+        self.played_cards_menu = None
+
         self.player_on_hand_id = None
 
         self.eliminated_player_ids = []
@@ -49,6 +52,8 @@ class NewGame(GameWindow):
 
         self.build_guess_tile()
         self.build_notes_button()
+
+        self.build_played_cards_button()
 
     def resize(self):
         super().resize()
@@ -65,6 +70,8 @@ class NewGame(GameWindow):
         self.set_back_to_menu_size()
 
         self.set_notes_button_size()
+
+        self.set_played_cards_button_size()
 
     def build_draw_pile(self, condition_cards):
         self.condition_cards_group = ConditionCardsGroup(
@@ -264,7 +271,7 @@ class NewGame(GameWindow):
         self.set_notes_button_size()
 
     def set_notes_button_size(self):
-        if not self.player_notes:
+        if not self.player_notes_button:
             return
 
         self.player_notes_button.resize()
@@ -272,6 +279,22 @@ class NewGame(GameWindow):
             client.state_manager.screen.get_width() * 0.08
         )
         self.player_notes_button.rect.bottom = client.state_manager.screen_rect.bottom
+
+    def build_played_cards_button(self):
+        self.played_cards_button = common.load_rotated_right_tile("played_cards_arrow", "played_cards_arrow.png", 3.5, client.state_manager.screen)
+
+        self.tiles_group.add(self.played_cards_button)
+        self.set_played_cards_button_size()
+
+    def set_played_cards_button_size(self):
+        if not self.played_cards_button:
+            return
+
+        self.played_cards_button.resize()
+        self.played_cards_button.rect.top = client.state_manager.screen_rect.top + (
+            client.state_manager.screen.get_width() * 0.01
+        )
+        self.played_cards_button.rect.right = client.state_manager.screen_rect.right
 
     def show_player_eliminated(self, player_id, **kwargs):
         if player_id == client.state_manager.player_id:
@@ -431,3 +454,5 @@ class NewGame(GameWindow):
         self.guess_tiles_popup_group.blit()
 
         client.state_manager.screen.blit(self.player_notes_button.image, self.player_notes_button.rect)
+
+        client.state_manager.screen.blit(self.played_cards_button.image, self.played_cards_button.rect)
