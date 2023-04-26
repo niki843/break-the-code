@@ -34,6 +34,9 @@ class NewGame(GameWindow):
         self.end_game_message = None
         self.back_to_menu_button = None
 
+        self.player_notes_button = None
+        self.player_notes = None
+
         self.player_on_hand_id = None
 
         self.eliminated_player_ids = []
@@ -45,6 +48,7 @@ class NewGame(GameWindow):
         self.tiles_group.add(self.background_image)
 
         self.build_guess_tile()
+        self.build_notes_button()
 
     def resize(self):
         super().resize()
@@ -59,6 +63,8 @@ class NewGame(GameWindow):
 
         self.set_end_game_message_size()
         self.set_back_to_menu_size()
+
+        self.set_notes_button_size()
 
     def build_draw_pile(self, condition_cards):
         self.condition_cards_group = ConditionCardsGroup(
@@ -251,6 +257,22 @@ class NewGame(GameWindow):
         )
         self.back_to_menu_button.rect.centerx = client.state_manager.screen_rect.centerx
 
+    def build_notes_button(self):
+        self.player_notes_button = common.load_tile("notes_arrow", common.get_image("notes_arrow.png"), 10, client.state_manager.screen)
+
+        self.tiles_group.add(self.player_notes_button)
+        self.set_notes_button_size()
+
+    def set_notes_button_size(self):
+        if not self.player_notes:
+            return
+
+        self.player_notes_button.resize()
+        self.player_notes_button.rect.left = client.state_manager.screen_rect.left + (
+            client.state_manager.screen.get_width() * 0.08
+        )
+        self.player_notes_button.rect.bottom = client.state_manager.screen_rect.bottom
+
     def show_player_eliminated(self, player_id, **kwargs):
         if player_id == client.state_manager.player_id:
             client.state_manager.is_player_eliminated = True
@@ -384,9 +406,10 @@ class NewGame(GameWindow):
                     return
                 client.server_communication_manager.guess_cards(cards_guess)
                 self.guess_tiles_popup_group.close(self.tiles_group)
-            case self.back_to_menu_button.name:
-                self.close()
-                self.event_handler.menu.open()
+
+        if self.back_to_menu_button and self.back_to_menu_button.name == tile.name:
+            self.close()
+            self.event_handler.menu.open()
 
     def blit(self):
         super().blit()
@@ -406,3 +429,5 @@ class NewGame(GameWindow):
         client.state_manager.screen.blit(self.guess_button.image, self.guess_button.rect)
 
         self.guess_tiles_popup_group.blit()
+
+        client.state_manager.screen.blit(self.player_notes_button.image, self.player_notes_button.rect)
