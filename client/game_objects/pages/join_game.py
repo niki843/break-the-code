@@ -1,4 +1,3 @@
-import asyncio
 import copy
 from collections import OrderedDict
 
@@ -127,7 +126,7 @@ class JoinGame(GameWindow):
             common.get_image("game_session.png"),
             client.state_manager.screen,
             44,
-            40,
+            38,
             common.get_image("game_session_selected.png"),
             6,
             left,
@@ -169,13 +168,13 @@ class JoinGame(GameWindow):
         self.tiles_group.add(self.game_session_group.shown_game_sessions)
 
     def add_player(self, game_session_id, player_id, player_name, **kwargs):
-        if self.clicked_game_session_tile.game_session_id == game_session_id:
+        if self.clicked_game_session_tile and self.clicked_game_session_tile.game_session_id == game_session_id:
             self.player_info_group.add_player_tile(player_id, player_name)
 
         self.game_session_group.add_player(game_session_id, player_id, player_name)
 
     def remove_player(self, game_session_id, player_id, **kwargs):
-        if self.clicked_game_session_tile.game_session_id == game_session_id:
+        if self.clicked_game_session_tile and self.clicked_game_session_tile.game_session_id == game_session_id:
             player_name = self.player_info_group.get_player_name_id_map().get(player_id)
             self.player_info_group.remove_player(player_name)
 

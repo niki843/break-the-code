@@ -107,6 +107,8 @@ class GameSessionsGroup(Tile):
                 + 1
             )
 
+        game_session.set_active_player_images()
+
         return game_session
 
     def delete_game_session(self, game_session_id):
@@ -213,11 +215,7 @@ class GameSessionsGroup(Tile):
     def blit(self):
         self.screen.blit(self.image, self.rect)
         for tile in self.shown_game_sessions:
-            self.screen.blit(tile.image, tile.rect)
-            self.screen.blit(
-                tile.text_box.text_surface,
-                tile.text_box.text_rect,
-            )
+            tile.blit()
 
         # Only redner slider when there are more than shown game sessions
         if len(self.game_sessions) > self.max_game_sessions_to_display:
