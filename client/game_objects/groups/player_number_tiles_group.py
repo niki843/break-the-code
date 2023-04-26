@@ -101,7 +101,9 @@ class PlayerNumberTilesGroup:
     def update_message(self, card, player_id, matching_cards, card_number_choice):
         player = self.player_id_player_map.get(player_id)
 
-        player.give_condition_card_response(card, matching_cards, card_number_choice)
+        response = player.give_condition_card_response(card, matching_cards, card_number_choice)
+
+        return player.username, response
 
     def give_info_message(self, player_id, message):
         player = self.player_id_player_map.get(player_id)

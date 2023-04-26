@@ -68,9 +68,31 @@ class Tile(sprite.Sprite):
         self.image = pygame.transform.scale(
             self.original_image,
             (
-                int(self.standard_tile_width) + (self.screen.get_width() * common.get_percentage_multiplier_from_percentage(self.tile_addition_width_percent)),
-                int(self.standard_tile_height) + (self.screen.get_height() * common.get_percentage_multiplier_from_percentage(self.tile_addition_height_percent)),
+                int(self.standard_tile_width)
+                + (
+                    self.screen.get_width()
+                    * common.get_percentage_multiplier_from_percentage(
+                        self.tile_addition_width_percent
+                    )
+                ),
+                int(self.standard_tile_height)
+                + (
+                    self.screen.get_height()
+                    * common.get_percentage_multiplier_from_percentage(
+                        self.tile_addition_height_percent
+                    )
+                ),
             ),
         )
 
         self.rect = self.image.get_rect()
+
+    def copy(self):
+        return Tile(
+            self.name,
+            self.original_image,
+            self.screen,
+            self.size_percent,
+            self.tile_addition_width_percent,
+            self.tile_addition_height_percent,
+        )

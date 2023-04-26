@@ -1,3 +1,5 @@
+import copy
+
 import client
 from client.game_objects.cards.card_reader import CardReader
 from client.custom_exceptions.no_such_card_exception import (
@@ -70,6 +72,8 @@ class NewGame(GameWindow):
         self.set_back_to_menu_size()
 
         self.set_notes_button_size()
+
+        self.set_played_cards_popup_size()
 
     def build_draw_pile(self, condition_cards):
         self.condition_cards_group = ConditionCardsGroup(
@@ -161,13 +165,15 @@ class NewGame(GameWindow):
     ):
         played_card = self.remove_played_card(card_id)
 
+        player_name_responses_map = {}
         for result in player_results:
-            self.player_number_tiles_group.update_message(
+            player_name, player_response = self.player_number_tiles_group.update_message(
                 played_card,
                 result.get("player_id"),
                 result.get("matching_cards"),
                 card_number_choice,
             )
+            player_name_responses_map[player_name] = player_response
 
         if not next_card_id:
             self.condition_cards_group.remove_card(
@@ -188,6 +194,8 @@ class NewGame(GameWindow):
         self.condition_cards_group.replace_card(old_card, new_card)
 
         self.tiles_group.add(new_card)
+
+        self.played_cards_group.add_played_card(old_card.copy(), player_name_responses_map)
 
         self.next_player()
 
