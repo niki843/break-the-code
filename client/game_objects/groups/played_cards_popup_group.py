@@ -1,4 +1,5 @@
 import client
+from client.game_objects.tiles.multiline_text_tile import MultilineTextTile
 
 from client.game_objects.tiles.tile import Tile
 from client.utils import common
@@ -20,8 +21,22 @@ class PlayedCardsPopupGroup:
         self.build()
 
     def add_played_card(self, played_card_tile: Tile, player_responses: dict):
+        player_response_tiles = []
+        for name, response in player_responses.items():
+            player_response_tiles.append(
+                MultilineTextTile(
+                    name="player_response",
+                    surface=common.generate_transparent_image(self.background.image.get_width(), self.background.image.get_height() * 0.15),
+                    screen=client.state_manager.screen,
+                    size_percent=32,
+                    text_to_display=f"{name}: {response}",
+                    text_size_percent=5,
+                    start_line=0,
+                )
+            )
+
         self.played_cards_and_player_responses.append(
-            (played_card_tile, player_responses)
+            (played_card_tile, player_response_tiles)
         )
         played_card_tile.rect.centerx = self.background.rect.centerx
 
@@ -29,26 +44,39 @@ class PlayedCardsPopupGroup:
         played_card_tile.resize()
 
         if len(self.played_cards_and_player_responses) > 0:
-            played_card_tile.rect.top = self.played_cards_and_player_responses[-1][0].rect.bottom + (
-                    self.background.image.get_height() * 0.01
-            )
+            played_card_tile.rect.top = self.played_cards_and_player_responses[-1][
+                0
+            ].rect.bottom + (self.background.image.get_height() * 0.01)
         else:
             played_card_tile.rect.top = self.background.rect.top + (
-                    self.background.image.get_height() * 0.01
+                self.background.image.get_height() * 0.01
             )
 
+        self.set_player_responses_size(played_card_tile, player_response_tiles)
+
     def set_played_cards_size(self):
-        top = self.background.rect.top + (
-                self.background.image.get_height() * 0.01
-        )
+        top = self.background.rect.top + (self.background.image.get_height() * 0.01)
         for card, player_responses in self.played_cards_and_player_responses:
             card.resize()
             card.rect.centerx = self.background.rect.centerx
             card.rect.top = top
 
-            top = card.rect.bottom + (
-                    self.background.image.get_height() * 0.01
+            top = self.set_player_responses_size(card, player_responses)
+
+    def set_player_responses_size(self, card_tile, response_tiles):
+        top = card_tile.rect.bottom + (
+            self.background.image.get_height() * 0.01
+        )
+        for response_tile in response_tiles:
+            response_tile.resize()
+            response_tile.rect.centerx = self.background.rect.centerx
+            response_tile.rect.top = top
+            response_tile.center_text()
+
+            top = response_tile.rect.bottom + (
+                self.background.image.get_height() * 0.01
             )
+        return top
 
     def build(self):
         self.build_background()
@@ -112,7 +140,7 @@ class PlayedCardsPopupGroup:
 
         self.played_cards_button.resize()
         self.played_cards_button.rect.top = client.state_manager.screen_rect.top + (
-                client.state_manager.screen.get_width() * 0.01
+            client.state_manager.screen.get_width() * 0.01
         )
         self.played_cards_button.rect.right = self.background.rect.left
 
@@ -125,5 +153,7 @@ class PlayedCardsPopupGroup:
             client.state_manager.screen.blit(
                 self.background.image, self.background.rect
             )
-            for card, _ in self.played_cards_and_player_responses:
+            for card, player_response_tiles in self.played_cards_and_player_responses:
                 client.state_manager.screen.blit(card.image, card.rect)
+                for player_response_tile in player_response_tiles:
+                    player_response_tile.blit()

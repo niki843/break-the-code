@@ -108,7 +108,7 @@ class MultilineTextTile(Tile):
         self.screen.blit(self.image, self.rect)
 
         displayed_surfaces = self.text_surfaces[
-            self.start_line : self.start_line + self.max_lines_to_display
+            self.start_line: self.start_line + self.max_lines_to_display
         ]
         for surface, rect in displayed_surfaces:
             self.screen.blit(surface, rect)

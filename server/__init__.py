@@ -6,6 +6,7 @@ CARD_INDEX_TO_LETTER_MAP = {0: "a", 1: "b", 2: "c", 3: "d", 4: "e"}
 
 CARDS_REQUIRING_USER_INPUT_MAP = {
     1: [8, 9],
+    2: [6, 7],
     16: [1, 2],
     21: [3, 4]
 }
