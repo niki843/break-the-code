@@ -101,14 +101,15 @@ async def join_game(websocket, game_session_id, player_id, player_name):
 
     # Notify all players of new player joining
     await current_game_session.send_joined_message(player_id, player_name)
-    broadcast_message(
-        CLIENT_JOIN_GAME_QUEUE,
-        message_type=server.PLAYER_JOINED_MESSAGE_TYPE,
-        message=server.PLAYER_JOINED_MESSAGE,
-        game_session_id=game_session_id,
-        player_id=player_id,
-        player_name=player_name,
-    )
+    if current_game_session.get_state() == GameState.PENDING:
+        broadcast_message(
+            CLIENT_JOIN_GAME_QUEUE,
+            message_type=server.PLAYER_JOINED_MESSAGE_TYPE,
+            message=server.PLAYER_JOINED_MESSAGE,
+            game_session_id=game_session_id,
+            player_id=player_id,
+            player_name=player_name,
+        )
 
     await handle_user_input(player_id, websocket, current_game_session)
 
