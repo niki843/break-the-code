@@ -5,6 +5,7 @@ from client.custom_exceptions.no_such_card_exception import (
 )
 from client.game_objects.groups.condition_cards_group import ConditionCardsGroup
 from client.game_objects.groups.guess_tiles_popup_group import GuessTilesPopupGroup
+from client.game_objects.groups.played_cards_popup_group import PlayedCardsPopupGroup
 from client.game_objects.groups.player_number_tiles_group import PlayerNumberTilesGroup
 from client.game_objects.pages.game_window import GameWindow
 from client.game_objects.tiles.input_box import InputBox
@@ -37,8 +38,7 @@ class NewGame(GameWindow):
         self.player_notes_button = None
         self.player_notes = None
 
-        self.played_cards_button = None
-        self.played_cards_menu = None
+        self.played_cards_group = None
 
         self.player_on_hand_id = None
 
@@ -53,7 +53,7 @@ class NewGame(GameWindow):
         self.build_guess_tile()
         self.build_notes_button()
 
-        self.build_played_cards_button()
+        self.build_played_cards_popup()
 
     def resize(self):
         super().resize()
@@ -70,8 +70,6 @@ class NewGame(GameWindow):
         self.set_back_to_menu_size()
 
         self.set_notes_button_size()
-
-        self.set_played_cards_button_size()
 
     def build_draw_pile(self, condition_cards):
         self.condition_cards_group = ConditionCardsGroup(
@@ -280,21 +278,14 @@ class NewGame(GameWindow):
         )
         self.player_notes_button.rect.bottom = client.state_manager.screen_rect.bottom
 
-    def build_played_cards_button(self):
-        self.played_cards_button = common.load_rotated_right_tile("played_cards_arrow", "played_cards_arrow.png", 3.5, client.state_manager.screen)
+    def build_played_cards_popup(self):
+        self.played_cards_group = PlayedCardsPopupGroup("played_cards", self.tiles_group)
 
-        self.tiles_group.add(self.played_cards_button)
-        self.set_played_cards_button_size()
+    def set_played_cards_popup_size(self):
+        if not self.played_cards_group:
+            pass
 
-    def set_played_cards_button_size(self):
-        if not self.played_cards_button:
-            return
-
-        self.played_cards_button.resize()
-        self.played_cards_button.rect.top = client.state_manager.screen_rect.top + (
-            client.state_manager.screen.get_width() * 0.01
-        )
-        self.played_cards_button.rect.right = client.state_manager.screen_rect.right
+        self.played_cards_group.resize()
 
     def show_player_eliminated(self, player_id, **kwargs):
         if player_id == client.state_manager.player_id:
@@ -429,6 +420,8 @@ class NewGame(GameWindow):
                     return
                 client.server_communication_manager.guess_cards(cards_guess)
                 self.guess_tiles_popup_group.close(self.tiles_group)
+            case self.played_cards_group.played_cards_button.name:
+                self.played_cards_group.clicked()
 
         if self.back_to_menu_button and self.back_to_menu_button.name == tile.name:
             self.close()
@@ -455,4 +448,4 @@ class NewGame(GameWindow):
 
         client.state_manager.screen.blit(self.player_notes_button.image, self.player_notes_button.rect)
 
-        client.state_manager.screen.blit(self.played_cards_button.image, self.played_cards_button.rect)
+        self.played_cards_group.blit()
