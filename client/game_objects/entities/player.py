@@ -146,7 +146,7 @@ class Player:
         else:
             text = card.negative_condition_message.format()
 
-        text = re.sub("\[\|]", "", text)
+        text = re.sub(r'[\[\]]', "", text)
 
         self.text_bubble_tile.replace_text(text)
         self.text_bubble_tile.center_text()

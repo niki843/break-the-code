@@ -73,7 +73,7 @@ class MultilineTextTile(Tile):
                 if len(current_word) > self.max_characters_per_line:
                     # if it is too big we split it by the maximum chars per line
                     # and set current_word = the second part of the split word
-                    next_word = current_word[self.max_characters_per_line :]
+                    next_word = current_word[self.max_characters_per_line:]
                     current_word = current_word[: self.max_characters_per_line]
                     # finally, we subtract the index by one making sure that in the next iteration we will be
                     # considering i to be the same word_index as before

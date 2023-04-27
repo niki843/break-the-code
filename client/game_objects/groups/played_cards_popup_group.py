@@ -26,12 +26,13 @@ class PlayedCardsPopupGroup:
             player_response_tiles.append(
                 MultilineTextTile(
                     name="player_response",
-                    surface=common.generate_transparent_image(self.background.image.get_width(), self.background.image.get_height() * 0.15),
+                    surface=common.generate_transparent_image(self.background.image.get_width(), self.background.image.get_height() * 0.14),
                     screen=client.state_manager.screen,
                     size_percent=32,
                     text_to_display=f"{name}: {response}",
                     text_size_percent=5,
                     start_line=0,
+                    tile_addition_height_percent=-1
                 )
             )
 
