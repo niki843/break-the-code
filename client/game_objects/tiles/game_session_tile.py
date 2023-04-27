@@ -90,6 +90,14 @@ class GameSessionTile(ToggleTile):
         image_tile.rect.centery = self.rect.centery
         self.player_image_tiles.append(image_tile)
 
+    def center_player_images(self):
+        right = self.rect.right - (self.image.get_width() * 0.01)
+        for tile in self.player_image_tiles:
+            tile.rect.right = right
+            tile.rect.centery = self.rect.centery
+
+            right = tile.rect.left - (self.image.get_width() * 0.01)
+
     def center_text(self):
         self.text_box.text_rect.left = self.rect.left + (self.screen.get_width() * 0.01)
         self.text_box.text_rect.centery = self.rect.centery
@@ -123,3 +131,7 @@ class GameSessionTile(ToggleTile):
         super().resize()
         if hasattr(self, "text_box"):
             self.text_box.resize()
+
+        if hasattr(self, "player_image_tiles"):
+            for tile in self.player_image_tiles:
+                tile.resize()

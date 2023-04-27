@@ -137,12 +137,14 @@ class GameSessionsGroup(Tile):
                 self.game_sessions[i].rect.left = self.first_element_left_location
                 self.game_sessions[i].rect.top = self.first_element_top_location
                 self.game_sessions[i].center_text()
+                self.game_sessions[i].center_player_images()
                 self.shown_game_sessions.append(self.game_sessions[i])
                 continue
 
             self.game_sessions[i].rect.left = self.game_sessions[i - 1].rect.left
             self.game_sessions[i].rect.top = self.game_sessions[i - 1].rect.bottom
             self.game_sessions[i].center_text()
+            self.game_sessions[i].center_player_images()
             self.shown_game_sessions.append(self.game_sessions[i])
 
             # Try to move the last element out of screen to remove collision issues
