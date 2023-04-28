@@ -1,5 +1,6 @@
 import client
 from client.game_objects.tiles.height_resizable_multiline_text_tile import HeightResizableMultilineTextTile
+from client.game_objects.tiles.slider import Slider
 
 from client.game_objects.tiles.tile import Tile
 from client.utils import common
@@ -11,6 +12,8 @@ class PlayedCardsPopupGroup:
         self.played_cards_and_player_responses = []
 
         self.played_cards_button = None
+
+        self.scroll = None
 
         self.background = None
 
@@ -72,11 +75,13 @@ class PlayedCardsPopupGroup:
     def build(self):
         self.build_background()
         self.build_played_cards_button()
+        self.build_scroll()
 
     def resize(self):
         self.set_background_size()
         self.set_played_cards_button_size()
         self.set_played_cards_size()
+        self.set_scroll_size()
 
     def clicked(self):
         self.close() if self.is_open else self.open()
@@ -135,6 +140,33 @@ class PlayedCardsPopupGroup:
         )
         self.played_cards_button.rect.right = self.background.rect.left
 
+    def build_scroll(self):
+        self.scroll = Slider(
+            name="game_sessions_slider",
+            surface=common.get_image("scroll_bar.png"),
+            screen=client.state_manager.screen,
+            size_percent=1,
+            handle_name="game_session_slider_handle",
+            handle_surface=common.get_image("slider_button.png"),
+            handle_size_percent=1.1,
+            delimiters_count=3,
+            handle_position=0,
+            horizontal=False,
+            tile_addition_width_percent=0.2,
+            tile_addition_height_percent=26
+        )
+
+        self.set_scroll_size()
+
+    def set_scroll_size(self):
+        if not self.scroll:
+            return
+
+        self.scroll.resize()
+        self.scroll.rect.right = self.background.rect.right
+        self.scroll.rect.top = self.background.rect.top
+        self.scroll.update_slider_handle_by_position()
+
     def blit(self):
         client.state_manager.screen.blit(
             self.played_cards_button.image, self.played_cards_button.rect
@@ -148,3 +180,5 @@ class PlayedCardsPopupGroup:
                 client.state_manager.screen.blit(card.image, card.rect)
                 for player_response_tile in player_response_tiles:
                     player_response_tile.blit()
+
+            self.scroll.blit()

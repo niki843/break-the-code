@@ -300,23 +300,12 @@ class Settings(GameWindow):
         client.state_manager.screen.blit(
             self.resolution_label_tile.image, self.resolution_label_tile.rect
         )
-        client.state_manager.screen.blit(
-            self.resolution_slider.image, self.resolution_slider.rect
-        )
-        client.state_manager.screen.blit(
-            self.resolution_slider.slider_handle.image,
-            self.resolution_slider.slider_handle.rect,
-        )
+        self.resolution_slider.blit()
 
         client.state_manager.screen.blit(
             self.music_label_tile.image, self.music_label_tile.rect
         )
-        client.state_manager.screen.blit(
-            self.music_slider.image, self.music_slider.rect
-        )
-        client.state_manager.screen.blit(
-            self.music_slider.slider_handle.image, self.music_slider.slider_handle.rect
-        )
+        self.music_slider.blit()
 
         client.state_manager.screen.blit(
             self.username_label.image, self.username_label.rect

@@ -221,10 +221,7 @@ class GameSessionsGroup(Tile):
 
         # Only redner slider when there are more than shown game sessions
         if len(self.game_sessions) > self.max_game_sessions_to_display:
-            self.screen.blit(self.slider.image, self.slider.rect)
-            self.screen.blit(
-                self.slider.slider_handle.image, self.slider.slider_handle.rect
-            )
+            self.slider.blit()
 
     def resize(self):
         super().resize()

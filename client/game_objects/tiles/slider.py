@@ -242,3 +242,9 @@ class Slider(Tile):
         self.slider_percentage = (
             self.actual_percentage[self.handle_position] if self.delimiters >= 2 else 0
         )
+
+    def blit(self):
+        self.screen.blit(self.image, self.rect)
+        self.screen.blit(
+            self.slider_handle.image, self.slider_handle.rect
+        )
