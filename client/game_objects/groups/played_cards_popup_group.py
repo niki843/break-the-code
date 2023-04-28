@@ -90,10 +90,14 @@ class PlayedCardsPopupGroup:
 
         self.is_open = True
 
+        self.tiles_group.add(self.background)
+
         self.resize()
 
     def close(self):
         self.is_open = False
+
+        self.tiles_group.remove(self.background)
 
         self.resize()
 
@@ -104,6 +108,7 @@ class PlayedCardsPopupGroup:
             30.3,
             client.state_manager.screen,
         )
+        self.background.priority = 2
 
         self.set_background_size()
 
@@ -166,6 +171,12 @@ class PlayedCardsPopupGroup:
         self.scroll.rect.right = self.background.rect.right
         self.scroll.rect.top = self.background.rect.top
         self.scroll.update_slider_handle_by_position()
+
+    def scroll_up(self):
+        self.scroll.previous_handle_position()
+
+    def scroll_down(self):
+        self.scroll.next_handle_position()
 
     def blit(self):
         client.state_manager.screen.blit(

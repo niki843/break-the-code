@@ -387,9 +387,9 @@ class NewGame(GameWindow):
             case client.LEFT_BUTTON_CLICK:
                 self.tile_left_button_click_event(tile)
             case client.SCROLL_UP:
-                pass
+                self.tile_scroll_up_event(tile)
             case client.SCROLL_DOWN:
-                pass
+                self.tile_scroll_down_event(tile)
 
     def tile_left_button_click_event(self, tile):
         match tile.name:
@@ -433,6 +433,18 @@ class NewGame(GameWindow):
         if self.back_to_menu_button and self.back_to_menu_button.name == tile.name:
             self.close()
             self.event_handler.menu.open()
+
+    def tile_scroll_up_event(self, tile):
+        match tile.name:
+            case self.played_cards_group.background.name:
+                # Scroll up the played cards group
+                self.played_cards_group.scroll_up()
+
+    def tile_scroll_down_event(self, tile):
+        match tile.name:
+            case self.played_cards_group.background.name:
+                # Scroll down the played cards group
+                self.played_cards_group.scroll_down()
 
     def blit(self):
         super().blit()
