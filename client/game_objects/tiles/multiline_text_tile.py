@@ -92,7 +92,7 @@ class MultilineTextTile(Tile):
     def center_text(self, align_type=AlignType.LEFT):
         current_top_surface = self.rect.top
         displayed_surfaces = self.text_surfaces[
-            self.start_line : self.start_line + self.max_lines_to_display
+            self.start_line: self.start_line + self.max_lines_to_display
         ]
         for surface, rect in displayed_surfaces:
             if align_type == AlignType.LEFT:

@@ -1,6 +1,5 @@
-import copy
-
 import client
+
 from client.game_objects.cards.card_reader import CardReader
 from client.custom_exceptions.no_such_card_exception import (
     NoSuchCardException,

@@ -1,5 +1,5 @@
 import client
-from client.game_objects.tiles.multiline_text_tile import MultilineTextTile
+from client.game_objects.tiles.height_resizable_multiline_text_tile import HeightResizableMultilineTextTile
 
 from client.game_objects.tiles.tile import Tile
 from client.utils import common
@@ -24,34 +24,22 @@ class PlayedCardsPopupGroup:
         player_response_tiles = []
         for name, response in player_responses.items():
             player_response_tiles.append(
-                MultilineTextTile(
+                HeightResizableMultilineTextTile(
                     name="player_response",
-                    surface=common.generate_transparent_image(self.background.image.get_width(), self.background.image.get_height() * 0.14),
                     screen=client.state_manager.screen,
-                    size_percent=32,
+                    width_percent=35,
                     text_to_display=f"{name}: {response}",
                     text_size_percent=5,
-                    start_line=0,
-                    tile_addition_height_percent=-1
+                    start_line=0
                 )
             )
 
         self.played_cards_and_player_responses.append(
             (played_card_tile, player_response_tiles)
         )
-        played_card_tile.rect.centerx = self.background.rect.centerx
 
         played_card_tile.size_percent = 23
         played_card_tile.resize()
-
-        if len(self.played_cards_and_player_responses) > 0:
-            played_card_tile.rect.top = self.played_cards_and_player_responses[-1][
-                0
-            ].rect.bottom + (self.background.image.get_height() * 0.01)
-        else:
-            played_card_tile.rect.top = self.background.rect.top + (
-                self.background.image.get_height() * 0.01
-            )
 
         self.set_player_responses_size(played_card_tile, player_response_tiles)
 
@@ -66,16 +54,18 @@ class PlayedCardsPopupGroup:
 
     def set_player_responses_size(self, card_tile, response_tiles):
         top = card_tile.rect.bottom + (
-            self.background.image.get_height() * 0.01
+            self.background.image.get_height() * 0.02
         )
         for response_tile in response_tiles:
             response_tile.resize()
-            response_tile.rect.centerx = self.background.rect.centerx
+            response_tile.rect.left = self.background.rect.left + (
+                self.background.image.get_width() * 0.05
+            )
             response_tile.rect.top = top
             response_tile.center_text()
 
             top = response_tile.rect.bottom + (
-                self.background.image.get_height() * 0.01
+                self.background.image.get_height() * 0.02
             )
         return top
 
