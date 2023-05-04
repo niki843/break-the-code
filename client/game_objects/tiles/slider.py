@@ -244,6 +244,8 @@ class Slider(Tile):
         )
 
     def blit(self):
+        if self.delimiters < 2:
+            return
         self.screen.blit(self.image, self.rect)
         self.screen.blit(
             self.slider_handle.image, self.slider_handle.rect

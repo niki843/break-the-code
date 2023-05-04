@@ -26,9 +26,7 @@ class HeightResizableMultilineTextTile(MultilineTextTile):
 
         self._load_max_characters_and_lines()
 
-        height = (self.character_height + self.new_line_space) * self.max_lines_to_display
-
-        surface = common.generate_transparent_image(screen.get_width() * common.get_percentage_multiplier_from_percentage(width_percent), height)
+        surface = common.generate_transparent_image(screen.get_width() * common.get_percentage_multiplier_from_percentage(width_percent), self.height)
 
         super().__init__(
             name,
@@ -48,3 +46,9 @@ class HeightResizableMultilineTextTile(MultilineTextTile):
             / (self.character_width + self.character_width * 0.14)
         )
         self.max_lines_to_display = math.ceil(len(self.text) / self.max_characters_per_line)
+        self.height = (self.character_height + self.new_line_space) * self.max_lines_to_display
+
+    def resize(self):
+        self._load_max_characters_and_lines()
+        self.surface = common.generate_transparent_image(self.screen.get_width() * common.get_percentage_multiplier_from_percentage(self.width_percent), self.height)
+        super().resize()

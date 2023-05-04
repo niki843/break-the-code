@@ -174,10 +174,16 @@ class NewGame(GameWindow):
             )
             player_name_responses_map[player_name] = player_response
 
+        old_card = self.condition_cards_group.get_tile_by_id(str(card_id))
+        self.tiles_group.remove(old_card)
+
+        self.played_cards_group.add_played_card(old_card.copy(), player_name_responses_map)
+
         if not next_card_id:
             self.condition_cards_group.remove_card(
                 self.condition_cards_group.get_tile_by_id(str(card_id))
             )
+            self.next_player()
             return
 
         self.draw_condition_card(next_card_id)
@@ -188,13 +194,10 @@ class NewGame(GameWindow):
             client.state_manager.screen,
             17,
         )
-        old_card = self.condition_cards_group.get_tile_by_id(str(card_id))
 
         self.condition_cards_group.replace_card(old_card, new_card)
 
         self.tiles_group.add(new_card)
-
-        self.played_cards_group.add_played_card(old_card.copy(), player_name_responses_map)
 
         self.next_player()
 

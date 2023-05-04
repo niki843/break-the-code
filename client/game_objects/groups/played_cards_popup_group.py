@@ -44,33 +44,32 @@ class PlayedCardsPopupGroup:
 
             player_response_tiles.append(player_response_tile)
 
+        played_card_tile.size_percent = 23
+        played_card_tile.resize()
+
+        top_element_spacing = math.ceil(self.background.image.get_height() * 0.01)
+        played_card_tile.rect.top = self.played_cards_and_player_responses[-1][1][-1].rect.bottom + top_element_spacing if self.played_cards_and_player_responses else self.background.rect.top + top_element_spacing
+        played_card_tile.rect.centerx = self.background.rect.centerx
+
         self.played_cards_and_player_responses.append(
             (played_card_tile, player_response_tiles)
         )
 
-        played_card_tile.size_percent = 23
-        played_card_tile.resize()
-
-        self.full_size_px += played_card_tile.image.get_height()
-
-        if self.full_size_px > self.background.image.get_height():
-            self.scroll.update(delimiters=math.ceil((self.full_size_px - self.background.image.get_height()) / self.single_scroll_px) + 1)
-
         self.set_player_responses_size(played_card_tile, player_response_tiles)
 
     def set_played_cards_size(self):
-        top = self.background.rect.top + (self.background.image.get_height() * 0.01)
+        top_element_spacing = math.ceil(self.background.image.get_height() * 0.01)
+        top = self.background.rect.top + top_element_spacing
         for card, player_responses in self.played_cards_and_player_responses:
             card.resize()
             card.rect.centerx = self.background.rect.centerx
             card.rect.top = top
 
-            self.full_size_px += card.image.get_height()
-
             top = self.set_player_responses_size(card, player_responses)
 
     def set_player_responses_size(self, card_tile, response_tiles):
-        top = card_tile.rect.bottom + (self.background.image.get_height() * 0.02)
+        top_element_spacing = math.ceil(self.background.image.get_height() * 0.02)
+        top = card_tile.rect.bottom + top_element_spacing
         for response_tile in response_tiles:
             response_tile.resize()
             response_tile.rect.left = self.background.rect.left + (
@@ -79,12 +78,14 @@ class PlayedCardsPopupGroup:
             response_tile.rect.top = top
             response_tile.center_text()
 
-            top = response_tile.rect.bottom + (
-                self.background.image.get_height() * 0.02
-            )
-
-            self.full_size_px += response_tile.image.get_height()
+            top = response_tile.rect.bottom + top_element_spacing
+        self.update_scroll()
         return top
+
+    def update_scroll(self):
+        spacing = math.ceil(self.background.image.get_height() * 0.01)
+        self.full_size_px = abs((self.played_cards_and_player_responses[0][0].rect.top - spacing) - self.played_cards_and_player_responses[-1][1][-1].rect.bottom)
+        self.scroll.update(delimiters=math.ceil((self.full_size_px - self.background.image.get_height()) / self.single_scroll_px) + 1)
 
     def build(self):
         self.build_background()
@@ -113,6 +114,8 @@ class PlayedCardsPopupGroup:
 
         self.tiles_group.remove(self.background)
 
+        self.scroll.handle_position = 0
+
         self.resize()
 
     def build_background(self):
@@ -138,7 +141,7 @@ class PlayedCardsPopupGroup:
         else:
             self.background.rect.left = client.state_manager.screen_rect.right
 
-        self.single_scroll_px = math.ceil(self.background.image.get_height() * common.get_percentage_multiplier_from_percentage(20))
+        self.single_scroll_px = math.ceil(self.background.image.get_height() * common.get_percentage_multiplier_from_percentage(15))
 
     def build_played_cards_button(self):
         self.played_cards_button = common.load_rotated_right_tile(
@@ -189,10 +192,16 @@ class PlayedCardsPopupGroup:
         self.scroll.update_slider_handle_by_position()
 
     def scroll_up(self):
+        if self.scroll.handle_position == 0:
+            return
         self.scroll.previous_handle_position()
         self.scroll_elements(self.single_scroll_px)
 
     def scroll_down(self):
+        # -1 because delimiters is len of all the separations but handle position is an index and it counts from 0
+        if self.scroll.handle_position >= self.scroll.delimiters - 1:
+            return
+
         self.scroll.next_handle_position()
         # Add negative scroll pixels to scroll down
         self.scroll_elements(self.single_scroll_px * -1)

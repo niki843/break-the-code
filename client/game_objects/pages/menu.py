@@ -415,7 +415,7 @@ class Menu(GameWindow):
         self.tiles_group.remove(self.game_session_name_box)
         self.tiles_group.remove(self.game_session_name_text)
         self.tiles_group.remove(self.number_players_label)
-        self.tiles_group.remove(self.number_players_dropdown)
+        self.tiles_group.remove(self.number_players_dropdown.dropdown_surfaces)
         self.tiles_group.remove(self.cancel_button)
         self.tiles_group.remove(self.create_button)
         self.tiles_group.remove(self.private_game_toggle_button)
@@ -450,7 +450,7 @@ class Menu(GameWindow):
                 self.event_handler.settings.open()
             case self.quit_tile.name:
                 pygame.event.post(pygame.event.Event(pygame.QUIT))
-            case self.game_session_name_text.name:
+            case self.game_session_name_text.name if self.game_session_name_text:
                 if self.game_session_name_text.text == "Game-Name":
                     self.game_session_name_text.new_line()
                 self.game_session_name_text.mark_clicked()
