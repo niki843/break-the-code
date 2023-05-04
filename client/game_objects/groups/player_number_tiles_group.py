@@ -123,7 +123,7 @@ class PlayerNumberTilesGroup:
             player.position_tiles()
             player.text_bubble_tile.center_text()
 
-    def blit(self):
+    def blit_assets(self):
         for player in self.player_id_player_map.values():
             client.state_manager.screen.blit(
                 player.image_tile.image, player.image_tile.rect
@@ -131,13 +131,15 @@ class PlayerNumberTilesGroup:
             for card in player.cards:
                 client.state_manager.screen.blit(card.image, card.rect)
 
-            if (
-                player.message_displayed_time
-                and time.time() - player.message_displayed_time <= 5
-            ):
-                player.text_bubble_tile.blit()
-
             client.state_manager.screen.blit(
                 player.username_text_tile.text_surface,
                 player.username_text_tile.text_rect,
             )
+
+    def blit_messages(self):
+        for player in self.player_id_player_map.values():
+            if (
+                    player.message_displayed_time
+                    and time.time() - player.message_displayed_time <= 5
+            ):
+                player.text_bubble_tile.blit()

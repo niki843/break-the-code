@@ -452,22 +452,25 @@ class NewGame(GameWindow):
     def blit(self):
         super().blit()
 
+        client.state_manager.screen.blit(self.guess_button.image, self.guess_button.rect)
+
+        if self.player_number_tiles_group:
+            self.player_number_tiles_group.blit_assets()
+
         if self.condition_cards_group:
             self.condition_cards_group.blit()
 
+        client.state_manager.screen.blit(self.player_notes_button.image, self.player_notes_button.rect)
+
         if self.player_number_tiles_group:
-            self.player_number_tiles_group.blit()
+            self.player_number_tiles_group.blit_messages()
+
+        self.played_cards_group.blit()
+
+        self.guess_tiles_popup_group.blit()
 
         if self.end_game_message:
             client.state_manager.screen.blit(self.end_game_message.text_surface, self.end_game_message.text_rect)
 
         if self.back_to_menu_button:
             client.state_manager.screen.blit(self.back_to_menu_button.image, self.back_to_menu_button.rect)
-
-        client.state_manager.screen.blit(self.guess_button.image, self.guess_button.rect)
-
-        self.guess_tiles_popup_group.blit()
-
-        client.state_manager.screen.blit(self.player_notes_button.image, self.player_notes_button.rect)
-
-        self.played_cards_group.blit()
