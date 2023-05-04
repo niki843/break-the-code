@@ -96,11 +96,14 @@ class ConditionCardsGroup:
 
     def maximize_old_tile(self):
         self.old_tile.size_percent = 30
+        self.resize_old_tile()
+
+        self.old_tile_displayed_time = time.time()
+
+    def resize_old_tile(self):
         self.old_tile.resize()
         self.old_tile.rect.centerx = client.state_manager.screen_rect.centerx
         self.old_tile.rect.centery = client.state_manager.screen_rect.centery
-
-        self.old_tile_displayed_time = time.time()
 
     def remove_card(self, card_tile):
         self.condition_card_tiles.pop(self.condition_card_tiles.index(card_tile))
@@ -126,7 +129,7 @@ class ConditionCardsGroup:
         if self.old_tile and time.time() - self.old_tile_displayed_time <= 5:
             self.screen.blit(self.old_tile.image, self.old_tile.rect)
         elif self.old_tile and self.old_tile.rect.left <= client.state_manager.screen_rect.right:
-            self.old_tile.rect.left += self.screen.get_width() * 0.007
+            self.old_tile.rect.left += self.screen.get_width() * 0.009
             self.screen.blit(self.old_tile.image, self.old_tile.rect)
         elif self.old_tile:
             self.old_tile = None
@@ -134,6 +137,8 @@ class ConditionCardsGroup:
     def resize(self):
         self.center_card.resize()
         self.center_center_card()
+        if self.old_tile:
+            self.resize_old_tile()
         for condition_card in self.condition_card_tiles:
             condition_card.resize()
             self.center_condition_cards()
