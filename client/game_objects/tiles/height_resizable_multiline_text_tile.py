@@ -18,11 +18,7 @@ class HeightResizableMultilineTextTile(MultilineTextTile):
         self.text = text_to_display
         self.width_percent = width_percent
         self.new_line_space = screen.get_height() * 0.01
-        font = common.load_font(
-            (client.state_manager.screen.get_width() * common.get_percentage_multiplier_from_percentage(width_percent))
-            * common.get_percentage_multiplier_from_percentage(text_size_percent)
-        )
-        self.character_width, self.character_height = font.size("h")
+        self.text_size_percent = text_size_percent
 
         self._load_max_characters_and_lines()
 
@@ -41,6 +37,11 @@ class HeightResizableMultilineTextTile(MultilineTextTile):
         )
 
     def _load_max_characters_and_lines(self):
+        font = common.load_font(
+            (client.state_manager.screen.get_width() * common.get_percentage_multiplier_from_percentage(self.width_percent))
+            * common.get_percentage_multiplier_from_percentage(self.text_size_percent)
+        )
+        self.character_width, self.character_height = font.size("h")
         self.max_characters_per_line = int(
             (client.state_manager.screen.get_width() * common.get_percentage_multiplier_from_percentage(self.width_percent))
             / (self.character_width + self.character_width * 0.14)

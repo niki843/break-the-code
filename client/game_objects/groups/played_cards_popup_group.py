@@ -94,6 +94,7 @@ class PlayedCardsPopupGroup:
 
     def resize(self):
         self.full_size_px = 0
+        self.scroll.handle_position = 0
         self.set_background_size()
         self.set_played_cards_button_size()
         self.set_played_cards_size()
