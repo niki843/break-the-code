@@ -69,6 +69,8 @@ class GameSessionsGroup(Tile):
             horizontal=False,
             tile_addition_width_percent=0.2,
             tile_addition_height_percent=-3.4,
+            handle_height_percent=30,
+            handle_width_percent=0
         )
         self.position_slider()
         self.slider.update()
@@ -106,6 +108,10 @@ class GameSessionsGroup(Tile):
                 - self.max_game_sessions_to_display
                 + 1
             )
+            if(self.slider.slider_handle.tile_addition_height_percent > 0):
+                self.slider.slider_handle.tile_addition_height_percent -= 3
+                self.slider.slider_handle.resize()
+                self.slider.set_slider_handle_position()
 
         game_session.set_active_player_images()
 
@@ -117,6 +123,10 @@ class GameSessionsGroup(Tile):
         )
         self.game_sessions.pop(current_game_session_index)
         del self.game_sessions_by_id[game_session_id]
+        if len(self.game_sessions) >= self.max_game_sessions_to_display:
+            self.slider.slider_handle.tile_addition_height_percent += 3
+            self.slider.slider_handle.resize()
+            self.slider.set_slider_handle_position()
         self.start_line -= 1 if self.start_line > 0 else 0
         self.center_elements()
         if self.slider.slider_percentage == 100:

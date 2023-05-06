@@ -52,6 +52,8 @@ class Slider(Tile):
         horizontal=True,
         tile_addition_width_percent=0,
         tile_addition_height_percent=0,
+        handle_height_percent=0,
+        handle_width_percent=0
     ):
         super().__init__(
             name,
@@ -62,7 +64,12 @@ class Slider(Tile):
             tile_addition_height_percent,
         )
         self.slider_handle = Tile(
-            handle_name, handle_surface, screen, handle_size_percent
+            handle_name,
+            handle_surface,
+            screen,
+            handle_size_percent,
+            tile_addition_width_percent=handle_width_percent,
+            tile_addition_height_percent=handle_height_percent
         )
 
         self.actual_percentage = []
