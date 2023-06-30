@@ -128,7 +128,7 @@ class NewGame(GameWindow):
             "guess_button",
             surface,
             client.TILE_WIDTH_PERCENTAGE_FROM_SCREEN_SMALL,
-            client.state_manager.screen
+            client.state_manager.screen,
         )
 
         self.tiles_group.add(self.guess_button)
@@ -166,7 +166,10 @@ class NewGame(GameWindow):
 
         player_name_responses_map = {}
         for result in player_results:
-            player_name, player_response = self.player_number_tiles_group.update_message(
+            (
+                player_name,
+                player_response,
+            ) = self.player_number_tiles_group.update_message(
                 played_card,
                 result.get("player_id"),
                 result.get("matching_cards"),
@@ -176,8 +179,6 @@ class NewGame(GameWindow):
 
         old_card = self.condition_cards_group.get_tile_by_id(str(card_id))
         self.tiles_group.remove(old_card)
-
-        self.played_cards_group.add_played_card(old_card.copy(), player_name_responses_map)
 
         if not next_card_id:
             self.condition_cards_group.remove_card(
@@ -195,7 +196,11 @@ class NewGame(GameWindow):
             17,
         )
 
-        self.condition_cards_group.replace_card(old_card, new_card)
+        self.condition_cards_group.replace_card(old_card, new_card, self.tiles_group)
+
+        self.played_cards_group.add_played_card(
+            self.condition_cards_group.old_tile.copy(), player_name_responses_map
+        )
 
         self.tiles_group.add(new_card)
 
@@ -232,11 +237,7 @@ class NewGame(GameWindow):
         self.guess_tiles_popup_group.resize()
 
     def build_end_game_message(self, size, message):
-        self.end_game_message = InputBox(
-            message,
-            size,
-            40
-        )
+        self.end_game_message = InputBox(message, size, 40)
 
         self.set_end_game_message_size()
 
@@ -245,8 +246,12 @@ class NewGame(GameWindow):
             return
 
         self.end_game_message.resize_text()
-        self.end_game_message.text_rect.centerx = client.state_manager.screen_rect.centerx
-        self.end_game_message.text_rect.centery = client.state_manager.screen_rect.centery
+        self.end_game_message.text_rect.centerx = (
+            client.state_manager.screen_rect.centerx
+        )
+        self.end_game_message.text_rect.centery = (
+            client.state_manager.screen_rect.centery
+        )
 
     def build_back_to_menu_button(self):
         self.back_to_menu_button = ToggleTile(
@@ -273,7 +278,12 @@ class NewGame(GameWindow):
         self.back_to_menu_button.rect.centerx = client.state_manager.screen_rect.centerx
 
     def build_notes_button(self):
-        self.player_notes_button = common.load_tile("notes_arrow", common.get_image("notes_arrow.png"), 10, client.state_manager.screen)
+        self.player_notes_button = common.load_tile(
+            "notes_arrow",
+            common.get_image("notes_arrow.png"),
+            10,
+            client.state_manager.screen,
+        )
 
         self.tiles_group.add(self.player_notes_button)
         self.set_notes_button_size()
@@ -289,7 +299,9 @@ class NewGame(GameWindow):
         self.player_notes_button.rect.bottom = client.state_manager.screen_rect.bottom
 
     def build_played_cards_popup(self):
-        self.played_cards_group = PlayedCardsPopupGroup("played_cards", self.tiles_group)
+        self.played_cards_group = PlayedCardsPopupGroup(
+            "played_cards", self.tiles_group
+        )
 
     def set_played_cards_popup_size(self):
         if not self.played_cards_group:
@@ -301,7 +313,9 @@ class NewGame(GameWindow):
         if player_id == client.state_manager.player_id:
             client.state_manager.is_player_eliminated = True
 
-        self.player_number_tiles_group.give_info_message(player_id, "I've tried to guess the cards incorrectly")
+        self.player_number_tiles_group.give_info_message(
+            player_id, "I've tried to guess the cards incorrectly"
+        )
         self.next_player()
         self.remove_player(player_id)
 
@@ -311,7 +325,9 @@ class NewGame(GameWindow):
             self.eliminated_player_ids.append(player_id)
 
     def show_player_won(self, winner_id, message, **kwargs):
-        self.player_number_tiles_group.give_info_message(winner_id, "I've guessed the cards correctly")
+        self.player_number_tiles_group.give_info_message(
+            winner_id, "I've guessed the cards correctly"
+        )
         if winner_id == client.state_manager.player_id:
             self.build_end_game_message(20, "You won!")
             self.build_back_to_menu_button()
@@ -337,7 +353,11 @@ class NewGame(GameWindow):
             self.player_info_group.add_player_tile(player_id, player_name)
 
     def next_player(self):
-        next_player_id = self.player_info_group.player_ids.index(self.player_on_hand_id) + 1 - len(self.player_info_group.player_ids)
+        next_player_id = (
+            self.player_info_group.player_ids.index(self.player_on_hand_id)
+            + 1
+            - len(self.player_info_group.player_ids)
+        )
         self.player_on_hand_id = self.player_info_group.player_ids[next_player_id]
 
     def set_player_disconnected(self, player_id, **kwargs):
@@ -345,8 +365,8 @@ class NewGame(GameWindow):
 
     def can_player_use_server_actions(self):
         if (
-                client.state_manager.is_player_eliminated
-                or client.state_manager.player_id != self.player_on_hand_id
+            client.state_manager.is_player_eliminated
+            or client.state_manager.player_id != self.player_on_hand_id
         ):
             return False
         if self.condition_cards_group.old_tile:
@@ -362,7 +382,11 @@ class NewGame(GameWindow):
 
         self.player_on_hand_id = self.player_info_group.player_ids[0]
 
-        client.state_manager.game_type = GameTypes.FOUR_PLAYER if self.player_info_group.connected_players == 4 else GameTypes.THREE_PLAYER
+        client.state_manager.game_type = (
+            GameTypes.FOUR_PLAYER
+            if self.player_info_group.connected_players == 4
+            else GameTypes.THREE_PLAYER
+        )
 
         self.build_guess_popup()
 
@@ -404,8 +428,13 @@ class NewGame(GameWindow):
                 card = self.current_drawn_condition_cards.get(int(card_id))
 
                 if card.has_user_choice:
-                    client.server_communication_manager.play_choice_condition_card(
-                        card.id, card.choices[0]
+                    self.condition_cards_group.open_condition_number_choice(card)
+                    self.tiles_group.add(
+                        [
+                            self.condition_cards_group.first_choice_tile,
+                            self.condition_cards_group.second_choice_tile,
+                            self.condition_cards_group.transparent_background,
+                        ]
                     )
                     return
 
@@ -413,13 +442,20 @@ class NewGame(GameWindow):
 
                 if self.guess_tiles_popup_group.is_open:
                     self.guess_tiles_popup_group.close(self.tiles_group)
+            case name if "first_choice_tile_" in name or "second_choice_tile_" in name:
+                card_id = self.condition_cards_group.maximized_choice_tile.name.split('-')[-1]
+                client.server_communication_manager.play_choice_condition_card(
+                    card_id, name.split('-')[0]
+                )
             case self.guess_button.name:
                 if self.guess_tiles_popup_group.is_open:
                     self.guess_tiles_popup_group.close(self.tiles_group)
                 self.guess_tiles_popup_group.open(self.tiles_group)
             case self.background_image.name:
                 self.guess_tiles_popup_group.close(self.tiles_group)
-            case name if name.startswith(self.guess_tiles_popup_group.GUESS_CARD_NAME.format("")):
+            case name if name.startswith(
+                self.guess_tiles_popup_group.GUESS_CARD_NAME.format("")
+            ):
                 tile.mark_clicked()
                 self.event_handler.wait_text_input(tile)
             case name if name.startswith("color_button"):
@@ -452,7 +488,9 @@ class NewGame(GameWindow):
     def blit(self):
         super().blit()
 
-        client.state_manager.screen.blit(self.guess_button.image, self.guess_button.rect)
+        client.state_manager.screen.blit(
+            self.guess_button.image, self.guess_button.rect
+        )
 
         if self.player_number_tiles_group:
             self.player_number_tiles_group.blit_assets()
@@ -460,7 +498,9 @@ class NewGame(GameWindow):
         if self.condition_cards_group:
             self.condition_cards_group.blit()
 
-        client.state_manager.screen.blit(self.player_notes_button.image, self.player_notes_button.rect)
+        client.state_manager.screen.blit(
+            self.player_notes_button.image, self.player_notes_button.rect
+        )
 
         if self.player_number_tiles_group:
             self.player_number_tiles_group.blit_messages()
@@ -470,7 +510,11 @@ class NewGame(GameWindow):
         self.guess_tiles_popup_group.blit()
 
         if self.end_game_message:
-            client.state_manager.screen.blit(self.end_game_message.text_surface, self.end_game_message.text_rect)
+            client.state_manager.screen.blit(
+                self.end_game_message.text_surface, self.end_game_message.text_rect
+            )
 
         if self.back_to_menu_button:
-            client.state_manager.screen.blit(self.back_to_menu_button.image, self.back_to_menu_button.rect)
+            client.state_manager.screen.blit(
+                self.back_to_menu_button.image, self.back_to_menu_button.rect
+            )

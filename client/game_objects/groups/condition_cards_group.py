@@ -4,6 +4,7 @@ import time
 import client
 from client.game_objects.tiles.tile import Tile
 from client.utils import common
+from client.game_objects.tiles.toggle_tile import ToggleTile
 
 
 class ConditionCardsGroup:
@@ -17,6 +18,11 @@ class ConditionCardsGroup:
         self.load_center_card()
         self.load_new_condition_card_tiles(condition_cards)
 
+        self.transparent_background = None
+        self.maximized_choice_tile = None
+        self.first_choice_tile = None
+        self.second_choice_tile = None
+
         self.old_tile = None
         self.old_tile_displayed_time = None
 
@@ -29,6 +35,7 @@ class ConditionCardsGroup:
         )
 
     def center_center_card(self):
+        """Center the card that's in the center"""
         self.center_card.rect.centerx = self.screen.get_rect().centerx
         self.center_card.rect.centery = self.screen.get_rect().centery
 
@@ -82,17 +89,92 @@ class ConditionCardsGroup:
             4
         ].rect.centerx
 
-    def replace_card(self, old_card_tile, new_card_tile):
+    def replace_card(self, old_card_tile, new_card_tile, tiles_group):
         self.old_tile = old_card_tile
-        self.condition_card_id_tile_map.pop(self.get_card_id(old_card_tile))
-        self.condition_card_tiles[
-            self.condition_card_tiles.index(old_card_tile)
-        ] = new_card_tile
-        self.condition_card_id_tile_map[self.get_card_id(new_card_tile)] = new_card_tile
+        self.remove_card_choice_popup(tiles_group)
+        self.replace_card_with_placeholder(old_card_tile, new_card_tile)
         new_card_tile.rect.centerx = old_card_tile.rect.centerx
         new_card_tile.rect.centery = old_card_tile.rect.centery
 
         self.maximize_old_tile()
+
+    def replace_card_with_placeholder(self, old_card_tile, new_card_tile):
+        self.condition_card_id_tile_map[self.get_card_id(new_card_tile)] = new_card_tile
+        self.condition_card_tiles[
+            self.condition_card_tiles.index(old_card_tile)
+        ] = new_card_tile
+
+    def remove_card_choice_popup(self, tiles_group):
+        if self.maximized_choice_tile:
+            tiles_group.remove([
+                self.first_choice_tile,
+                self.second_choice_tile,
+                self.transparent_background
+            ])
+            self.old_tile = self.maximized_choice_tile
+
+            self.first_choice_tile = None
+            self.second_choice_tile = None
+            self.maximized_choice_tile = None
+            self.transparent_background = None
+
+    def open_condition_number_choice(self, card):
+        self.first_choice_tile = ToggleTile(
+            name=f"{card.choices[0]}-first_choice_tile_off",
+            next_name=f"{card.choices[0]}-first_choice_tile_on",
+            current_surface=common.get_image(f"choice_{card.choices[0]}.png"),
+            screen=self.screen,
+            size_percent=7,
+            next_surface=common.get_image(f"choice_{card.choices[0]}_active.png"),
+            shrink_percent=0,
+            is_on=False
+        )
+        self.first_choice_tile.priority = 3
+
+        self.second_choice_tile = ToggleTile(
+            name=f"{card.choices[1]}-second_choice_tile_off",
+            next_name=f"{card.choices[1]}-second_choice_tile_on",
+            current_surface=common.get_image(f"choice_{card.choices[1]}.png"),
+            screen=self.screen,
+            size_percent=7,
+            next_surface=common.get_image(f"choice_{card.choices[1]}_active.png"),
+            shrink_percent=0,
+            is_on=False
+        )
+        self.second_choice_tile.priority = 3
+
+        self.transparent_background = Tile(
+            f"choice_card_transparent_bgr",
+            common.generate_transparent_image(self.screen.get_width(), self.screen.get_height()),
+            self.screen,
+            100,
+        )
+        self.transparent_background.priority = 2
+        card_tile = self.get_tile_by_id(str(card.id))
+
+        placeholder_tile = Tile(
+            f"condition_card_placeholder-{card.id}",
+            common.generate_transparent_image(card_tile.image.get_width(), card_tile.image.get_height()),
+            self.screen,
+            17,
+        )
+        placeholder_tile.rect.centerx = card_tile.rect.centerx
+        placeholder_tile.rect.centery = card_tile.rect.centery
+        self.replace_card_with_placeholder(card_tile, placeholder_tile)
+
+        self.maximized_choice_tile = card_tile
+        self.maximize_choice_card(card_tile)
+
+    def maximize_choice_card(self, card_tile):
+        self.old_tile = card_tile
+        self.old_tile.size_percent = 30
+        self.resize_old_tile()
+        self.old_tile = None
+
+        self.first_choice_tile.rect.centery = card_tile.rect.bottom
+        self.first_choice_tile.rect.right = card_tile.rect.centerx - (self.screen.get_width() * 0.01)
+        self.second_choice_tile.rect.centery = card_tile.rect.bottom
+        self.second_choice_tile.rect.left = card_tile.rect.centerx + (self.screen.get_width() * 0.01)
 
     def maximize_old_tile(self):
         self.old_tile.size_percent = 30
@@ -101,6 +183,7 @@ class ConditionCardsGroup:
         self.old_tile_displayed_time = time.time()
 
     def resize_old_tile(self):
+
         self.old_tile.resize()
         self.old_tile.rect.centerx = client.state_manager.screen_rect.centerx
         self.old_tile.rect.centery = client.state_manager.screen_rect.centery
@@ -125,6 +208,14 @@ class ConditionCardsGroup:
         self.screen.blit(self.center_card.image, self.center_card.rect)
         for card in self.condition_card_tiles:
             self.screen.blit(card.image, card.rect)
+
+        if self.maximized_choice_tile:
+            self.screen.blit(self.maximized_choice_tile.image, self.maximized_choice_tile.rect)
+        if self.first_choice_tile:
+            self.screen.blit(self.first_choice_tile.image, self.first_choice_tile.rect)
+            self.screen.blit(self.second_choice_tile.image, self.second_choice_tile.rect)
+        if self.transparent_background:
+            self.screen.blit(self.transparent_background.image, self.transparent_background.rect)
 
         if self.old_tile and time.time() - self.old_tile_displayed_time <= 5:
             self.screen.blit(self.old_tile.image, self.old_tile.rect)
