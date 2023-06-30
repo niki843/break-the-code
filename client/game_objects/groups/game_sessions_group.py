@@ -118,9 +118,14 @@ class GameSessionsGroup(Tile):
         return game_session
 
     def delete_game_session(self, game_session_id):
-        current_game_session_index = list(self.game_sessions_by_id.keys()).index(
-            game_session_id
-        )
+        try:
+            current_game_session_index = list(self.game_sessions_by_id.keys()).index(
+                game_session_id
+            )
+        except ValueError:
+            """"The game session isn't in the logged game sessions because it's currently running"""
+            return
+
         self.game_sessions.pop(current_game_session_index)
         del self.game_sessions_by_id[game_session_id]
         if len(self.game_sessions) >= self.max_game_sessions_to_display:
