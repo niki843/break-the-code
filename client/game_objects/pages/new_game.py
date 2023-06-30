@@ -196,7 +196,7 @@ class NewGame(GameWindow):
             17,
         )
 
-        self.condition_cards_group.replace_card(old_card, new_card, self.tiles_group)
+        self.condition_cards_group.replace_card(old_card, new_card, self.tiles_group, card_number_choice)
 
         self.played_cards_group.add_played_card(
             self.condition_cards_group.old_tile.copy(), player_name_responses_map

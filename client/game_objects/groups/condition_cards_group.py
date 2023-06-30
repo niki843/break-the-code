@@ -25,6 +25,7 @@ class ConditionCardsGroup:
 
         self.old_tile = None
         self.old_tile_displayed_time = None
+        self.old_tile_number_choice_tile = None
 
     def load_center_card(self):
         self.center_card = Tile(
@@ -89,12 +90,21 @@ class ConditionCardsGroup:
             4
         ].rect.centerx
 
-    def replace_card(self, old_card_tile, new_card_tile, tiles_group):
+    def replace_card(self, old_card_tile, new_card_tile, tiles_group, card_number_choice=None):
         self.old_tile = old_card_tile
         self.remove_card_choice_popup(tiles_group)
         self.replace_card_with_placeholder(old_card_tile, new_card_tile)
         new_card_tile.rect.centerx = old_card_tile.rect.centerx
         new_card_tile.rect.centery = old_card_tile.rect.centery
+
+        if card_number_choice:
+            self.old_tile_number_choice_tile = Tile(
+                name=f"{card_number_choice}-first_choice_tile_off",
+                surface=common.get_image(f"choice_{card_number_choice}.png"),
+                screen=self.screen,
+                size_percent=7,
+            )
+            self.old_tile_number_choice_tile.priority = 3
 
         self.maximize_old_tile()
 
@@ -183,10 +193,14 @@ class ConditionCardsGroup:
         self.old_tile_displayed_time = time.time()
 
     def resize_old_tile(self):
-
         self.old_tile.resize()
         self.old_tile.rect.centerx = client.state_manager.screen_rect.centerx
         self.old_tile.rect.centery = client.state_manager.screen_rect.centery
+
+        if self.old_tile_number_choice_tile:
+            self.old_tile_number_choice_tile.resize()
+            self.old_tile_number_choice_tile.rect.centerx = self.old_tile.rect.centerx
+            self.old_tile_number_choice_tile.rect.centery = self.old_tile.rect.bottom
 
     def remove_card(self, card_tile):
         self.condition_card_tiles.pop(self.condition_card_tiles.index(card_tile))
@@ -219,11 +233,17 @@ class ConditionCardsGroup:
 
         if self.old_tile and time.time() - self.old_tile_displayed_time <= 5:
             self.screen.blit(self.old_tile.image, self.old_tile.rect)
+            if self.old_tile_number_choice_tile:
+                self.screen.blit(self.old_tile_number_choice_tile.image, self.old_tile_number_choice_tile.rect)
         elif self.old_tile and self.old_tile.rect.left <= client.state_manager.screen_rect.right:
             self.old_tile.rect.left += self.screen.get_width() * 0.009
             self.screen.blit(self.old_tile.image, self.old_tile.rect)
+            if self.old_tile_number_choice_tile:
+                self.old_tile_number_choice_tile.rect.left += self.screen.get_width() * 0.009
+                self.screen.blit(self.old_tile_number_choice_tile.image, self.old_tile_number_choice_tile.rect)
         elif self.old_tile:
             self.old_tile = None
+            self.old_tile_number_choice_tile = None
 
     def resize(self):
         self.center_card.resize()
