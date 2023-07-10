@@ -6,6 +6,7 @@ from client.custom_exceptions.no_such_card_exception import (
 )
 from client.game_objects.groups.condition_cards_group import ConditionCardsGroup
 from client.game_objects.groups.guess_tiles_popup_group import GuessTilesPopupGroup
+from client.game_objects.groups.notes_popup_group import NotesPopupGroup
 from client.game_objects.groups.played_cards_popup_group import PlayedCardsPopupGroup
 from client.game_objects.groups.player_number_tiles_group import PlayerNumberTilesGroup
 from client.game_objects.pages.game_window import GameWindow
@@ -36,10 +37,8 @@ class NewGame(GameWindow):
         self.end_game_message = None
         self.back_to_menu_button = None
 
-        self.player_notes_button = None
-        self.player_notes = None
-
         self.played_cards_group = None
+        self.notes_group = None
 
         self.player_on_hand_id = None
 
@@ -52,9 +51,9 @@ class NewGame(GameWindow):
         self.tiles_group.add(self.background_image)
 
         self.build_guess_tile()
-        self.build_notes_button()
 
         self.build_played_cards_popup()
+        self.build_notes_popup()
 
     def resize(self):
         super().resize()
@@ -70,9 +69,8 @@ class NewGame(GameWindow):
         self.set_end_game_message_size()
         self.set_back_to_menu_size()
 
-        self.set_notes_button_size()
-
         self.set_played_cards_popup_size()
+        self.set_notes_popup_size()
 
     def build_draw_pile(self, condition_cards):
         self.condition_cards_group = ConditionCardsGroup(
@@ -277,27 +275,6 @@ class NewGame(GameWindow):
         )
         self.back_to_menu_button.rect.centerx = client.state_manager.screen_rect.centerx
 
-    def build_notes_button(self):
-        self.player_notes_button = common.load_tile(
-            "notes_arrow",
-            common.get_image("notes_arrow.png"),
-            10,
-            client.state_manager.screen,
-        )
-
-        self.tiles_group.add(self.player_notes_button)
-        self.set_notes_button_size()
-
-    def set_notes_button_size(self):
-        if not self.player_notes_button:
-            return
-
-        self.player_notes_button.resize()
-        self.player_notes_button.rect.left = client.state_manager.screen_rect.left + (
-            client.state_manager.screen.get_width() * 0.08
-        )
-        self.player_notes_button.rect.bottom = client.state_manager.screen_rect.bottom
-
     def build_played_cards_popup(self):
         self.played_cards_group = PlayedCardsPopupGroup(
             "played_cards", self.tiles_group
@@ -308,6 +285,15 @@ class NewGame(GameWindow):
             pass
 
         self.played_cards_group.resize()
+
+    def build_notes_popup(self):
+        self.notes_group = NotesPopupGroup("notes", self.tiles_group)
+
+    def set_notes_popup_size(self):
+        if not self.notes_group:
+            pass
+
+        self.notes_group.resize()
 
     def show_player_eliminated(self, player_id, **kwargs):
         if player_id == client.state_manager.player_id:
@@ -468,6 +454,8 @@ class NewGame(GameWindow):
                 self.guess_tiles_popup_group.close(self.tiles_group)
             case self.played_cards_group.played_cards_button.name:
                 self.played_cards_group.clicked()
+            case self.notes_group.player_notes_button.name:
+                self.notes_group.clicked()
 
         if self.back_to_menu_button and self.back_to_menu_button.name == tile.name:
             self.close()
@@ -498,14 +486,12 @@ class NewGame(GameWindow):
         if self.condition_cards_group:
             self.condition_cards_group.blit()
 
-        client.state_manager.screen.blit(
-            self.player_notes_button.image, self.player_notes_button.rect
-        )
-
         if self.player_number_tiles_group:
             self.player_number_tiles_group.blit_messages()
 
         self.played_cards_group.blit()
+
+        self.notes_group.blit()
 
         self.guess_tiles_popup_group.blit()
 
