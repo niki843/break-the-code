@@ -261,7 +261,7 @@ class JoinGame(GameWindow):
                     return
 
                 self.clicked_game_session_tile = tile
-                tile.next_value()
+                self.clicked_game_session_tile.next_value()
                 for player_id, player_name in tile.player_id_usernames_map.items():
                     self.player_info_group.add_player_tile(player_id, player_name)
             case self.join_game_tile.name:
