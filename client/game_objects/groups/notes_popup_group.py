@@ -1,5 +1,6 @@
 import client
 from client.utils import common
+from game_objects.tiles.tile import Tile
 
 
 class NotesPopupGroup:
@@ -10,6 +11,8 @@ class NotesPopupGroup:
         self.background = None
 
         self.player_notes_button = None
+
+        self.notes_tile = None
 
         self.is_open = False
 
@@ -22,16 +25,18 @@ class NotesPopupGroup:
     def resize(self):
         self.set_background_size()
         self.set_notes_button_size()
+        self.build_notes_tile()
 
     def build_background(self):
         self.background = common.load_tile(
             "notes_background",
-            common.get_image("notes_wo_side_win_cropped.png"),
-            100,
+            common.get_image("notes_w_side_win_cropped.png"),
+            70,
             client.state_manager.screen,
         )
         self.background.priority = 2
 
+        self.set_background_size()
         self.set_background_size()
 
     def set_background_size(self):
@@ -39,7 +44,7 @@ class NotesPopupGroup:
             return
 
         self.background.resize()
-        self.background.rect.centerx = client.state_manager.screen_rect.centerx
+        self.background.rect.left = client.state_manager.screen_rect.left
 
         if self.is_open:
             self.background.rect.bottom = client.state_manager.screen_rect.bottom
@@ -67,6 +72,23 @@ class NotesPopupGroup:
         )
         self.player_notes_button.rect.bottom = self.background.rect.top
 
+    def build_notes_tile(self):
+        self.notes_tile = common.load_tile(
+            "notes",
+            common.get_image("notes.png"),
+            46,
+            client.state_manager.screen,
+        )
+
+        self.set_notes_tile_size()
+
+    def set_notes_tile_size(self):
+        if not self.notes_tile:
+            return
+
+        self.notes_tile.rect.centerx = self.background.rect.centerx
+        self.notes_tile.rect.centery = self.background.rect.centery
+
     def clicked(self):
         self.close() if self.is_open else self.open()
 
@@ -92,4 +114,7 @@ class NotesPopupGroup:
         if self.is_open:
             client.state_manager.screen.blit(
                 self.background.image, self.background.rect
+            )
+            client.state_manager.screen.blit(
+                self.notes_tile.image, self.notes_tile.rect
             )
