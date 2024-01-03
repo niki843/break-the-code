@@ -1,6 +1,5 @@
 import client
 from client.utils import common
-from game_objects.tiles.tile import Tile
 
 
 class NotesPopupGroup:
@@ -9,6 +8,7 @@ class NotesPopupGroup:
         self.tiles_group = tiles_group
 
         self.background = None
+        self.next_background = None
 
         self.player_notes_button = None
 
@@ -30,11 +30,18 @@ class NotesPopupGroup:
     def build_background(self):
         self.background = common.load_tile(
             "notes_background",
+            common.get_image("notes_wo_side_win_cropped.png"),
+            100,
+            client.state_manager.screen,
+        )
+        self.next_background = common.load_tile(
+            "notes_background",
             common.get_image("notes_w_side_win_cropped.png"),
-            70,
+            69.8,
             client.state_manager.screen,
         )
         self.background.priority = 2
+        self.next_background.priority = 2
 
         self.set_background_size()
         self.set_background_size()
@@ -96,6 +103,7 @@ class NotesPopupGroup:
         self.is_open = True
 
         self.tiles_group.add(self.background)
+        self.tiles_group.remove(self.next_background)
 
         self.resize()
 
@@ -103,6 +111,14 @@ class NotesPopupGroup:
         self.is_open = False
 
         self.tiles_group.remove(self.background)
+        self.tiles_group.remove(self.next_background)
+
+        self.resize()
+
+    def scale(self):
+        temp = self.background
+        self.background = self.next_background
+        self.next_background = temp
 
         self.resize()
 

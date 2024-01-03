@@ -453,6 +453,7 @@ class NewGame(GameWindow):
                 client.server_communication_manager.guess_cards(cards_guess)
                 self.guess_tiles_popup_group.close(self.tiles_group)
             case self.played_cards_group.played_cards_button.name:
+                self.notes_group.scale()
                 self.played_cards_group.clicked()
             case self.notes_group.player_notes_button.name:
                 self.notes_group.clicked()
