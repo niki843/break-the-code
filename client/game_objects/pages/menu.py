@@ -431,15 +431,6 @@ class Menu(GameWindow):
         self.is_private_game = False
         self.players_count = "4"
 
-    def activate_tile(self, tile, event):
-        match event.button:
-            case client.LEFT_BUTTON_CLICK:
-                self.tile_left_button_click_event(tile)
-            case client.SCROLL_UP:
-                pass
-            case client.SCROLL_DOWN:
-                pass
-
     def tile_left_button_click_event(self, tile):
         match tile.name:
             case self.new_game_tile.name:

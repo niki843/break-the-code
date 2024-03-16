@@ -28,6 +28,21 @@ class GameWindow:
         )
 
     def activate_tile(self, tile, event):
+        match event.button:
+            case client.LEFT_BUTTON_CLICK:
+                self.tile_left_button_click_event(tile)
+            case client.SCROLL_UP:
+                self.tile_scroll_up_event(tile)
+            case client.SCROLL_DOWN:
+                self.tile_scroll_down_event(tile)
+
+    def tile_left_button_click_event(self, tile):
+        pass
+
+    def tile_scroll_up_event(self, tile):
+        pass
+
+    def tile_scroll_down_event(self, tile):
         pass
 
     def build(self):
@@ -169,3 +184,4 @@ class GameWindow:
 
     def close(self):
         pass
+

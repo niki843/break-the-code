@@ -158,15 +158,6 @@ class Lobby(GameWindow):
             player_info_group=player_info_group,
         )
 
-    def activate_tile(self, tile, event):
-        match event.button:
-            case client.LEFT_BUTTON_CLICK:
-                self.tile_left_button_click_event(tile)
-            case client.SCROLL_UP:
-                pass
-            case client.SCROLL_DOWN:
-                pass
-
     def tile_left_button_click_event(self, tile):
         match tile.name:
             case self.back_tile.name:

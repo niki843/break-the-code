@@ -319,15 +319,6 @@ class Settings(GameWindow):
 
         client.state_manager.screen.blit(self.back_tile.image, self.back_tile.rect)
 
-    def activate_tile(self, tile, event):
-        match event.button:
-            case client.LEFT_BUTTON_CLICK:
-                self.tile_left_button_click_event(tile)
-            case client.SCROLL_UP:
-                pass
-            case client.SCROLL_DOWN:
-                pass
-
     def tile_left_button_click_event(self, tile):
         match tile.name:
             case self.resolution_slider.slider_handle.name:
