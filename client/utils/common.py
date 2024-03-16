@@ -4,6 +4,7 @@ import os
 import uuid
 
 from client.game_objects.tiles.tile import Tile
+from game_objects.tiles.movable_tile import MovableTile
 
 
 def get_percentage_multiplier_from_percentage(percentage: float):
@@ -80,6 +81,10 @@ def load_tiny_tile(tile_name, img_path, screen):
 
 def load_tile(tile_name, surface, size, screen):
     return Tile(tile_name, surface, screen, size)
+
+
+def load_movable_tile(reference_object, x_distance_percentage, y_distance_percentage, tile_name, surface, size, screen):
+    return MovableTile(reference_object, x_distance_percentage, y_distance_percentage, tile_name, surface, screen, size)
 
 
 def load_rotated_left_tile(tile_name, img_path, size, screen):

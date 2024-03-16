@@ -7,12 +7,12 @@ class NotesPopupGroup:
         self.group_name = group_name
         self.tiles_group = tiles_group
 
+        self.guess_number_tiles = []
+
         self.background = None
         self.next_background = None
 
         self.player_notes_button = None
-
-        self.notes_tile = None
 
         self.is_open = False
 
@@ -21,11 +21,12 @@ class NotesPopupGroup:
     def build(self):
         self.build_background()
         self.build_notes_button()
+        self.build_guess_numbers_tiles()
 
     def resize(self):
         self.set_background_size()
         self.set_notes_button_size()
-        self.build_notes_tile()
+        self.set_guess_numbers_tile_size()
 
     def build_background(self):
         self.background = common.load_tile(
@@ -79,22 +80,44 @@ class NotesPopupGroup:
         )
         self.player_notes_button.rect.bottom = self.background.rect.top
 
-    def build_notes_tile(self):
-        self.notes_tile = common.load_tile(
-            "notes",
-            common.get_image("notes.png"),
-            46,
-            client.state_manager.screen,
-        )
+    def build_guess_numbers_tiles(self):
+        x_distance_percentage = 3.5
+        y_distance_percentage = 5
+        for i in range(0, 10):
+            tile1 = common.load_movable_tile(
+                        self.background,
+                        x_distance_percentage,
+                        y_distance_percentage,
+                        f"{i}_black_tile",
+                        common.get_image(f"{i}.png"),
+                        3.2,
+                        client.state_manager.screen
+            )
+            tile2 = common.load_movable_tile(
+                        self.background,
+                        x_distance_percentage,
+                        y_distance_percentage,
+                        f"{i}_white_tile",
+                        common.get_image(f"{i}.png"),
+                        3.2,
+                        client.state_manager.screen
+            )
+            self.guess_number_tiles.append((tile1, tile2))
 
-        self.set_notes_tile_size()
+            x_distance_percentage = x_distance_percentage + 3.5
 
-    def set_notes_tile_size(self):
-        if not self.notes_tile:
+        self.set_guess_numbers_tile_size()
+
+    def set_guess_numbers_tile_size(self):
+        if not self.guess_number_tiles:
             return
 
-        self.notes_tile.rect.centerx = self.background.rect.centerx
-        self.notes_tile.rect.centery = self.background.rect.centery
+        for tile1, tile2 in self.guess_number_tiles:
+            tile1.resize()
+            tile2.resize()
+
+            tile1.rect.left, tile1.rect.top = tile1.get_position()
+            tile2.rect.left, tile2.rect.top = tile2.get_position()
 
     def clicked(self):
         self.close() if self.is_open else self.open()
@@ -120,6 +143,12 @@ class NotesPopupGroup:
         self.background = self.next_background
         self.next_background = temp
 
+        for tile1, tile2 in self.guess_number_tiles:
+            tile1.change_reference_object(self.background)
+            tile2.change_reference_object(self.background)
+
+        self.set_guess_numbers_tile_size()
+
         self.resize()
 
     def blit(self):
@@ -131,6 +160,11 @@ class NotesPopupGroup:
             client.state_manager.screen.blit(
                 self.background.image, self.background.rect
             )
-            client.state_manager.screen.blit(
-                self.notes_tile.image, self.notes_tile.rect
-            )
+
+            for tile1, tile2 in self.guess_number_tiles:
+                client.state_manager.screen.blit(
+                    tile1.image, tile1.rect
+                )
+                client.state_manager.screen.blit(
+                    tile2.image, tile2.rect
+                )
