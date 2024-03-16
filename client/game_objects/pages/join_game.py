@@ -240,7 +240,7 @@ class JoinGame(GameWindow):
                 self.event_handler.menu.open()
                 self.close()
             case self.game_session_group.slider.slider_handle.name:
-                self.event_handler.handle_slider_clicked(self.scroll_text_tile)
+                self.event_handler.handle_slider_clicked(self.game_session_group.slider)
             case self.game_session_group.tile_name:
                 self.player_info_group.clear_players()
 

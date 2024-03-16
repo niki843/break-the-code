@@ -64,3 +64,6 @@ class MovableTile(Tile):
 
     def change_reference_object(self, reference_object: Tile):
         self.reference_object = reference_object
+
+    def move_slider(self, event):
+        x_movement, y_movement = event.pos

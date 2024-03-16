@@ -49,6 +49,7 @@ async def create_game(websocket, player_id, player_name, room_name):
             message=ex.message,
             error_type=ex.error_type,
         )
+        return
 
     GAME_SESSIONS[started_game_session_id] = current_game_session
 

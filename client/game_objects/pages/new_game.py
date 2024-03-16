@@ -448,6 +448,14 @@ class NewGame(GameWindow):
                 self.played_cards_group.clicked()
             case self.notes_group.player_notes_button.name:
                 self.notes_group.clicked()
+            case name if name.endswith(
+                self.notes_group.GUESS_NUMBER_BLACK_TILES_NAME.format("")
+            ) or name.endswith(
+                self.notes_group.GUESS_NUMBER_WHITE_TILES_NAME.format("")
+            ):
+                self.event_handler.handle_slider_clicked(self.notes_group.guess_number_tiles[int(name.split("_")[0])])
+            case self.played_cards_group.scroll.slider_handle.name:
+                self.event_handler.handle_slider_clicked(self.played_cards_group.scroll)
 
         if self.back_to_menu_button and self.back_to_menu_button.name == tile.name:
             self.close()

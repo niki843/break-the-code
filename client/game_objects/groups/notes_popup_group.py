@@ -3,6 +3,9 @@ from client.utils import common
 
 
 class NotesPopupGroup:
+    GUESS_NUMBER_BLACK_TILES_NAME = "{0}_black_tile"
+    GUESS_NUMBER_WHITE_TILES_NAME = "{0}_white_tile"
+
     def __init__(self, group_name, tiles_group):
         self.group_name = group_name
         self.tiles_group = tiles_group
@@ -88,7 +91,7 @@ class NotesPopupGroup:
                         self.background,
                         x_distance_percentage,
                         y_distance_percentage,
-                        f"{i}_black_tile",
+                        self.GUESS_NUMBER_BLACK_TILES_NAME.format(i),
                         common.get_image(f"{i}.png"),
                         3.2,
                         client.state_manager.screen
@@ -97,7 +100,7 @@ class NotesPopupGroup:
                         self.background,
                         x_distance_percentage,
                         y_distance_percentage,
-                        f"{i}_white_tile",
+                        self.GUESS_NUMBER_WHITE_TILES_NAME.format(i),
                         common.get_image(f"{i}.png"),
                         3.2,
                         client.state_manager.screen
