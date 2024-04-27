@@ -90,14 +90,17 @@ class Slider(Tile):
         self.update_slider_handle_by_position()
 
     def move_slider(self, event):
-        self.move_slider_horizontally(
+        is_greater = self.move_slider_horizontally(
             event.pos[0]
         ) if self.horizontal else self.move_slider_vertically(event.pos[1])
+
+        return is_greater
 
     def move_slider_vertically(self, pos_y):
         if pos_y < self.rect.top or pos_y > self.rect.bottom:
             return
 
+        old_handle_position = self.handle_position
         self.handle_position = (
             bisect(
                 self.pivot_values,
@@ -106,12 +109,18 @@ class Slider(Tile):
             - 1
         )
 
+        if old_handle_position == self.handle_position:
+            return None
+
         self.update_slider_handle_by_position()
+
+        return True if old_handle_position > self.handle_position else False
 
     def move_slider_horizontally(self, pos_x):
         if pos_x < self.rect.left or pos_x > self.rect.right:
             return
 
+        old_handle_position = self.handle_position
         self.handle_position = (
             bisect(
                 self.pivot_values,
@@ -120,7 +129,12 @@ class Slider(Tile):
             - 1
         )
 
+        if old_handle_position == self.handle_position:
+            return None
+
         self.update_slider_handle_by_position()
+
+        return True if old_handle_position > self.handle_position else False
 
     def next_handle_position(self):
         self.set_value(1)

@@ -107,6 +107,7 @@ class PlayedCardsPopupGroup:
         self.is_open = True
 
         self.tiles_group.add(self.background)
+        self.tiles_group.add(self.scroll.slider_handle)
 
         self.resize()
 
@@ -180,6 +181,7 @@ class PlayedCardsPopupGroup:
             tile_addition_width_percent=0.2,
             tile_addition_height_percent=26,
         )
+        self.scroll.slider_handle.priority = 3
 
         self.set_scroll_size()
 
@@ -191,6 +193,17 @@ class PlayedCardsPopupGroup:
         self.scroll.rect.right = self.background.rect.right
         self.scroll.rect.top = self.background.rect.top
         self.scroll.update_slider_handle_by_position()
+
+    def move_slider(self, event):
+        should_move_up = self.scroll.move_slider(event=event)
+
+        if should_move_up is None:
+            # Skip if not change
+            return
+        elif should_move_up:
+            self.scroll_up()
+        else:
+            self.scroll_down()
 
     def scroll_up(self):
         if self.scroll.handle_position == 0:

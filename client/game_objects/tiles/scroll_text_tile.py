@@ -65,12 +65,8 @@ class ScrollTextTile(MultilineTextTile):
         self.center_text()
 
     def move_slider(self, event):
+        self.slider.move_slider(event)
         current_percentage = self.slider.slider_percentage
-        self.slider.move_slider_horizontally(
-            event.pos[0]
-        ) if self.slider.horizontal else self.slider.move_slider_vertically(
-            event.pos[1]
-        )
 
         if current_percentage > self.slider.slider_percentage:
             self.scroll_up()

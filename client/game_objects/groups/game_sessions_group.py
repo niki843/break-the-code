@@ -108,7 +108,7 @@ class GameSessionsGroup(Tile):
                 - self.max_game_sessions_to_display
                 + 1
             )
-            if(self.slider.slider_handle.tile_addition_height_percent > 0):
+            if self.slider.slider_handle.tile_addition_height_percent > 0:
                 self.slider.slider_handle.tile_addition_height_percent -= 3
                 self.slider.slider_handle.resize()
                 self.slider.set_slider_handle_position()
@@ -196,6 +196,17 @@ class GameSessionsGroup(Tile):
         self.slider_position_right = right
         self.rect.left = left
         self.rect.top = top
+
+    def move_slider(self, event):
+        should_move_up = self.slider.move_slider(event=event)
+
+        if should_move_up is None:
+            # Skip if not change
+            return
+        elif should_move_up:
+            self.scroll_up()
+        else:
+            self.scroll_down()
 
     def scroll_down(self):
         self.change_line(1)
