@@ -53,7 +53,7 @@ class Slider(Tile):
         tile_addition_width_percent=0,
         tile_addition_height_percent=0,
         handle_height_percent=0,
-        handle_width_percent=0
+        handle_width_percent=0,
     ):
         super().__init__(
             name,
@@ -69,7 +69,7 @@ class Slider(Tile):
             screen,
             handle_size_percent,
             tile_addition_width_percent=handle_width_percent,
-            tile_addition_height_percent=handle_height_percent
+            tile_addition_height_percent=handle_height_percent,
         )
 
         self.actual_percentage = []
@@ -90,23 +90,25 @@ class Slider(Tile):
         self.update_slider_handle_by_position()
 
     def move_slider(self, event):
-        is_greater = self.move_slider_horizontally(
-            event.pos[0]
-        ) if self.horizontal else self.move_slider_vertically(event.pos[1])
+        is_greater = (
+            self.move_slider_horizontally(event.pos[0])
+            if self.horizontal
+            else self.move_slider_vertically(event.pos[1])
+        )
 
         return is_greater
 
     def move_slider_vertically(self, pos_y):
-        if pos_y < self.rect.top or pos_y > self.rect.bottom:
-            return
-
         old_handle_position = self.handle_position
-        self.handle_position = (
+        # Move the handle to the next value when the mouse reaches the middle
+        # of the distance between the current and the next this makes a smoother transition between values
+        self.handle_position = max(
             bisect(
                 self.pivot_values,
                 round(((pos_y - self.rect.top) / self.image.get_height()) * 100),
             )
-            - 1
+            - 1,
+            0
         )
 
         if old_handle_position == self.handle_position:
@@ -117,16 +119,16 @@ class Slider(Tile):
         return True if old_handle_position > self.handle_position else False
 
     def move_slider_horizontally(self, pos_x):
-        if pos_x < self.rect.left or pos_x > self.rect.right:
-            return
-
         old_handle_position = self.handle_position
-        self.handle_position = (
+        # Move the handle to the next value when the mouse reaches the middle
+        # of the distance between the current and the next this makes a smoother transition between values
+        self.handle_position = max(
             bisect(
                 self.pivot_values,
                 round(((pos_x - self.rect.left) / self.image.get_width()) * 100),
             )
-            - 1
+            - 1,
+            0,
         )
 
         if old_handle_position == self.handle_position:
@@ -268,6 +270,4 @@ class Slider(Tile):
         if self.delimiters < 2:
             return
         self.screen.blit(self.image, self.rect)
-        self.screen.blit(
-            self.slider_handle.image, self.slider_handle.rect
-        )
+        self.screen.blit(self.slider_handle.image, self.slider_handle.rect)
