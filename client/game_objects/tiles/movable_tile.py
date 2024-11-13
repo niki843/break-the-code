@@ -66,5 +66,4 @@ class MovableTile(Tile):
         self.reference_object = reference_object
 
     def move_slider(self, event):
-        # TODO implement this
-        x_movement, y_movement = event.pos
+        self.rect.left, self.rect.top = event.pos

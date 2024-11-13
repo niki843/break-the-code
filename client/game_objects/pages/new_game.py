@@ -454,10 +454,13 @@ class NewGame(GameWindow):
                 self.notes_group.GUESS_NUMBER_WHITE_TILES_NAME.format("")
             ):
                 # TODO might need to create a separate function for this
-                self.event_handler.handle_slider_clicked(self.notes_group.guess_number_tiles[int(name.split("_")[0])])
-            case self.played_cards_group.scroll.slider_handle.name:
-                # TODO test what will happen if something changes while you hold the slider
-                self.event_handler.handle_slider_clicked(self.played_cards_group)
+                color_num = 0 if name.split("_")[1] == 'black' else 1
+                tile_position = int(name.split("_")[0])
+                self.event_handler.handle_slider_clicked(self.notes_group.guess_number_tiles[tile_position][color_num])
+            # TODO: Vertical scroll glitching
+            # case self.played_cards_group.scroll.slider_handle.name:
+            #     # TODO test what will happen if something changes while you hold the slider
+            #     self.event_handler.handle_slider_clicked(self.played_cards_group)
 
         if self.back_to_menu_button and self.back_to_menu_button.name == tile.name:
             self.close()

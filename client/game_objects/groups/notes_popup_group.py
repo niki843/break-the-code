@@ -105,6 +105,10 @@ class NotesPopupGroup:
                         3.2,
                         client.state_manager.screen
             )
+            self.tiles_group.add(tile1)
+            self.tiles_group.add(tile2)
+            tile1.priority = 3
+            tile2.priority = 3
             self.guess_number_tiles.append((tile1, tile2))
 
             x_distance_percentage = x_distance_percentage + 3.5
