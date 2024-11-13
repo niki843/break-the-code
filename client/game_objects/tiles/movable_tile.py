@@ -52,6 +52,7 @@ class MovableTile(Tile):
             tile_addition_height_percent,
         )
 
+        self.current_pos = None
         self.reference_object = reference_object
         self.x_distance_percentage = x_distance_percentage
         self.y_distance_percentage = y_distance_percentage
@@ -59,11 +60,18 @@ class MovableTile(Tile):
     def get_position(self):
         x_position = self.reference_object.rect.left + (client.state_manager.screen.get_width() * (self.x_distance_percentage / 100))
         y_position = self.reference_object.rect.top + (client.state_manager.screen.get_height() * (self.y_distance_percentage / 100))
+        self.current_pos = x_position, y_position
 
         return x_position, y_position
+
+    def update_current_position(self):
+        self.current_pos = self.rect.left, self.rect.top
 
     def change_reference_object(self, reference_object: Tile):
         self.reference_object = reference_object
 
     def move_slider(self, event):
         self.rect.left, self.rect.top = event.pos
+
+    def update_position(self):
+        self.rect.left, self.rect.top = self.current_pos

@@ -111,7 +111,7 @@ class NotesPopupGroup:
             tile2.priority = 3
             self.guess_number_tiles.append((tile1, tile2))
 
-            x_distance_percentage = x_distance_percentage + 3.5
+            x_distance_percentage = x_distance_percentage + 4
 
         self.set_guess_numbers_tile_size()
 
@@ -124,7 +124,10 @@ class NotesPopupGroup:
             tile2.resize()
 
             tile1.rect.left, tile1.rect.top = tile1.get_position()
-            tile2.rect.left, tile2.rect.top = tile2.get_position()
+
+            tile2_left, tile2_top = tile2.get_position()
+            tile2.rect.left, tile2.rect.top = tile2_left + 7, tile2_top + 7
+            tile2.update_current_position()
 
     def clicked(self):
         self.close() if self.is_open else self.open()

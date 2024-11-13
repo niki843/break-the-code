@@ -129,6 +129,9 @@ class EventHandler(Singleton):
                     slider.move_slider(event)
             self.current_window.blit()
 
+        if hasattr(slider, "update_position"):
+            slider.update_position()
+
     def handle_save_button(self, button):
         mouse_clicked = True
         while mouse_clicked:
