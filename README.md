@@ -8,7 +8,7 @@ Key Features:
 ✅ Interactive UI built with Pygame
 ✅ Turn-based deduction mechanics inspired by the original board game
 ✅ Custom game rules for added flexibility
-✅ In-game chat system (optional)
+✅ In-game chat system (in-development)
 
 Tech Stack:
 Python – Core game logic
