@@ -52,6 +52,7 @@ class MovableTile(Tile):
             tile_addition_height_percent,
         )
 
+        self.placeable_position_tiles = []
         self.current_pos = None
         self.reference_object = reference_object
         self.x_distance_percentage = x_distance_percentage
@@ -63,6 +64,12 @@ class MovableTile(Tile):
         self.current_pos = x_position, y_position
 
         return x_position, y_position
+
+    def add_position_tile(self):
+        pass
+
+    def remove_position_tile(self):
+        pass
 
     def update_current_position(self):
         self.current_pos = self.rect.left, self.rect.top

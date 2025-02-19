@@ -1,16 +1,24 @@
+import pygame
 import client
 from client.utils import common
+from tiles.guess_card_tile import GuessCardTile
+from tiles.plain_text_box import PlainTextTile
+from utils.enums import GameTypes
 
 
 class NotesPopupGroup:
     GUESS_NUMBER_BLACK_TILES_NAME = "{0}_black_tile"
     GUESS_NUMBER_WHITE_TILES_NAME = "{0}_white_tile"
+    GUESS_CARD_NAME = "guess_card-{0}"
 
     def __init__(self, group_name, tiles_group):
         self.group_name = group_name
         self.tiles_group = tiles_group
 
         self.guess_number_tiles = []
+        self.guess_cards = []
+
+        self.table_tile_text = None
 
         self.background = None
         self.next_background = None
@@ -25,11 +33,15 @@ class NotesPopupGroup:
         self.build_background()
         self.build_notes_button()
         self.build_guess_numbers_tiles()
+        self.build_table_tiles_text_tile()
+        self.build_guess_cards()
 
     def resize(self):
         self.set_background_size()
         self.set_notes_button_size()
         self.set_guess_numbers_tile_size()
+        self.set_table_tiles_tile_text_size()
+        self.set_guess_cards_size()
 
     def build_background(self):
         self.background = common.load_tile(
@@ -129,6 +141,73 @@ class NotesPopupGroup:
             tile2.rect.left, tile2.rect.top = tile2_left + 7, tile2_top + 7
             tile2.update_current_position()
 
+    def build_table_tiles_text_tile(self):
+        surface = pygame.Surface([50, 12], pygame.SRCALPHA, 32)
+        surface = surface.convert_alpha()
+        self.table_tile_text = PlainTextTile(
+            name="table_tile",
+            surface=surface,
+            screen=client.state_manager.screen,
+            size_percent=22,
+            text_to_display="Table tiles",
+            text_size_percent=40,
+            max_characters_on_line=15,
+        )
+
+        self.set_table_tiles_tile_text_size()
+
+    def set_table_tiles_tile_text_size(self):
+        if not self.table_tile_text:
+            return
+
+        left = self.background.rect.centerx + (
+                client.state_manager.screen.get_width() * 0.25
+        )
+        top = self.background.rect.top + (
+                client.state_manager.screen.get_height() * 0.020
+        )
+
+        self.table_tile_text.text_rect.left = left
+        self.table_tile_text.text_rect.top = top
+
+    def build_guess_cards(self):
+        cards_amm = 5 if client.state_manager.game_type == GameTypes.THREE_PLAYER else 4
+
+        for i in range(0, cards_amm):
+            self.guess_cards.append(
+                GuessCardTile(
+                    i,
+                    self.GUESS_CARD_NAME.format(i),
+                    self.GUESS_CARD_NAME.format(i),
+                    common.get_image("user_number_1.png"),
+                    client.state_manager.screen,
+                    5.5,
+                    common.get_image("user_number_pressed.png"),
+                    text_size_percentage_from_screen_height=5,
+                    max_char=1,
+                )
+            )
+
+        self.set_guess_cards_size()
+
+    def set_guess_cards_size(self):
+        if not self.guess_cards:
+            return
+
+        left = self.background.rect.centerx + (
+                client.state_manager.screen.get_width() * 0.18
+        )
+        top = self.background.rect.top + (
+                client.state_manager.screen.get_height() * 0.055
+        )
+        for card in self.guess_cards:
+            card.resize()
+            card.rect.left = left
+            card.rect.top = top
+
+            left = card.rect.right + (client.state_manager.screen.get_width() * 0.02)
+            card.center_color_buttons()
+
     def clicked(self):
         self.close() if self.is_open else self.open()
 
@@ -170,6 +249,15 @@ class NotesPopupGroup:
             client.state_manager.screen.blit(
                 self.background.image, self.background.rect
             )
+
+            client.state_manager.screen.blit(
+                self.table_tile_text.text_surface, self.table_tile_text.text_rect
+            )
+
+            for guess_card in self.guess_cards:
+                client.state_manager.screen.blit(
+                    guess_card.image, guess_card.rect
+                )
 
             for tile1, tile2 in self.guess_number_tiles:
                 client.state_manager.screen.blit(
